@@ -58,7 +58,7 @@ public class Hotel {
 
     public List<Room> getRooms(int minCapacity) {
         return rooms.stream()
-                .filter(room -> room.getCapacity() > minCapacity)
+                .filter(room -> room.getCapacity() >= minCapacity)
                 .collect(Collectors.toList());
     }
 
