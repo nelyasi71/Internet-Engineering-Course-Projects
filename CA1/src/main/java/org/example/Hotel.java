@@ -2,6 +2,7 @@ package org.example;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Hotel {
     private List<Customer> customers;
@@ -24,5 +25,11 @@ public class Hotel {
 
     public void addBooking(Booking booking) {
         bookings.add(booking);
+    }
+
+    public List<Room> getRooms(int minCapacity) {
+        return rooms.stream()
+                .filter(room -> room.getCapacity() > minCapacity)
+                .collect(Collectors.toList());
     }
 }
