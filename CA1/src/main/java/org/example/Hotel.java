@@ -1,9 +1,14 @@
 package org.example;
 
+import lombok.Getter;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.Comparator;
+import java.util.Optional;
 
+@Getter
 public class Hotel {
     private List<Customer> customers;
     private List<Room> rooms;
@@ -31,5 +36,11 @@ public class Hotel {
         return rooms.stream()
                 .filter(room -> room.getCapacity() > minCapacity)
                 .collect(Collectors.toList());
+    }
+
+    public Optional<String> getOldestCustomerName() {
+        return customers.stream()
+                .max(Comparator.comparingInt(Customer::getAge))
+                .map(Customer::getName);
     }
 }
