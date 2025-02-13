@@ -1,7 +1,10 @@
 package org.example;
+import lombok.ToString;
+
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
+@ToString
 public class Booking {
     private String bookingID;
     private Customer booker;
