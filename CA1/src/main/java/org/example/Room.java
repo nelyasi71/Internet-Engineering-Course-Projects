@@ -8,4 +8,12 @@ public class Room {
         this.roomId = roomId;
         this.capacity = capacity;
     }
+
+    public String getRoomId() {
+        return roomId;
+    }
+
+    public int getCapacity() {
+        return capacity;
+    }
 }
