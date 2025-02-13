@@ -12,4 +12,8 @@ public class Customer {
         this.phoneNumber = phoneNumber;
         this.id = id;
     }
+
+    public int getAge() {
+        return age;
+    }
 }
