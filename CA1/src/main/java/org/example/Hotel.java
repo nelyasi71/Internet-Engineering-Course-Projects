@@ -1,5 +1,6 @@
 package org.example;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Hotel {
@@ -7,9 +8,9 @@ public class Hotel {
     private List<Room> rooms;
     private List<Booking> bookings;
 
-    public Hotel(List<Customer> customers, List<Room> rooms, List<Booking> bookings) {
-        this.customers = customers;
-        this.rooms = rooms;
-        this.bookings = bookings;
+    public Hotel() {
+        this.customers = new ArrayList<>();
+        this.rooms = new ArrayList<>();
+        this.bookings = new ArrayList<>();
     }
 }
