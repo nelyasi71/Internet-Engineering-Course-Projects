@@ -3,13 +3,13 @@ package org.example;
 public class Customer {
     private String name;
     private int age;
-    private int phone_number ;
+    private int phoneNumber ;
     private String id;
 
-    public Customer(String name, int age, int phone_number, String id) {
+    public Customer(String name, int age, int phoneNumber, String id) {
         this.name = name;
         this.age = age;
-        this.phone_number = phone_number;
+        this.phoneNumber = phoneNumber;
         this.id = id;
     }
 }
