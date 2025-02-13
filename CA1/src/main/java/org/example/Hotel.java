@@ -68,8 +68,8 @@ public class Hotel {
                 .map(Customer::getName);
     }
 
-    public Optional<List<Integer>> getCustomerPhonesByRoomNumber(String roomNumber) {
-        List<Integer> phoneNumbers = bookings.stream()
+    public Optional<List<String>> getCustomerPhonesByRoomNumber(String roomNumber) {
+        List<String> phoneNumbers = bookings.stream()
                 .filter(booking -> booking.getBookedRoom().getRoomId().equals(roomNumber))
                 .map(booking -> customers.stream()
                         .filter(customer -> customer.getId().equals(booking.getBooker().getId()))
