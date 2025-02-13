@@ -2,11 +2,8 @@ package org.example;
 
 import lombok.Getter;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
-import java.util.Comparator;
-import java.util.Optional;
 
 @Getter
 public class Hotel {
@@ -43,4 +40,19 @@ public class Hotel {
                 .max(Comparator.comparingInt(Customer::getAge))
                 .map(Customer::getName);
     }
+
+    public Optional<List<Integer>> getCustomerPhonesByRoomNumber(String roomNumber) {
+        List<Integer> phoneNumbers = bookings.stream()
+                .filter(booking -> booking.getBookedRoom().getRoomId().equals(roomNumber))
+                .map(booking -> customers.stream()
+                        .filter(customer -> customer.getId().equals(booking.getBooker().getId()))
+                        .findFirst()
+                        .map(Customer::getPhoneNumber)
+                        .orElse(null))
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+
+        return phoneNumbers.isEmpty() ? Optional.empty() : Optional.of(phoneNumbers);
+    }
+
 }

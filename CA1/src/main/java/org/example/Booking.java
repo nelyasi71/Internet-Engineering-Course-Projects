@@ -1,8 +1,12 @@
 package org.example;
+
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
-public class Booking {
+import lombok.Getter;
+
+@Getter
+class Booking {
     private String bookingID;
     private Customer booker;
     private Room bookedRoom;
