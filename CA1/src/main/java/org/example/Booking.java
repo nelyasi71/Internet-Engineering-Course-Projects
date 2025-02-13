@@ -1,5 +1,6 @@
 package org.example;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 public class Booking {
     private String bookingID;
@@ -14,5 +15,9 @@ public class Booking {
         this.bookedRoom = bookedRoom;
         this.checkInDate = checkInDate;
         this.checkOutDate = checkOutDate;
+    }
+
+    public long getStayDurationInDays() {
+        return ChronoUnit.DAYS.between(checkInDate, checkOutDate);
     }
 }
