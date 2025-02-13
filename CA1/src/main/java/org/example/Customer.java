@@ -1,5 +1,7 @@
 package org.example;
+import lombok.Getter;
 
+@Getter
 public class Customer {
     private String name;
     private int age;
@@ -11,6 +13,7 @@ public class Customer {
         this.age = age;
         this.phoneNumber = phoneNumber;
         this.id = id;
+
     }
 
     public int getAge() {
