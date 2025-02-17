@@ -11,6 +11,15 @@ public class Customer {
     private String id;
 
     public Customer(String name, int age, String phoneNumber, String id) {
+        if (age <= 0) {
+            throw new IllegalArgumentException("Age cannot be negative");
+        }
+        if (name == null) {
+            throw new IllegalArgumentException("Name cannot be null");
+        }
+        if (phoneNumber == null) {
+            throw new IllegalArgumentException("PhoneNumber cannot be null");
+        }
         this.name = name;
         this.age = age;
         this.phoneNumber = phoneNumber;

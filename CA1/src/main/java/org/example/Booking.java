@@ -1,9 +1,10 @@
 package org.example;
+
+import lombok.Getter;
 import lombok.ToString;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import lombok.Getter;
 
 @Getter
 @ToString
@@ -15,6 +16,9 @@ public class Booking {
     private LocalDateTime checkOutDate;
 
     public Booking(String bookingID, Customer booker, Room bookedRoom, LocalDateTime checkInDate, LocalDateTime checkOutDate) {
+        if (checkInDate.isAfter(checkOutDate)) {
+            throw new IllegalArgumentException("Check-in date must be before check-out date");
+        }
         this.bookingID = bookingID;
         this.booker = booker;
         this.bookedRoom = bookedRoom;

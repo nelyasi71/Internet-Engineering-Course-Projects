@@ -1,18 +1,14 @@
 package org.example;
 
-import lombok.Getter;
-
-import java.util.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.Comparator;
-import java.util.Optional;
+import lombok.Getter;
+
 import java.io.File;
-import java.time.format.DateTimeFormatter;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Getter
 public class Hotel {
@@ -35,7 +31,21 @@ public class Hotel {
     }
 
     public void addBooking(Booking booking) {
+        if (isRoomBooked(booking)) {
+            throw new IllegalArgumentException("Room is already booked for the selected dates");
+        }
         bookings.add(booking);
+    }
+
+    private boolean isRoomBooked(Booking newBooking) {
+        for (Booking existingBooking : bookings) {
+            if (existingBooking.getBookedRoom().equals(newBooking.getBookedRoom()) &&
+                    (newBooking.getCheckInDate().isBefore(existingBooking.getCheckOutDate()) &&
+                            newBooking.getCheckOutDate().isAfter(existingBooking.getCheckInDate()))) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public Customer findCustomerById(String id) {
@@ -57,18 +67,32 @@ public class Hotel {
     }
 
     public List<Room> getRooms(int minCapacity) {
+        if (minCapacity < 0) {
+            throw new IllegalArgumentException("Capacity cannot be negative");
+        }
         return rooms.stream()
                 .filter(room -> room.getCapacity() >= minCapacity)
                 .collect(Collectors.toList());
     }
 
     public Optional<String> getOldestCustomerName() {
+        if (customers.isEmpty()) {
+            throw new NoSuchElementException("No customers exist");
+        }
         return customers.stream()
                 .max(Comparator.comparingInt(Customer::getAge))
                 .map(Customer::getName);
     }
 
-    public Optional<List<String>> getCustomerPhonesByRoomNumber(String roomNumber) {
+    public List<String> getCustomerPhonesByRoomNumber(String roomNumber) {
+        if (rooms.stream().noneMatch(room -> room.getRoomId().equals(roomNumber))) {
+            throw new NoSuchElementException("Room does not exist in the hotel.");
+        }
+
+        if (customers.isEmpty()) {
+            throw new NoSuchElementException("No customers found in the hotel.");
+        }
+
         List<String> phoneNumbers = bookings.stream()
                 .filter(booking -> booking.getBookedRoom().getRoomId().equals(roomNumber))
                 .map(booking -> customers.stream()
@@ -79,9 +103,8 @@ public class Hotel {
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
 
-        return phoneNumbers.isEmpty() ? Optional.empty() : Optional.of(phoneNumbers);
+        return phoneNumbers.isEmpty() ? null : phoneNumbers;
     }
-
 
     public void initFromJson(String filePath) {
         ObjectMapper mapper = new ObjectMapper();
