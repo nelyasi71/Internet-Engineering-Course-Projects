@@ -23,10 +23,16 @@ public class Hotel {
     }
 
     public void addCustomer(Customer customer) {
+        if(isCustomerExisted(customer.getId())) {
+            throw new IllegalArgumentException("The customer is already existed.");
+        }
         customers.add(customer);
     }
 
     public void addRoom(Room room) {
+        if(isRoomExisted(room.getId())) {
+            throw new IllegalArgumentException("The room is already existed.");
+        }
         rooms.add(room);
     }
 
@@ -57,14 +63,23 @@ public class Hotel {
         return null;
     }
 
+    public boolean isCustomerExisted(String id) {
+        return this.findCustomerById(id) != null;
+    }
+
     public Room findRoomById(String id) {
         for (Room room : this.rooms) {
-            if (room.getRoomId().equals(id)) {
+            if (room.getId().equals(id)) {
                 return room;
             }
         }
         return null;
     }
+
+    public boolean isRoomExisted(String id) {
+        return this.findRoomById(id) != null;
+    }
+
 
     public List<Room> getRooms(int minCapacity) {
         if (minCapacity < 0) {
@@ -85,7 +100,7 @@ public class Hotel {
     }
 
     public List<String> getCustomerPhonesByRoomNumber(String roomNumber) {
-        if (rooms.stream().noneMatch(room -> room.getRoomId().equals(roomNumber))) {
+        if (rooms.stream().noneMatch(room -> room.getId().equals(roomNumber))) {
             throw new NoSuchElementException("Room does not exist in the hotel.");
         }
 
@@ -94,7 +109,7 @@ public class Hotel {
         }
 
         List<String> phoneNumbers = bookings.stream()
-                .filter(booking -> booking.getBookedRoom().getRoomId().equals(roomNumber))
+                .filter(booking -> booking.getBookedRoom().getId().equals(roomNumber))
                 .map(booking -> customers.stream()
                         .filter(customer -> customer.getId().equals(booking.getBooker().getId()))
                         .findFirst()
@@ -119,9 +134,7 @@ public class Hotel {
                     String name = customer.get("name").asText();
                     String phone = customer.get("phone").asText();
                     int age = customer.get("age").asInt();
-                    this.customers.add(
-                            new Customer(name, age, phone, id)
-                    );
+                    addCustomer(new Customer(name, age, phone, id));
                 }
             }
 
@@ -130,9 +143,7 @@ public class Hotel {
                 for (JsonNode room : roomsNode) {
                     String id = room.get("id").asText();
                     int capacity = room.get("capacity").asInt();
-                    this.rooms.add(
-                            new Room(id, capacity)
-                    );
+                    addRoom(new Room(id, capacity));
                 }
             }
 
@@ -148,9 +159,7 @@ public class Hotel {
                     LocalDateTime checkIn = LocalDateTime.parse(booking.get("check_in").asText(), formatter);
                     LocalDateTime checkOut = LocalDateTime.parse(booking.get("check_out").asText(), formatter);
 
-                    this.bookings.add(
-                            new Booking(id, customer, room, checkIn, checkOut)
-                    );
+                    addBooking(new Booking(id, customer, room, checkIn, checkOut));
                 }
             }
 

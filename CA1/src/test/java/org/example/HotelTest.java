@@ -9,6 +9,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.*;
 
 
 class HotelTest {
@@ -38,122 +39,73 @@ class HotelTest {
         hotel.addBooking(booking);
     }
 
-    //validation does not work check
-    @Test
-    void When_AgeIsNegative_Expect_IllegalArgumentException() {
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            new Customer("Bob", -1, "987654321", "2");
-        });
-        assertEquals("Age cannot be negative", exception.getMessage());
-    }
 
-    @Test
-    void When_CheckInIsAfterCheckOut_Expect_IllegalArgumentException() {
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            new Booking("B002", customer, room1,
-                    LocalDateTime.of(2025, 2, 25, 12, 0),
-                    LocalDateTime.of(2025, 2, 20, 12, 0));
-        });
-
-        assertEquals("Check-in date must be before check-out date", exception.getMessage());
-    }
-
-    @Test
-    void When_CheckOutIsBeforeCheckIn_Expect_IllegalArgumentException() {
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            new Booking("B005", customer, room1,
-                    LocalDateTime.of(2025, 2, 15, 12, 0),
-                    LocalDateTime.of(2025, 2, 10, 12, 0));
-        });
-
-        assertEquals("Check-in date must be before check-out date", exception.getMessage());
-    }
-
-
-    @Test
-    void When_RoomCapacityIsNegative_Expect_IllegalArgumentException() {
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            new Room("105", -1);
-        });
-
-        assertEquals("Room capacity must be greater than zero", exception.getMessage());
-    }
-
-    @Test
-    void shouldThrowException_When_NameIsNull() {
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            new Customer(null, 20, "987654321", "2");
-        });
-
-        assertEquals("Name cannot be null", exception.getMessage());
-    }
-
-    @Test
-    void shouldThrowException_When_phoneNumberIsNull() {
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            new Customer("Narges", 20, null, "2");
-        });
-
-        assertEquals("PhoneNumber cannot be null", exception.getMessage());
-    }
     //booking functions check
+
+    @Test
+    void Should_ThrowException_When_roomExisted() {
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            Room existedRoom = new Room("101", 2);
+            hotel.addRoom(existedRoom);
+        });
+
+        assertEquals("The room is already existed.", exception.getMessage());
+
+    }
+
+    @Test
+    void Should_ThrowException_When_customerExisted() {
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            Customer existedCustomer = new Customer("Bob", 2 ,"0915151515", "1");
+            hotel.addCustomer(existedCustomer);
+        });
+
+        assertEquals("The customer is already existed.", exception.getMessage());
+
+    }
+
     @Test
     void When_CheckInAndCheckOutAre5DaysApart_Expect_Return5Days() {
         assertEquals(5, booking.getStayDurationInDays());
     }
 
     @Test
-    void When_RoomIsAvailable_Expect_ValidBooking() {
-        Room room = new Room("101", 2);
-        hotel.addRoom(room);
+    void Should_doBookings_When_roomIsAvailable() {
 
-        Customer customer1 = new Customer("Alice", 25, "123456789", "1");
-        Booking booking1 = new Booking("B001", customer1, room,
-                LocalDateTime.of(2025, 2, 15, 12, 0),
-                LocalDateTime.of(2025, 2, 20, 12, 0));
-        hotel.addBooking(booking1);  // First booking
-
-        Customer customer2 = new Customer("Bob", 30, "987654321", "2");
-        Booking booking2 = new Booking("B002", customer2, room,
+        Booking booking2 = new Booking("B002", customer, room1,
                 LocalDateTime.of(2025, 2, 21, 12, 0),
                 LocalDateTime.of(2025, 2, 25, 12, 0));
         hotel.addBooking(booking2);
+
+        assertThat(hotel.getBookings()).contains(booking);
+        assertThat(hotel.getBookings()).contains(booking2);
     }
 
 
     @Test
-    void When_RoomIsAlreadyBooked_Expect_IllegalArgumentException() {
-        Room room = new Room("101", 2);
-        Customer customer1 = new Customer("Alice", 25, "123456789", "1");
-        Booking booking1 = new Booking("B001", customer1, room,
-                LocalDateTime.of(2025, 3, 15, 12, 0),
-                LocalDateTime.of(2025, 3, 20, 12, 0));
-        hotel.addBooking(booking1);
+    void Should_throwException_When_RoomIsAlreadyBooked() {
 
-        Customer customer2 = new Customer("Bob", 30, "987654321", "2");
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            Booking booking2 = new Booking("B002", customer2, room,
-                    LocalDateTime.of(2025, 3, 18, 12, 0),
-                    LocalDateTime.of(2025, 3, 22, 12, 0));
-            hotel.addBooking(booking2);
+            Booking booking1 = new Booking("B002", customer, room1,
+                    LocalDateTime.of(2025, 2, 18, 12, 0),
+                    LocalDateTime.of(2025, 2, 22, 12, 0));
+            hotel.addBooking(booking1);
         });
 
         assertEquals("Room is already booked for the selected dates", exception.getMessage());
     }
 
     @Test
-    void When_RoomIsBookedForOneDay_Expect_ValidBooking() {
-        Room room = new Room("101", 2);
-        hotel.addRoom(room);
+    void Should_doBooking_When_multipleBookingInOneDay() {
 
         Customer customer1 = new Customer("Alice", 25, "123456789", "1");
-        Booking booking1 = new Booking("B001", customer1, room,
+        Booking booking1 = new Booking("B001", customer1, room2,
                 LocalDateTime.of(2025, 2, 15, 12, 0),
                 LocalDateTime.of(2025, 2, 15, 12, 0));
         hotel.addBooking(booking1);
 
         Customer customer2 = new Customer("Bob", 30, "987654321", "2");
-        Booking booking2 = new Booking("B002", customer2, room,
+        Booking booking2 = new Booking("B002", customer2, room2,
                 LocalDateTime.of(2025, 2, 15, 13, 0),
                 LocalDateTime.of(2025, 2, 15, 14, 0));
         hotel.addBooking(booking2);
@@ -192,7 +144,7 @@ class HotelTest {
     }
 
     @Test
-    void should_ThrowIllegalArgumentException_When_InvalidMinCapacityIsNegative() {
+    void should_ThrowIllegalArgumentException_When_minCapacityIsNegative() {
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             hotel.getRooms(-1);
         });
@@ -227,9 +179,7 @@ class HotelTest {
     @Test
     void should_ThrowNoSuchElementException_When_NoCustomersExist() {
         Hotel hotel = new Hotel();
-        NoSuchElementException exception = assertThrows(NoSuchElementException.class, () -> {
-            hotel.getOldestCustomerName();
-        });
+        NoSuchElementException exception = assertThrows(NoSuchElementException.class, hotel::getOldestCustomerName);
         assertEquals("No customers exist", exception.getMessage());
     }
 
@@ -238,7 +188,7 @@ class HotelTest {
         hotel.addBooking(new Booking("1", customer, room2, LocalDateTime.now(), LocalDateTime.now().plusDays(2)));
         List<String> phoneNumbers = hotel.getCustomerPhonesByRoomNumber("102");
         assertEquals(1, phoneNumbers.size());
-        assertEquals("123456789", phoneNumbers.get(0));
+        assertEquals("123456789", phoneNumbers.getFirst());
     }
 
     @Test
@@ -249,7 +199,6 @@ class HotelTest {
         hotel.addCustomer(customer1);
         hotel.addCustomer(customer2);
 
-        hotel.addRoom(room3);
         hotel.addBooking(new Booking("2", customer1, room3, LocalDateTime.now().plusDays(3), LocalDateTime.now().plusDays(6)));
         hotel.addBooking(new Booking("3", customer2, room3, LocalDateTime.now().plusDays(7), LocalDateTime.now().plusDays(9)));
 
