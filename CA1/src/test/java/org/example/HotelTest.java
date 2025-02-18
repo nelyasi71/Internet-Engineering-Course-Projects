@@ -42,6 +42,35 @@ class HotelTest {
 
     //booking functions check
 
+
+    @Test
+    void Should_ThrowException_When_BookerDoesNotExistInCustomerList() {
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            Room room4 = new Room(104, 6);
+            Booking booking2 = new Booking(1, customer, room4,
+                    LocalDateTime.of(2025, 2, 15, 12, 0),
+                    LocalDateTime.of(2025, 2, 20, 12, 0));
+
+            hotel.addBooking(booking2);
+        });
+
+        assertEquals("This room does not exist.", exception.getMessage());
+    }
+
+    @Test
+    void Should_ThrowException_When_RoomDoesNotExistInRoomsList() {
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            Customer customer2 = new Customer("Alice", 25, "123456789", 2);
+            Booking booking2 = new Booking(1, customer2, room2,
+                    LocalDateTime.of(2025, 2, 15, 12, 0),
+                    LocalDateTime.of(2025, 2, 20, 12, 0));
+
+            hotel.addBooking(booking2);
+        });
+
+        assertEquals("This customer does not exist.", exception.getMessage());
+    }
+
     @Test
     void Should_ThrowException_When_roomExisted() {
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
@@ -92,20 +121,18 @@ class HotelTest {
             hotel.addBooking(booking1);
         });
 
-        assertEquals("Room is already booked for the selected dates", exception.getMessage());
+        assertEquals("Room is already booked for the selected dates.", exception.getMessage());
     }
 
     @Test
     void Should_doBooking_When_multipleBookingInOneDay() {
 
-        Customer customer1 = new Customer("Alice", 25, "123456789", 1);
-        Booking booking1 = new Booking(1, customer1, room2,
+        Booking booking1 = new Booking(1, customer, room2,
                 LocalDateTime.of(2025, 2, 15, 12, 0),
                 LocalDateTime.of(2025, 2, 15, 12, 0));
         hotel.addBooking(booking1);
 
-        Customer customer2 = new Customer("Bob", 30, "987654321", 2);
-        Booking booking2 = new Booking(2, customer2, room2,
+        Booking booking2 = new Booking(2, customer, room2,
                 LocalDateTime.of(2025, 2, 15, 13, 0),
                 LocalDateTime.of(2025, 2, 15, 14, 0));
         hotel.addBooking(booking2);
@@ -218,24 +245,8 @@ class HotelTest {
     }
 
     @Test
-    void shouldThrowException_When_RoomDoesNotExist() {
+    void should_ThrowException_When_RoomDoesNotExist() {
         assertThrows(NoSuchElementException.class, () -> hotel.getCustomerPhonesByRoomNumber(999));
-    }
-
-    @Test
-    void should_ThrowException_When_RoomHasBookingsButCustomerNotInCustomerList(){
-        Hotel hotel = new Hotel();
-        Customer customer1 = new Customer("Hassan", 40, "9876543210", 2);
-        Customer customer2 = new Customer("Hasti", 40, "9395004426", 3);
-        Room room = new Room(107, 2);
-        hotel.addBooking(new Booking(1, customer1, room, LocalDateTime.now().plusDays(3), LocalDateTime.now().plusDays(6)));
-        hotel.addBooking(new Booking(2, customer2, room, LocalDateTime.now().plusDays(7), LocalDateTime.now().plusDays(9)));
-        hotel.addRoom(room);
-
-        Exception exception = assertThrows(NoSuchElementException.class, () -> {
-            hotel.getCustomerPhonesByRoomNumber(107);
-        });
-        assertEquals("No customers found in the hotel.",exception.getMessage());
     }
 }
 

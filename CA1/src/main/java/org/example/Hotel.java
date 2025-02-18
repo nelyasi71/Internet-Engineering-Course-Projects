@@ -39,8 +39,14 @@ public class Hotel {
     }
 
     public void addBooking(Booking booking) {
+        if(!isCustomerExisted(booking.getBooker().getId())) {
+            throw new IllegalArgumentException("This customer does not exist.");
+        }
+        if(!isRoomExisted(booking.getBookedRoom().getId())) {
+            throw new IllegalArgumentException("This room does not exist.");
+        }
         if (isRoomBooked(booking)) {
-            throw new IllegalArgumentException("Room is already booked for the selected dates");
+            throw new IllegalArgumentException("Room is already booked for the selected dates.");
         }
         bookings.add(booking);
     }
@@ -104,10 +110,6 @@ public class Hotel {
     public List<String> getCustomerPhonesByRoomNumber(int roomNumber) {
         if (rooms.stream().noneMatch(room -> room.getId() == roomNumber)) {
             throw new NoSuchElementException("Room does not exist in the hotel.");
-        }
-
-        if (customers.isEmpty()) {
-            throw new NoSuchElementException("No customers found in the hotel.");
         }
 
         List<String> phoneNumbers = bookings.stream()
