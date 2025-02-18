@@ -63,29 +63,19 @@ public class Hotel {
     }
 
     public Customer findCustomerById(int id) {
-        for (Customer customer : this.customers) {
-            if (customer.getId() == id) {
-                return customer;
-            }
-        }
-        return null;
+        return customers.stream().filter(customer -> customer.getId() == id).findFirst().orElse(null);
     }
 
     public boolean isCustomerExisted(int id) {
-        return this.findCustomerById(id) != null;
+        return customers.stream().anyMatch(room -> room.getId() == id);
     }
 
     public Room findRoomById(int id) {
-        for (Room room : this.rooms) {
-            if (room.getId() == id) {
-                return room;
-            }
-        }
-        return null;
+        return rooms.stream().filter(room -> room.getId() == id).findFirst().orElse(null);
     }
 
     public boolean isRoomExisted(int id) {
-        return this.findRoomById(id) != null;
+        return rooms.stream().anyMatch(room -> room.getId() == id);
     }
 
 
@@ -108,7 +98,7 @@ public class Hotel {
     }
 
     public List<String> getCustomerPhonesByRoomNumber(int roomNumber) {
-        if (rooms.stream().noneMatch(room -> room.getId() == roomNumber)) {
+        if (!isRoomExisted(roomNumber)) {
             throw new NoSuchElementException("Room does not exist in the hotel.");
         }
 
