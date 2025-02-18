@@ -2,6 +2,8 @@ package org.example;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.Getter;
 
 import java.io.File;
@@ -163,6 +165,47 @@ public class Hotel {
                 }
             }
 
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public void logState(String filePath) {
+        ObjectMapper mapper = new ObjectMapper();
+        ArrayNode roomsArray = mapper.createArrayNode();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+        for (Room room : rooms) {
+            ObjectNode roomNode = mapper.createObjectNode();
+            roomNode.put("room_id", room.getId());
+            roomNode.put("capacity", room.getCapacity());
+
+            ArrayNode bookingsArray = mapper.createArrayNode();
+            for (Booking booking : bookings) {
+                if (booking.getBookedRoom().getId().equals(room.getId())) {
+                    ObjectNode bookingNode = mapper.createObjectNode();
+                    bookingNode.put("id", booking.getBookingID());
+
+                    ObjectNode customerNode = mapper.createObjectNode();
+                    customerNode.put("id", booking.getBooker().getId());
+                    customerNode.put("name", booking.getBooker().getName());
+                    customerNode.put("phone", booking.getBooker().getPhoneNumber());
+                    customerNode.put("age", booking.getBooker().getAge());
+
+                    bookingNode.set("customer", customerNode);
+                    bookingNode.put("check_in", booking.getCheckInDate().format(formatter));
+                    bookingNode.put("check_out", booking.getCheckOutDate().format(formatter));
+
+                    bookingsArray.add(bookingNode);
+                }
+            }
+            roomNode.set("bookings", bookingsArray);
+            roomsArray.add(roomNode);
+        }
+
+        try {
+            mapper.writerWithDefaultPrettyPrinter().writeValue(new File(filePath), roomsArray);
         } catch (Exception e) {
             e.printStackTrace();
         }
