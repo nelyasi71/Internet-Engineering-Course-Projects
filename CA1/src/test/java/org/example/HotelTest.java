@@ -22,12 +22,12 @@ class HotelTest {
     void setUp() {
         hotel = new Hotel();
 
-        customer = new Customer("Alice", 25, "123456789", "1");
-        room1 = new Room("101", 2);
-        room2 = new Room("102", 4);
-        room3 = new Room("103", 6);
+        customer = new Customer("Alice", 25, "123456789", 1);
+        room1 = new Room(101, 2);
+        room2 = new Room(102, 4);
+        room3 = new Room(103, 6);
 
-        booking = new Booking("B001", customer, room1,
+        booking = new Booking(1, customer, room1,
                 LocalDateTime.of(2025, 2, 15, 12, 0),
                 LocalDateTime.of(2025, 2, 20, 12, 0));
 
@@ -45,7 +45,7 @@ class HotelTest {
     @Test
     void Should_ThrowException_When_roomExisted() {
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            Room existedRoom = new Room("101", 2);
+            Room existedRoom = new Room(101, 2);
             hotel.addRoom(existedRoom);
         });
 
@@ -56,7 +56,7 @@ class HotelTest {
     @Test
     void Should_ThrowException_When_customerExisted() {
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            Customer existedCustomer = new Customer("Bob", 2 ,"0915151515", "1");
+            Customer existedCustomer = new Customer("Bob", 2 ,"0915151515", 1);
             hotel.addCustomer(existedCustomer);
         });
 
@@ -72,7 +72,7 @@ class HotelTest {
     @Test
     void Should_doBookings_When_roomIsAvailable() {
 
-        Booking booking2 = new Booking("B002", customer, room1,
+        Booking booking2 = new Booking(2, customer, room1,
                 LocalDateTime.of(2025, 2, 21, 12, 0),
                 LocalDateTime.of(2025, 2, 25, 12, 0));
         hotel.addBooking(booking2);
@@ -86,7 +86,7 @@ class HotelTest {
     void Should_throwException_When_RoomIsAlreadyBooked() {
 
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            Booking booking1 = new Booking("B002", customer, room1,
+            Booking booking1 = new Booking(2, customer, room1,
                     LocalDateTime.of(2025, 2, 18, 12, 0),
                     LocalDateTime.of(2025, 2, 22, 12, 0));
             hotel.addBooking(booking1);
@@ -98,14 +98,14 @@ class HotelTest {
     @Test
     void Should_doBooking_When_multipleBookingInOneDay() {
 
-        Customer customer1 = new Customer("Alice", 25, "123456789", "1");
-        Booking booking1 = new Booking("B001", customer1, room2,
+        Customer customer1 = new Customer("Alice", 25, "123456789", 1);
+        Booking booking1 = new Booking(1, customer1, room2,
                 LocalDateTime.of(2025, 2, 15, 12, 0),
                 LocalDateTime.of(2025, 2, 15, 12, 0));
         hotel.addBooking(booking1);
 
-        Customer customer2 = new Customer("Bob", 30, "987654321", "2");
-        Booking booking2 = new Booking("B002", customer2, room2,
+        Customer customer2 = new Customer("Bob", 30, "987654321", 2);
+        Booking booking2 = new Booking(2, customer2, room2,
                 LocalDateTime.of(2025, 2, 15, 13, 0),
                 LocalDateTime.of(2025, 2, 15, 14, 0));
         hotel.addBooking(booking2);
@@ -154,9 +154,9 @@ class HotelTest {
 
     @Test
     void should_ReturnJane_When_OldestCustomerIsJane() {
-        hotel.addCustomer(new Customer("John", 30, "123456789", "C001"));
-        hotel.addCustomer(new Customer("Jane", 40, "987654321", "C002"));
-        hotel.addCustomer(new Customer("Ben", 22, "987655321", "C003"));
+        hotel.addCustomer(new Customer("John", 30, "123456789", 11));
+        hotel.addCustomer(new Customer("Jane", 40, "987654321", 12));
+        hotel.addCustomer(new Customer("Ben", 22, "987655321", 13));
 
         Optional<String> oldestCustomer = hotel.getOldestCustomerName();
 
@@ -166,9 +166,9 @@ class HotelTest {
 
     @Test
     void should_ReturnOneFirstOldestCustomer_When_MultipleHaveSameAge() {
-        hotel.addCustomer(new Customer("John", 40, "123456789", "C001"));
-        hotel.addCustomer(new Customer("Jane", 40, "987654321", "C002"));
-        hotel.addCustomer(new Customer("Ben", 22, "987655321", "C003"));
+        hotel.addCustomer(new Customer("John", 40, "123456789", 11));
+        hotel.addCustomer(new Customer("Jane", 40, "987654321", 12));
+        hotel.addCustomer(new Customer("Ben", 22, "987655321", 13));
 
         Optional<String> oldestCustomer = hotel.getOldestCustomerName();
 
@@ -185,24 +185,24 @@ class HotelTest {
 
     @Test
     void should_ReturnPhoneNumber_When_RoomHasOneBooking() {
-        hotel.addBooking(new Booking("1", customer, room2, LocalDateTime.now(), LocalDateTime.now().plusDays(2)));
-        List<String> phoneNumbers = hotel.getCustomerPhonesByRoomNumber("102");
+        hotel.addBooking(new Booking(1, customer, room2, LocalDateTime.now(), LocalDateTime.now().plusDays(2)));
+        List<String> phoneNumbers = hotel.getCustomerPhonesByRoomNumber(102);
         assertEquals(1, phoneNumbers.size());
         assertEquals("123456789", phoneNumbers.getFirst());
     }
 
     @Test
     void should_ReturnMultiplePhoneNumbers_When_RoomHasMultipleBookings() {
-        Customer customer1 = new Customer("Hassan", 40, "9876543210", "2");
-        Customer customer2 = new Customer("Hasti", 40, "9395004426", "3");
+        Customer customer1 = new Customer("Hassan", 40, "9876543210", 2);
+        Customer customer2 = new Customer("Hasti", 40, "9395004426", 3);
 
         hotel.addCustomer(customer1);
         hotel.addCustomer(customer2);
 
-        hotel.addBooking(new Booking("2", customer1, room3, LocalDateTime.now().plusDays(3), LocalDateTime.now().plusDays(6)));
-        hotel.addBooking(new Booking("3", customer2, room3, LocalDateTime.now().plusDays(7), LocalDateTime.now().plusDays(9)));
+        hotel.addBooking(new Booking(2, customer1, room3, LocalDateTime.now().plusDays(3), LocalDateTime.now().plusDays(6)));
+        hotel.addBooking(new Booking(3, customer2, room3, LocalDateTime.now().plusDays(7), LocalDateTime.now().plusDays(9)));
 
-        List<String> phoneNumbers = hotel.getCustomerPhonesByRoomNumber("103");
+        List<String> phoneNumbers = hotel.getCustomerPhonesByRoomNumber(103);
 
         assertEquals(2, phoneNumbers.size());
         assertTrue(phoneNumbers.contains("9876543210"));
@@ -211,29 +211,29 @@ class HotelTest {
 
     @Test
     void should_ReturnEmpty_When_RoomHasNoBookings() {
-        Room room = new Room("105", 2);
+        Room room = new Room(105, 2);
         hotel.addRoom(room);
-        List<String> phoneNumbers = hotel.getCustomerPhonesByRoomNumber("105");
+        List<String> phoneNumbers = hotel.getCustomerPhonesByRoomNumber(105);
         assertNull(phoneNumbers);
     }
 
     @Test
     void shouldThrowException_When_RoomDoesNotExist() {
-        assertThrows(NoSuchElementException.class, () -> hotel.getCustomerPhonesByRoomNumber("999"));
+        assertThrows(NoSuchElementException.class, () -> hotel.getCustomerPhonesByRoomNumber(999));
     }
 
     @Test
     void should_ThrowException_When_RoomHasBookingsButCustomerNotInCustomerList(){
         Hotel hotel = new Hotel();
-        Customer customer1 = new Customer("Hassan", 40, "9876543210", "2");
-        Customer customer2 = new Customer("Hasti", 40, "9395004426", "3");
-        Room room = new Room("107", 2);
-        hotel.addBooking(new Booking("1", customer1, room, LocalDateTime.now().plusDays(3), LocalDateTime.now().plusDays(6)));
-        hotel.addBooking(new Booking("2", customer2, room, LocalDateTime.now().plusDays(7), LocalDateTime.now().plusDays(9)));
+        Customer customer1 = new Customer("Hassan", 40, "9876543210", 2);
+        Customer customer2 = new Customer("Hasti", 40, "9395004426", 3);
+        Room room = new Room(107, 2);
+        hotel.addBooking(new Booking(1, customer1, room, LocalDateTime.now().plusDays(3), LocalDateTime.now().plusDays(6)));
+        hotel.addBooking(new Booking(2, customer2, room, LocalDateTime.now().plusDays(7), LocalDateTime.now().plusDays(9)));
         hotel.addRoom(room);
 
         Exception exception = assertThrows(NoSuchElementException.class, () -> {
-            hotel.getCustomerPhonesByRoomNumber("107");
+            hotel.getCustomerPhonesByRoomNumber(107);
         });
         assertEquals("No customers found in the hotel.",exception.getMessage());
     }

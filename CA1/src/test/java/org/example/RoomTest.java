@@ -14,7 +14,7 @@ class RoomTest {
     @Test
     void Should_ThrowException_When_RoomCapacityIsNotPositive() {
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            new Room("105", 0);
+            new Room(105, 0);
         });
 
         assertEquals("Room capacity must be greater than zero", exception.getMessage());

@@ -8,9 +8,9 @@ public class Customer {
     private String name;
     private int age;
     private String phoneNumber ;
-    private String id;
+    private int id;
 
-    public Customer(String name, int age, String phoneNumber, String id) {
+    public Customer(String name, int age, String phoneNumber, int id) {
         if (age <= 0) {
             throw new IllegalArgumentException("Age cannot be negative");
         }

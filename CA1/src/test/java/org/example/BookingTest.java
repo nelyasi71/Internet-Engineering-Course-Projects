@@ -14,14 +14,14 @@ class BookingTest {
 
     @BeforeEach
     void setUp() {
-        customer = new Customer("Alice", 25, "123456789", "1");
-        room = new Room("101", 2);
+        customer = new Customer("Alice", 25, "123456789", 1);
+        room = new Room(101, 2);
     }
 
     @Test
     void Should_ThrowException_When_CheckOutIsBeforeCheckIn() {
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            new Booking("B005", customer, room,
+            new Booking(1, customer, room,
                     LocalDateTime.of(2025, 2, 15, 12, 0),
                     LocalDateTime.of(2025, 2, 10, 12, 0));
         });

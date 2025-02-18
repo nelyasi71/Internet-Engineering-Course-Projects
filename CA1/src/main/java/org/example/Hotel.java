@@ -56,29 +56,29 @@ public class Hotel {
         return false;
     }
 
-    public Customer findCustomerById(String id) {
+    public Customer findCustomerById(int id) {
         for (Customer customer : this.customers) {
-            if (customer.getId().equals(id)) {
+            if (customer.getId() == id) {
                 return customer;
             }
         }
         return null;
     }
 
-    public boolean isCustomerExisted(String id) {
+    public boolean isCustomerExisted(int id) {
         return this.findCustomerById(id) != null;
     }
 
-    public Room findRoomById(String id) {
+    public Room findRoomById(int id) {
         for (Room room : this.rooms) {
-            if (room.getId().equals(id)) {
+            if (room.getId() == id) {
                 return room;
             }
         }
         return null;
     }
 
-    public boolean isRoomExisted(String id) {
+    public boolean isRoomExisted(int id) {
         return this.findRoomById(id) != null;
     }
 
@@ -101,8 +101,8 @@ public class Hotel {
                 .map(Customer::getName);
     }
 
-    public List<String> getCustomerPhonesByRoomNumber(String roomNumber) {
-        if (rooms.stream().noneMatch(room -> room.getId().equals(roomNumber))) {
+    public List<String> getCustomerPhonesByRoomNumber(int roomNumber) {
+        if (rooms.stream().noneMatch(room -> room.getId() == roomNumber)) {
             throw new NoSuchElementException("Room does not exist in the hotel.");
         }
 
@@ -111,9 +111,9 @@ public class Hotel {
         }
 
         List<String> phoneNumbers = bookings.stream()
-                .filter(booking -> booking.getBookedRoom().getId().equals(roomNumber))
+                .filter(booking -> booking.getBookedRoom().getId() == roomNumber)
                 .map(booking -> customers.stream()
-                        .filter(customer -> customer.getId().equals(booking.getBooker().getId()))
+                        .filter(customer -> customer.getId() == booking.getBooker().getId())
                         .findFirst()
                         .map(Customer::getPhoneNumber)
                         .orElse(null))
@@ -132,7 +132,7 @@ public class Hotel {
             JsonNode customersNode = rootNode.get("customers");
             if (customersNode != null) {
                 for (JsonNode customer : customersNode) {
-                    String id = customer.get("id").asText();
+                    int id = customer.get("ssn").asInt();
                     String name = customer.get("name").asText();
                     String phone = customer.get("phone").asText();
                     int age = customer.get("age").asInt();
@@ -143,7 +143,7 @@ public class Hotel {
             JsonNode roomsNode = rootNode.get("rooms");
             if (roomsNode != null) {
                 for (JsonNode room : roomsNode) {
-                    String id = room.get("id").asText();
+                    int id = room.get("id").asInt();
                     int capacity = room.get("capacity").asInt();
                     addRoom(new Room(id, capacity));
                 }
@@ -152,9 +152,9 @@ public class Hotel {
             JsonNode bookingsNode = rootNode.get("bookings");
             if (bookingsNode != null) {
                 for (JsonNode booking : bookingsNode) {
-                    String id = booking.get("id").asText();
-                    String roomId = booking.get("room_id").asText();
-                    String customerId = booking.get("customer_id").asText();
+                    int id = booking.get("id").asInt();
+                    int roomId = booking.get("room_id").asInt();
+                    int customerId = booking.get("customer_id").asInt();
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
                     Customer customer = findCustomerById(customerId);
                     Room room = findRoomById(roomId);
@@ -183,12 +183,12 @@ public class Hotel {
 
             ArrayNode bookingsArray = mapper.createArrayNode();
             for (Booking booking : bookings) {
-                if (booking.getBookedRoom().getId().equals(room.getId())) {
+                if (booking.getBookedRoom().getId() == room.getId()) {
                     ObjectNode bookingNode = mapper.createObjectNode();
-                    bookingNode.put("id", booking.getBookingID());
+                    bookingNode.put("id", booking.getId());
 
                     ObjectNode customerNode = mapper.createObjectNode();
-                    customerNode.put("id", booking.getBooker().getId());
+                    customerNode.put("ssn", booking.getBooker().getId());
                     customerNode.put("name", booking.getBooker().getName());
                     customerNode.put("phone", booking.getBooker().getPhoneNumber());
                     customerNode.put("age", booking.getBooker().getAge());

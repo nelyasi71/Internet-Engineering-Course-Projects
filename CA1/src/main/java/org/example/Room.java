@@ -5,10 +5,10 @@ import lombok.ToString;
 @Getter
 @ToString
 public class Room {
-    private String id;
+    private int id;
     private int capacity;
 
-    public Room(String id, int capacity) {
+    public Room(int id, int capacity) {
         if (capacity <= 0) {
             throw new IllegalArgumentException("Room capacity must be greater than zero");
         }

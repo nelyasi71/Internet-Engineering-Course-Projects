@@ -1,7 +1,7 @@
 {
     "customers": [
         {
-            "id": "12345",
+            "ssn": 12345,
             "name": "Example Name",
             "phone": "09101231212",
             "age": 18
@@ -9,14 +9,14 @@
     ],
     "rooms": [
         {
-            "id": "1",
+            "id": 1,
             "capacity": 3
         }
     ],
     "bookings": [
         {
-            "id": "1",
-            "room_id": "1",
+            "id": 1,
+            "room_id": 1,
             "customer_id": "12345",
             "check_in": "2024-01-01 08:00:00",
             "check_out": "2024-01-02 16:00:00"
