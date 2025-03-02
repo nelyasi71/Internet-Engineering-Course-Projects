@@ -124,6 +124,25 @@ public class UserRepository {
 
     }
 
+    public void borrowBook(BorrowBook dto) {
+        if(Repositories.userRepository.doesAdminExist(dto.getUsername())) {
+            throw new IllegalArgumentException("not aaa");
+        }
+
+        Optional<Customer> customer = Repositories.userRepository.getCustomerByUsername(dto.getUsername());
+        if(customer.isEmpty()) {
+            throw new IllegalArgumentException("not aaa");
+        }
+
+        Optional<Book> book = Repositories.bookRepository.getBookByTitle(dto.getTitle());
+        if(book.isEmpty()) {
+            throw new IllegalArgumentException("not aaa");
+        }
+
+        customer.get().addCart(new BorrowItem(book.get(), dto.getDays()));
+
+    }
+
     public Optional<Customer> getCustomerByUsername(String username) {
         return customers.stream()
                 .filter(customer -> customer.getUserName().equals(username))

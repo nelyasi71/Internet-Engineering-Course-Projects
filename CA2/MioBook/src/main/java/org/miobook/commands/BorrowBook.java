@@ -5,6 +5,8 @@ import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Range;
+import org.miobook.repositories.Repositories;
+import org.miobook.services.JsonValidator;
 
 
 @Getter
@@ -24,10 +26,11 @@ public class BorrowBook extends BaseCommand {
 
     @Override
     public void validate() {
+        JsonValidator.validate(this);
     }
 
     @Override
     public void execute() {
-
+        Repositories.userRepository.borrowBook(this);
     }
 }
