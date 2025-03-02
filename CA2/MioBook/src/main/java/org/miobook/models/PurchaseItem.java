@@ -1,5 +1,9 @@
 package org.miobook.models;
 
+
+import lombok.Getter;
+
+@Getter
 public class PurchaseItem {
     private Book book;
 

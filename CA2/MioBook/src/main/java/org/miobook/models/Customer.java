@@ -1,10 +1,11 @@
 package org.miobook.models;
 
 import java.util.List;
+import java.util.Optional;
 
 public class Customer extends User {
 
-    private Cart shoppingCart;
+    private final Cart shoppingCart;
     private List<Purchase> purchasesHistory;
     
     //TODO
@@ -16,7 +17,12 @@ public class Customer extends User {
         this.shoppingCart = new Cart();
     }
 
-    public void addCart(PurchaseItem item) {
-        this.shoppingCart.add(item);
+    public void addCart(PurchaseItem purchaseItem) {
+        this.shoppingCart.add(purchaseItem);
     }
+
+    public void removeCard(PurchaseItem purchaseItem) {
+        this.shoppingCart.remove(purchaseItem);
+    }
+
 }

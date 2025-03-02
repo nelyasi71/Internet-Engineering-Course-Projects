@@ -4,6 +4,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
+import org.miobook.repositories.Repositories;
+import org.miobook.services.JsonValidator;
 
 
 @Getter
@@ -19,10 +21,11 @@ public class RemoveCart extends BaseCommand {
 
     @Override
     public void validate() {
+        JsonValidator.validate(this);
     }
 
     @Override
     public void execute() {
-
+        Repositories.userRepository.removeCart(this);
     }
 }
