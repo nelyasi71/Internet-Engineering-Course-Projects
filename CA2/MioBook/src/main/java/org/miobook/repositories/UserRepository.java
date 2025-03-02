@@ -3,6 +3,7 @@ package org.miobook.repositories;
 import org.miobook.commands.AddCart;
 import org.miobook.commands.AddCredit;
 import org.miobook.commands.AddUser;
+import org.miobook.commands.RemoveCart;
 import org.miobook.models.*;
 
 import java.util.ArrayList;
@@ -79,7 +80,7 @@ public class UserRepository {
 //                .filter(user -> user.getUserName().equals(username))
 //                .findFirst();
 //    }
-    public void addCart(AddCart dto) {
+    public void addCart(AddCart dto) throws IllegalArgumentException {
         if(Repositories.userRepository.doesAdminExist(dto.getUsername())) {
             throw new IllegalArgumentException("not aaa");
         }
@@ -94,8 +95,27 @@ public class UserRepository {
             throw new IllegalArgumentException("not aaa");
         }
 
-        PurchaseItem item = new BuyItem(book.get());
-        customer.get().addCart(item);
+        customer.get().addCart(new BuyItem(book.get()));
+    }
+
+
+    public void removeCart(RemoveCart dto) {
+        if(Repositories.userRepository.doesAdminExist(dto.getUsername())) {
+            throw new IllegalArgumentException("not aaa");
+        }
+
+        Optional<Customer> customer = Repositories.userRepository.getCustomerByUsername(dto.getUsername());
+        if(customer.isEmpty()) {
+            throw new IllegalArgumentException("not aaa");
+        }
+
+        Optional<Book> book = Repositories.bookRepository.getBookByTitle(dto.getTitle());
+        if(book.isEmpty()) {
+            throw new IllegalArgumentException("not aaa");
+        }
+
+        PurchaseItem item = new PurchaseItem(book.get());
+        customer.get().removeCard(item);
     }
 
     public Optional<Customer> getCustomerByUsername(String username) {
