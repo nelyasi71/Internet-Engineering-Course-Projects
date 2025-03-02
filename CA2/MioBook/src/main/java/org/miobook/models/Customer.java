@@ -15,4 +15,8 @@ public class Customer extends User {
 
         this.shoppingCart = new Cart();
     }
+
+    public void addCart(PurchaseItem item) {
+        this.shoppingCart.add(item);
+    }
 }
