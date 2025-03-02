@@ -14,9 +14,6 @@ public class Wallet {
     }
 
     public void addCredit(int amount) {
-        if (amount <= 0) {
-            throw new IllegalArgumentException("not aaa");
-        }
         this.credit += amount;
     }
 }
