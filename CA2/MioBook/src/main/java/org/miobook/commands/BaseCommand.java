@@ -1,11 +1,10 @@
-import org.json.JSONObject;
+package org.miobook.commands;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 public abstract class BaseCommand {
-    protected JSONObject inputJson;
 
-    public BaseCommand(JSONObject inputJson) {
-        this.inputJson = inputJson;
-    }
+    public BaseCommand() {}
 
     public abstract boolean validate();
 
