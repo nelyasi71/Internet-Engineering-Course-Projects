@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.stream.Stream;
 
 public class UserRepository {
-    List<Customer> customers = new ArrayList<>();
-    List<Admin> admins = new ArrayList<>();
+    private final List<Customer> customers = new ArrayList<>();
+    private final List<Admin> admins = new ArrayList<>();
 
     public boolean doesCustomerExist(String username) {
         return customers.stream()

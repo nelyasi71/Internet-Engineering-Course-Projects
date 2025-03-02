@@ -3,12 +3,10 @@ package org.miobook.repositories;
 import org.miobook.commands.AddBook;
 import org.miobook.models.*;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class BookRepository {
-    List<Book> books;
+    private final List<Book> books = new ArrayList<>();
 
 
     public boolean doesBookExist(String title) {
@@ -18,6 +16,21 @@ public class BookRepository {
 
 
     public void addBook(AddBook dto) {
+        if(!Repositories.userRepository.doesAdminExist(dto.getUsername())) {
+            throw new IllegalArgumentException("not aaa");
+        }
+        if(doesBookExist(dto.getTitle())) {
+            throw new IllegalArgumentException("not aaa");
+        }
 
+        Optional<Author> author = Repositories.authorRepository.getAuthorByName(dto.getAuthor());
+
+        if(author.isEmpty()) {
+            throw new IllegalArgumentException("not aaa");
+        }
+
+        Repositories.bookRepository.books.add(
+                new Book(dto.getTitle(), author.get(), dto.getPublisher(), dto.getYear(), dto.getGenres(), dto.getPrice(), dto.getContent(), dto.getSynopsis());
+        )
     }
 }

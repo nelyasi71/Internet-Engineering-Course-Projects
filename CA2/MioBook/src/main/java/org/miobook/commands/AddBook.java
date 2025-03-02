@@ -1,64 +1,61 @@
 package org.miobook.commands;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.miobook.exceptions.*;
-import org.miobook.model.Book;
-import org.miobook.validation.ValidationService;
-import org.json.JSONObject;
-import java.io.IOException;
-import java.util.ArrayList;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import jakarta.validation.constraints.*;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.validator.constraints.Range;
+import org.miobook.services.IntDeserializer;
+import org.miobook.services.JsonValidator;
+
 import java.util.List;
 
+@Getter
+@Setter
 public class AddBook extends BaseCommand {
+    @NotNull
+    @Pattern(regexp = "^[a-zA-Z0-9-_]+$", message = "Username can only contain letters, numbers, dash and underscores")
+    private String username;
 
-    public AddBook(JSONObject inputJson) {
+    @NotNull
+    private String title;
 
-        super(inputJson);
+    @NotNull
+    private String author;
 
+    @NotNull
+    private String publisher;
+
+    @NotNull
+    private String synopsis;
+
+    @NotNull
+    private String content;
+
+    @NotNull
+    @NotEmpty
+    private List<String> genres;
+
+    @NotNull
+    @JsonDeserialize(using = IntDeserializer.class)
+    @Range(min = 1)
+    int year;
+
+    @NotNull
+    int price;
+
+
+    public AddBook() {
+        super();
     }
 
     @Override
-    public boolean validate() {
-        ObjectMapper objectMapper = new ObjectMapper();
-        Book book = objectMapper.readValue(inputJson.toString(), Book.class);
-        List<String> errorsMassages = new ArrayList<>();
-
-        try {
-            ValidationService.validateBookName(book.getTitle());
-        } catch (BookNameAlreadyExistsException e) {
-            errorMessages.add(e.getMessage());
-        }
-        try {
-            ValidationService.validateAuthor(book.getAuthor());
-        } catch (AuthorNotFoundException e) {
-            errorMessages.add(e.getMessage());
-        }
-        try {
-            ValidationService.validatePublisher(book.getPublisher());
-        } catch (InvalidPublisherException e) {
-            errorMessages.add(e.getMessage());
-        }
-        try {
-            ValidationService.validateYear(book.getYear());
-        } catch (InvalidYearException e) {
-            errorMessages.add(e.getMessage());
-        }
-        try {
-            ValidationService.validateGenres(book.getGenres());
-        } catch (InvalidGenresException e) {
-            errorMessages.add(e.getMessage());
-        }
-        if (!errors.isEmpty()) {
-            throw new ValidationException("Validation failed: \n" + String.join("\n", errors));
-        }
-        return true;
+    public void validate() {
+        JsonValidator.validate(this);
     }
 
     @Override
     public void execute(){
-        if (!validate()) {
-            return;
-        }
-        return;//add logic later
+
     };
 }
