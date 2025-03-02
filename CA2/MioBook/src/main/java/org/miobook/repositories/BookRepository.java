@@ -14,6 +14,12 @@ public class BookRepository {
                 .anyMatch(book -> book.getTitle().equals(title));
     }
 
+    public Optional<Book> getBookByTitle(String title) {
+        return books.stream()
+                .filter(book -> book.getTitle().equals(title))
+                .findFirst();
+    }
+
 
     public void addBook(AddBook dto) {
         if(!Repositories.userRepository.doesAdminExist(dto.getUsername())) {
