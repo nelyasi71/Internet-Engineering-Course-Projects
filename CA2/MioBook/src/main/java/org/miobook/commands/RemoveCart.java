@@ -18,8 +18,7 @@ public class RemoveCart extends BaseCommand {
     private String title;
 
     @Override
-    public boolean validate() {
-        return false;
+    public void validate() {
     }
 
     @Override

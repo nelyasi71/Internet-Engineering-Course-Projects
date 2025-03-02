@@ -24,8 +24,7 @@ public class AddReview extends BaseCommand {
     private int rate;
 
     @Override
-    public boolean validate() {
-        return false;
+    public void validate() {
     }
 
     @Override

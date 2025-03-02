@@ -23,8 +23,7 @@ public class BorrowBook extends BaseCommand {
 
 
     @Override
-    public boolean validate() {
-        return false;
+    public void validate() {
     }
 
     @Override

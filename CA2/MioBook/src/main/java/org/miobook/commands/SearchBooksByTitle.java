@@ -2,7 +2,6 @@
 
 package org.miobook.commands;
 
-import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,8 +15,7 @@ public class SearchBooksByTitle extends BaseCommand {
     private int from;
     private int to;
     @Override
-    public boolean validate() {
-        return false;
+    public void validate() {
     }
     @Override
     public void execute() {

@@ -14,8 +14,7 @@ public class PurchaseCart extends BaseCommand {
     private String username;
 
     @Override
-    public boolean validate() {
-        return false;
+    public void validate() {
     }
 
     @Override

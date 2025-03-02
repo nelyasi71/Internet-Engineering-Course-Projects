@@ -2,7 +2,6 @@ package org.miobook.commands;
 
 
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,8 +13,7 @@ public class ShowPurchasedBooks extends BaseCommand {
     private String username;
 
     @Override
-    public boolean validate() {
-        return false;
+    public void validate() {
     }
     @Override
     public void execute() {

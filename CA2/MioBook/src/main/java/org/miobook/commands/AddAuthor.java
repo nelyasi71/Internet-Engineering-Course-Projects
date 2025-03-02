@@ -1,18 +1,14 @@
 package org.miobook.commands;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
-import org.miobook.models.Address;
 import org.miobook.repositories.Repositories;
 import org.miobook.services.JsonValidator;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -40,9 +36,8 @@ public class AddAuthor extends BaseCommand {
     }
 
     @Override
-    public boolean validate() {
+    public void validate() {
         JsonValidator.validate(this);
-        return true;
     }
 
     @Override
