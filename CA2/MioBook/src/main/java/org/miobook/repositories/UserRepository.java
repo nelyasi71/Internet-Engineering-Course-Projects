@@ -1,11 +1,13 @@
 package org.miobook.repositories;
 
+import org.miobook.commands.AddCredit;
 import org.miobook.commands.AddUser;
 import org.miobook.models.Admin;
 import org.miobook.models.Customer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 public class UserRepository {
@@ -36,6 +38,10 @@ public class UserRepository {
                 .anyMatch(user -> user.getEmail().equals(email));
     }
 
+    public boolean isCreditValid(int credit) {
+        return credit > 0;
+    }
+
     public void addUser(AddUser dto) {
         if(doesUserExist(dto.getUsername())) {
             throw new IllegalArgumentException("not aaa");
@@ -51,6 +57,21 @@ public class UserRepository {
         }
 
         System.out.println("aaa");
+    }
+
+    public void addCredit(AddCredit dto) {
+        Optional<Customer> customerOptional = customers.stream()
+        .filter(customer -> customer.getUserName().equals(dto.getUsername()))
+                .findFirst();
+
+        if(customerOptional.isEmpty()) {
+            throw new IllegalArgumentException("not aaa");
+        }
+        if (!isCreditValid(dto.getCredit())){
+            throw new IllegalArgumentException("not aaa");
+        }
+        Customer customer = customerOptional.get();
+        customer.getWallet().setCredit(customer.getWallet().getCredit() + dto.getCredit());
     }
 
 //    public Optional<User> getUserByUsername(String username) {

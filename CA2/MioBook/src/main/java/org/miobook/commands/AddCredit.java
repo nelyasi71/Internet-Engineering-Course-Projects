@@ -1,11 +1,16 @@
 package org.miobook.commands;
 
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Range;
+import org.miobook.repositories.Repositories;
+import org.miobook.services.IntDeserializer;
+import org.miobook.services.JsonValidator;
+
 
 @Getter
 @Setter
@@ -17,14 +22,20 @@ public class AddCredit extends BaseCommand {
 
     @NotNull
     @Range(min = 1000)
-    private int title;
+    @JsonDeserialize(using = IntDeserializer.class)
+    private int credit;
+
+    public AddCredit() {
+        super();
+    }
 
     @Override
     public void validate() {
+        JsonValidator.validate(this);
     }
 
     @Override
     public void execute() {
-
+        Repositories.userRepository.addCredit(this);
     }
 }
