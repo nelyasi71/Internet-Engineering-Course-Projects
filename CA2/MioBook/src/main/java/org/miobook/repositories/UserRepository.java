@@ -1,9 +1,6 @@
 package org.miobook.repositories;
 
-import org.miobook.commands.AddCart;
-import org.miobook.commands.AddCredit;
-import org.miobook.commands.AddUser;
-import org.miobook.commands.RemoveCart;
+import org.miobook.commands.*;
 import org.miobook.models.*;
 
 import java.util.ArrayList;
@@ -75,11 +72,6 @@ public class UserRepository {
         customer.addCredit(dto.getCredit());
     }
 
-//    public Optional<User> getUserByUsername(String username) {
-//        return users.stream()
-//                .filter(user -> user.getUserName().equals(username))
-//                .findFirst();
-//    }
     public void addCart(AddCart dto) throws IllegalArgumentException {
         if(Repositories.userRepository.doesAdminExist(dto.getUsername())) {
             throw new IllegalArgumentException("not aaa");
@@ -116,6 +108,20 @@ public class UserRepository {
 
         PurchaseItem item = new PurchaseItem(book.get());
         customer.get().removeCard(item);
+    }
+
+    public void purchaseCart(PurchaseCart dto) {
+        if(Repositories.userRepository.doesAdminExist(dto.getUsername())) {
+            throw new IllegalArgumentException("not aaa");
+        }
+
+        Optional<Customer> customer = Repositories.userRepository.getCustomerByUsername(dto.getUsername());
+        if(customer.isEmpty()) {
+            throw new IllegalArgumentException("not aaa");
+        }
+
+        customer.get().purchaseCart();
+
     }
 
     public Optional<Customer> getCustomerByUsername(String username) {

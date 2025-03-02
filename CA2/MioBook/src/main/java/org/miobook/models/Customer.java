@@ -7,7 +7,8 @@ public class Customer extends User {
 
     private final Cart shoppingCart;
     private List<Purchase> purchasesHistory;
-    
+    private Wallet wallet;
+
     //TODO
     private List<PurchaseItem> purchasedBooks;
 
@@ -15,6 +16,7 @@ public class Customer extends User {
         super(userName, password, email, address);
 
         this.shoppingCart = new Cart();
+        this.wallet = new Wallet();
     }
 
     public void addCart(PurchaseItem purchaseItem) {
@@ -25,8 +27,23 @@ public class Customer extends User {
         this.shoppingCart.remove(purchaseItem);
     }
 
+    public void purchaseCart() {
+        if(shoppingCart.isEmpty()) {
+            throw new IllegalArgumentException("not aaa");
+        }
 
-    public void addCredit(int credit) {
-        this.getWallet().addCredit(credit);
+        int cartPrice = shoppingCart.getPrice();
+        if(this.wallet.getCredit() < cartPrice) {
+            throw new IllegalArgumentException("not aaa");
+        }
+
+        shoppingCart.clear();
+        wallet.decreaseCredit(cartPrice);
+        Purchase newPurchase = new Purchase(shoppingCart.getItems());
+        purchasesHistory.add(newPurchase);
+    }
+
+    public void addCredit(int credit) throws IllegalArgumentException {
+        wallet.addCredit(credit);
     }
 }

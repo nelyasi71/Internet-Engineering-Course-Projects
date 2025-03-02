@@ -19,4 +19,8 @@ public class Wallet {
         }
         this.credit += amount;
     }
+
+    public void decreaseCredit(int amount) {
+        credit -= amount;
+    }
 }

@@ -5,6 +5,12 @@ import java.util.List;
 
 public class Purchase {
 
-    List<PurchaseItem> purchaseItems;
-    LocalDateTime date;
+    private List<PurchaseItem> purchaseItems;
+    private LocalDateTime date;
+
+    public Purchase(List<PurchaseItem> purchaseItems) {
+        this.purchaseItems = purchaseItems;
+        date = LocalDateTime.now();
+
+    }
 }
