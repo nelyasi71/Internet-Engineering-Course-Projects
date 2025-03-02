@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Range;
 import org.miobook.repositories.Repositories;
+import org.miobook.responses.BaseResponse;
 import org.miobook.services.IntDeserializer;
 import org.miobook.services.JsonValidator;
 
@@ -35,7 +36,9 @@ public class AddCredit extends BaseCommand {
     }
 
     @Override
-    public void execute() {
+    public BaseResponse execute() {
         Repositories.userRepository.addCredit(this);
+        return null;
+
     }
 }

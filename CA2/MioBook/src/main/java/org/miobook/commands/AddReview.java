@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Range;
+import org.miobook.responses.BaseResponse;
 
 @Getter
 @Setter
@@ -28,7 +29,8 @@ public class AddReview extends BaseCommand {
     }
 
     @Override
-    public void execute() {
+    public BaseResponse execute() {
+        return null;
 
     }
 }

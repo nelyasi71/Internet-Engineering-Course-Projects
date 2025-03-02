@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
 import org.miobook.repositories.Repositories;
+import org.miobook.responses.BaseResponse;
 import org.miobook.services.JsonValidator;
 
 import java.time.LocalDate;
@@ -41,7 +42,8 @@ public class AddAuthor extends BaseCommand {
     }
 
     @Override
-    public void execute() {
+    public BaseResponse execute() {
         Repositories.authorRepository.addAuthor(this);
+        return null;
     }
 }

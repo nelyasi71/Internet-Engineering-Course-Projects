@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
 import org.miobook.repositories.Repositories;
+import org.miobook.responses.BaseResponse;
 import org.miobook.services.JsonValidator;
 
 @Getter
@@ -21,7 +22,9 @@ public class PurchaseCart extends BaseCommand {
     }
 
     @Override
-    public void execute() {
+    public BaseResponse execute() {
         Repositories.userRepository.purchaseCart(this);
+        return null;
+
     }
 }

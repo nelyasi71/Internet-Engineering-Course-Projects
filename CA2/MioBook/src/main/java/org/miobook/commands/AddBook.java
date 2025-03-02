@@ -5,6 +5,8 @@ import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Range;
+import org.miobook.repositories.Repositories;
+import org.miobook.responses.BaseResponse;
 import org.miobook.services.IntDeserializer;
 import org.miobook.services.JsonValidator;
 
@@ -55,7 +57,9 @@ public class AddBook extends BaseCommand {
     }
 
     @Override
-    public void execute(){
+    public BaseResponse execute(){
+        Repositories.bookRepository.addBook(this);
+        return null;
 
-    };
+    }
 }

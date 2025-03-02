@@ -4,6 +4,7 @@ package org.miobook.commands;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+import org.miobook.responses.BaseResponse;
 
 @Getter
 @Setter
@@ -15,7 +16,8 @@ public class ShowBookDetails extends BaseCommand {
     public void validate() {
     }
     @Override
-    public void execute() {
+    public BaseResponse execute() {
+        return null;
 
     }
 }
