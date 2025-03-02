@@ -71,7 +71,7 @@ public class UserRepository {
             throw new IllegalArgumentException("not aaa");
         }
         Customer customer = customerOptional.get();
-        customer.getWallet().setCredit(customer.getWallet().getCredit() + dto.getCredit());
+        customer.addCredit(dto.getCredit());
     }
 
 //    public Optional<User> getUserByUsername(String username) {

@@ -12,4 +12,11 @@ public class Wallet {
     public Wallet() {
         this.credit = 0;
     }
+
+    public void addCredit(int amount) {
+        if (amount <= 0) {
+            throw new IllegalArgumentException("not aaa");
+        }
+        this.credit += amount;
+    }
 }

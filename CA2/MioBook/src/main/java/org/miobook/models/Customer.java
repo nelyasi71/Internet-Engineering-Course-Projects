@@ -19,4 +19,8 @@ public class Customer extends User {
     public void addCart(PurchaseItem item) {
         this.shoppingCart.add(item);
     }
+
+    public void addCredit(int credit) {
+        this.getWallet().addCredit(credit);
+    }
 }
