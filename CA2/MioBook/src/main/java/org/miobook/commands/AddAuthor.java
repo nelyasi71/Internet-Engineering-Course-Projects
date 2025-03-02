@@ -43,7 +43,12 @@ public class AddAuthor extends BaseCommand {
 
     @Override
     public BaseResponse execute() {
-        Repositories.authorRepository.addAuthor(this);
-        return null;
+        try {
+            this.validate();
+            Repositories.authorRepository.addAuthor(this);
+            return new BaseResponse(true, "Author added successfully.", null);
+        } catch (IllegalArgumentException exp) {
+            return new BaseResponse(false, exp.getMessage(), null);
+        }
     }
 }

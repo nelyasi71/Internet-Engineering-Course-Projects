@@ -27,8 +27,12 @@ public class RemoveCart extends BaseCommand {
 
     @Override
     public BaseResponse execute() {
-        Repositories.userRepository.removeCart(this);
-        return null;
-
+        try {
+            this.validate();
+            Repositories.userRepository.removeCart(this);
+            return new BaseResponse(true, "Removed book from cart.", null);
+        } catch (IllegalArgumentException exp) {
+            return new BaseResponse(false, exp.getMessage(), null);
+        }
     }
 }

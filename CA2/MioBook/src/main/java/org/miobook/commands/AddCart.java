@@ -28,8 +28,12 @@ public class AddCart extends BaseCommand {
 
     @Override
     public BaseResponse execute() {
-        Repositories.userRepository.addCart(this);
-        return null;
-
+        try {
+            this.validate();
+            Repositories.userRepository.addCart(this);
+            return new BaseResponse(true, "Added book to cart.", null);
+        } catch (IllegalArgumentException exp) {
+            return new BaseResponse(false, exp.getMessage(), null);
+        }
     }
 }

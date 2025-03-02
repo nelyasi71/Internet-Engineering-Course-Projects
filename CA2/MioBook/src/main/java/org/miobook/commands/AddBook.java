@@ -57,9 +57,13 @@ public class AddBook extends BaseCommand {
     }
 
     @Override
-    public BaseResponse execute(){
-        Repositories.bookRepository.addBook(this);
-        return null;
-
+    public BaseResponse execute() {
+        try {
+            this.validate();
+            Repositories.bookRepository.addBook(this);
+            return new BaseResponse(true, "Book added successfully.", null);
+        } catch (IllegalArgumentException exp) {
+            return new BaseResponse(false, exp.getMessage(), null);
+        }
     }
 }

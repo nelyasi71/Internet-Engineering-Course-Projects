@@ -23,8 +23,12 @@ public class PurchaseCart extends BaseCommand {
 
     @Override
     public BaseResponse execute() {
-        Repositories.userRepository.purchaseCart(this);
-        return null;
-
+        try {
+            this.validate();
+            Repositories.userRepository.purchaseCart(this);
+            return new BaseResponse(true, "Purchase completed successfully.", null);
+        } catch (IllegalArgumentException exp) {
+            return new BaseResponse(false, exp.getMessage(), null);
+        }
     }
 }

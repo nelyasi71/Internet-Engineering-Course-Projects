@@ -37,8 +37,12 @@ public class AddCredit extends BaseCommand {
 
     @Override
     public BaseResponse execute() {
-        Repositories.userRepository.addCredit(this);
-        return null;
-
+        try {
+            this.validate();
+            Repositories.userRepository.addCredit(this);
+            return new BaseResponse(true, "Credit added successfully.", null);
+        } catch (IllegalArgumentException exp) {
+            return new BaseResponse(false, exp.getMessage(), null);
+        }
     }
 }
