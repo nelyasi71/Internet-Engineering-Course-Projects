@@ -28,9 +28,10 @@ public class Main {
         commands.add("show_cart {\"username\": \"user\"}");
         commands.add("purchase_cart {\"username\": \"user\"}");
         commands.add("show_cart {\"username\": \"user\"}");
-        commands.add("add_review {\"username\": \"user\", \"title\": \"book\", \"rate\": 4, \"comment\": \"This is the perfect book\"}");
+        commands.add("add_review {\"username\": \"user\", \"title\": \"book1\", \"rate\": 4, \"comment\": \"This is the perfect book\"}");
+        commands.add("add_review {\"username\": \"user\", \"title\": \"book1\", \"rate\": 1, \"comment\": \"This is the worst book ever\"}");
         commands.add("search_books_by_title {\"title\": \"book\"}");
-
+        commands.add("show_book_reviews {\"title\": \"book1\"}");
         for (String command : commands) {
 //        while (true) {
 //            System.out.print("Enter command (or 'exit' to quit): ");

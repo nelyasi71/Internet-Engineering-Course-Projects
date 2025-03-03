@@ -8,10 +8,8 @@ import org.miobook.models.*;
 import org.miobook.commands.*;
 import java.util.Optional;
 import java.time.LocalDateTime;
-import org.miobook.responses.BookContentRecord;
-import org.miobook.responses.BookRecord;
-import org.miobook.responses.SearchedBookRecord;
-import org.miobook.responses.SearchedBooksRecord;
+
+import org.miobook.responses.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -119,5 +117,29 @@ public class BookRepository {
             throw new IllegalArgumentException("not aaa");
         }
         return new SearchedBooksRecord(dto.getTitle(),matchedBooks);
+    }
+
+    public BookReviewRecord showBookReviews(ShowBookReviews dto) {
+        Optional<Book> bookOptional = Repositories.bookRepository.getBookByTitle(dto.getTitle());
+        if(bookOptional.isEmpty()) {
+            throw new IllegalArgumentException("not aaa");
+        }
+        Book book = bookOptional.get();
+
+        List<ReviewRecord> reviewResponses = book.getReviews().stream()
+                .map(review -> new ReviewRecord(
+                        review.getCustomer().getUsername(),  // Assuming getUsername() exists in Customer
+                        review.getRate(),
+                        review.getComment()
+                ))
+                .collect(Collectors.toList());
+
+        double averageRating = book.getReviews().stream()
+                .mapToDouble(Review::getRate)
+                .average()
+                .orElse(0);
+
+        return new BookReviewRecord(dto.getTitle(), reviewResponses, averageRating);
+
     }
 }
