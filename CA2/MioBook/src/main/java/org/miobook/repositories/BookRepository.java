@@ -10,8 +10,11 @@ import java.util.Optional;
 import java.time.LocalDateTime;
 import org.miobook.responses.BookContentRecord;
 import org.miobook.responses.BookRecord;
+import org.miobook.responses.SearchedBookRecord;
+import org.miobook.responses.SearchedBooksRecord;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class BookRepository {
     private final List<Book> books = new ArrayList<>();
@@ -95,5 +98,26 @@ public class BookRepository {
 
         Review review = new Review(customer, dto.getComment(), dto.getRate(), LocalDateTime.now());
         book.addReview(review);
+    }
+
+    public SearchedBooksRecord searchBooksByTitle(SearchBooksByTitle dto) {
+
+        List<SearchedBookRecord> matchedBooks = books.stream()
+                .filter(book -> book.getTitle().toLowerCase().contains(dto.getTitle().toLowerCase()))
+                .map(book -> new SearchedBookRecord(
+                        book.getTitle(),
+                        book.getAuthor().getName(),
+                        book.getPublisher(),
+                        book.getGenres(),
+                        book.getPublishedYear(),
+                        book.getPrice(),
+                        book.getSynopsis()
+                ))
+                .collect(Collectors.toList());
+
+        if (matchedBooks.isEmpty()) {
+            throw new IllegalArgumentException("not aaa");
+        }
+        return new SearchedBooksRecord(dto.getTitle(),matchedBooks);
     }
 }
