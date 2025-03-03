@@ -28,4 +28,8 @@ public class Book {
         this.content = content;
         this.reviews = new ArrayList<>();
     }
+
+    public void addReview(Review review) {
+        this.reviews.add(review);
+    }
 }
