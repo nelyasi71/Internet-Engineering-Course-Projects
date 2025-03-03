@@ -11,7 +11,7 @@ import org.miobook.services.JsonValidator;
 
 @Getter
 @Setter
-public class RemoveCart extends BaseCommand {
+public class RemoveCart implements BaseCommand<Void> {
 
     @NotNull
     @Pattern(regexp = "^[a-zA-Z0-9-_]+$", message = "Username can only contain letters, numbers, dash and underscores")
@@ -26,13 +26,13 @@ public class RemoveCart extends BaseCommand {
     }
 
     @Override
-    public BaseResponse execute() {
+    public BaseResponse<Void> execute() {
         try {
             this.validate();
             Repositories.userRepository.removeCart(this);
-            return new BaseResponse(true, "Removed book from cart.", null);
+            return new BaseResponse<>(true, "Removed book from cart.", null);
         } catch (IllegalArgumentException exp) {
-            return new BaseResponse(false, exp.getMessage(), null);
+            return new BaseResponse<>(false, exp.getMessage(), null);
         }
     }
 }

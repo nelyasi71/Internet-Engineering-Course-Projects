@@ -8,7 +8,7 @@ import org.miobook.responses.BaseResponse;
 
 @Getter
 @Setter
-public class ShowBookDetails extends BaseCommand {
+public class ShowBookDetails implements BaseCommand<Void> {
 
     @NotNull
     private String username;
@@ -16,7 +16,7 @@ public class ShowBookDetails extends BaseCommand {
     public void validate() {
     }
     @Override
-    public BaseResponse execute() {
+    public BaseResponse<Void> execute() {
         return null;
 
     }

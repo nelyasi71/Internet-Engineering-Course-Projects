@@ -7,11 +7,12 @@ import lombok.Getter;
 import lombok.Setter;
 import org.miobook.repositories.Repositories;
 import org.miobook.responses.BaseResponse;
+import org.miobook.responses.PurchaseCartRecord;
 import org.miobook.services.JsonValidator;
 
 @Getter
 @Setter
-public class PurchaseCart extends BaseCommand {
+public class PurchaseCart implements BaseCommand<PurchaseCartRecord> {
     @NotNull
     @Pattern(regexp = "^[a-zA-Z0-9-_]+$", message = "Username can only contain letters, numbers, dash and underscores")
     private String username;
@@ -22,13 +23,13 @@ public class PurchaseCart extends BaseCommand {
     }
 
     @Override
-    public BaseResponse execute() {
+    public BaseResponse<PurchaseCartRecord> execute() {
         try {
             this.validate();
-            Repositories.userRepository.purchaseCart(this);
-            return new BaseResponse(true, "Purchase completed successfully.", null);
+            PurchaseCartRecord data = Repositories.userRepository.purchaseCart(this);
+            return new BaseResponse<>(true, "Purchase completed successfully.", data);
         } catch (IllegalArgumentException exp) {
-            return new BaseResponse(false, exp.getMessage(), null);
+            return new BaseResponse<>(false, exp.getMessage(), null);
         }
     }
 }

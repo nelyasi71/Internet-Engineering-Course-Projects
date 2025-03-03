@@ -14,7 +14,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class AddBook extends BaseCommand {
+public class AddBook implements BaseCommand<Void> {
     @NotNull
     @Pattern(regexp = "^[a-zA-Z0-9-_]+$", message = "Username can only contain letters, numbers, dash and underscores")
     private String username;
@@ -57,13 +57,13 @@ public class AddBook extends BaseCommand {
     }
 
     @Override
-    public BaseResponse execute() {
+    public BaseResponse<Void> execute() {
         try {
             this.validate();
             Repositories.bookRepository.addBook(this);
-            return new BaseResponse(true, "Book added successfully.", null);
+            return new BaseResponse<>(true, "Book added successfully.", null);
         } catch (IllegalArgumentException exp) {
-            return new BaseResponse(false, exp.getMessage(), null);
+            return new BaseResponse<>(false, exp.getMessage(), null);
         }
     }
 }

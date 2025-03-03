@@ -12,7 +12,7 @@ import org.miobook.services.JsonValidator;
 
 @Getter
 @Setter
-public class BorrowBook extends BaseCommand {
+public class BorrowBook implements BaseCommand<Void> {
     @NotNull
     @Pattern(regexp = "^[a-zA-Z0-9-_]+$", message = "Username can only contain letters, numbers, dash and underscores")
     private String username;
@@ -31,7 +31,7 @@ public class BorrowBook extends BaseCommand {
     }
 
     @Override
-    public BaseResponse execute() {
+    public BaseResponse<Void> execute() {
         Repositories.userRepository.borrowBook(this);
         return null;
 

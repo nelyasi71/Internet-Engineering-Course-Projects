@@ -2,6 +2,7 @@ package org.miobook.models;
 
 import lombok.Getter;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -9,7 +10,7 @@ import java.util.Optional;
 public class Cart {
 
     @Getter
-    private List<PurchaseItem> items;
+    private final List<PurchaseItem> items = new ArrayList<>();
 
     public boolean isEmpty() {
         return items.isEmpty();
@@ -19,7 +20,11 @@ public class Cart {
         items.clear();
     }
 
-    public int getPrice() {
+    public int size() {
+        return items.size();
+    }
+
+    public int price() {
         return items.stream()
                 .mapToInt(item -> item.getBook().getPrice())
                 .sum();

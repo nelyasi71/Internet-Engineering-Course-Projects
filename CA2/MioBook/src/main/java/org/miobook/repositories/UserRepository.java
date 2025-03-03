@@ -1,7 +1,10 @@
 package org.miobook.repositories;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.miobook.commands.*;
 import org.miobook.models.*;
+import org.miobook.responses.PurchaseCartRecord;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,7 +57,6 @@ public class UserRepository {
             admins.add(new Admin(dto.getUsername(), dto.getPassword(), dto.getEmail(), dto.getAddress()));
         }
 
-        System.out.println("aaa");
     }
 
     public void addCredit(AddCredit dto) {
@@ -110,7 +112,7 @@ public class UserRepository {
         customer.get().removeCard(item);
     }
 
-    public void purchaseCart(PurchaseCart dto) {
+    public PurchaseCartRecord purchaseCart(PurchaseCart dto) {
         if(Repositories.userRepository.doesAdminExist(dto.getUsername())) {
             throw new IllegalArgumentException("not aaa");
         }
@@ -120,7 +122,10 @@ public class UserRepository {
             throw new IllegalArgumentException("not aaa");
         }
 
-        customer.get().purchaseCart();
+        Purchase purchase = customer.get().purchaseCart();
+        return new PurchaseCartRecord(
+                purchase.size(), purchase.price(), purchase.getDate()
+        );
 
     }
 

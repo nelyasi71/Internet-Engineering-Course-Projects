@@ -11,4 +11,8 @@ public class PurchaseItem {
         this.book = book;
     }
 
+    public PurchaseItem(PurchaseItem other) {
+        this.book = other.book;
+    }
+
 }

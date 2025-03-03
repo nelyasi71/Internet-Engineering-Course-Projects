@@ -1,16 +1,18 @@
 package org.miobook.models;
 
+import org.miobook.responses.PurchaseCartRecord;
+
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class Customer extends User {
 
     private final Cart shoppingCart;
-    private List<Purchase> purchasesHistory;
+    private final List<Purchase> purchasesHistory = new ArrayList<>();
     private Wallet wallet;
 
     //TODO
-    private List<PurchaseItem> purchasedBooks;
+    private final List<PurchaseItem> purchasedBooks = new ArrayList<>();
 
     public Customer(String userName, String password, String email, Address address) {
         super(userName, password, email, address);
@@ -27,20 +29,25 @@ public class Customer extends User {
         this.shoppingCart.remove(purchaseItem);
     }
 
-    public void purchaseCart() {
+    public Purchase purchaseCart() {
         if(shoppingCart.isEmpty()) {
             throw new IllegalArgumentException("not aaa");
         }
 
-        int cartPrice = shoppingCart.getPrice();
+        int cartPrice = shoppingCart.price();
         if(this.wallet.getCredit() < cartPrice) {
             throw new IllegalArgumentException("not aaa");
         }
 
-        shoppingCart.clear();
-        wallet.decreaseCredit(cartPrice);
+
         Purchase newPurchase = new Purchase(shoppingCart.getItems());
+        wallet.decreaseCredit(cartPrice);
+        shoppingCart.clear();
         purchasesHistory.add(newPurchase);
+
+        System.out.println(newPurchase);
+
+        return newPurchase;
     }
 
     public void addCredit(int credit) throws IllegalArgumentException {

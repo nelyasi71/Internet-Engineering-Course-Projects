@@ -15,7 +15,7 @@ import org.miobook.services.JsonValidator;
 
 @Getter
 @Setter
-public class AddCredit extends BaseCommand {
+public class AddCredit implements BaseCommand<Void> {
 
     @NotNull
     @Pattern(regexp = "^[a-zA-Z0-9-_]+$", message = "Username can only contain letters, numbers, dash and underscores")
@@ -26,9 +26,6 @@ public class AddCredit extends BaseCommand {
     @JsonDeserialize(using = IntDeserializer.class)
     private int credit;
 
-    public AddCredit() {
-        super();
-    }
 
     @Override
     public void validate() {
@@ -36,13 +33,13 @@ public class AddCredit extends BaseCommand {
     }
 
     @Override
-    public BaseResponse execute() {
+    public BaseResponse<Void> execute() {
         try {
             this.validate();
             Repositories.userRepository.addCredit(this);
-            return new BaseResponse(true, "Credit added successfully.", null);
+            return new BaseResponse<Void>(true, "Credit added successfully.", null);
         } catch (IllegalArgumentException exp) {
-            return new BaseResponse(false, exp.getMessage(), null);
+            return new BaseResponse<Void>(false, exp.getMessage(), null);
         }
     }
 }

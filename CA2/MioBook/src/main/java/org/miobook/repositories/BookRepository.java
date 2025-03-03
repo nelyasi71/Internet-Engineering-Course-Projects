@@ -30,7 +30,6 @@ public class BookRepository {
         }
 
         Optional<Author> author = Repositories.authorRepository.getAuthorByName(dto.getAuthor());
-
         if(author.isEmpty()) {
             throw new IllegalArgumentException("not aaa");
         }
@@ -38,6 +37,5 @@ public class BookRepository {
         Repositories.bookRepository.books.add(
                 new Book(dto.getTitle(), author.get(), dto.getPublisher(), dto.getYear(), dto.getGenres(), dto.getPrice(), dto.getContent(), dto.getSynopsis())
         );
-        System.out.println("aaa");
     }
 }

@@ -29,6 +29,5 @@ public class AuthorRepository {
         }
 
         authors.add(new Author(dto.getName(), dto.getPenName(), dto.getBorn(), dto.getDeath()));
-        System.out.println("aaa");
     }
 }

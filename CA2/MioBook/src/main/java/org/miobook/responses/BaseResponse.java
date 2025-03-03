@@ -1,21 +1,19 @@
 package org.miobook.responses;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.ToString;
 
 
-public class BaseResponse {
-    private boolean success;
-    private String message;
-    private ObjectNode data;
-
-    public BaseResponse(boolean success, String message, ObjectNode data) {
-        this.success = success;
-        this.message = message;
-        this.data = data;
-    }
+public record BaseResponse<T> (
+        boolean success,
+        String message,
+        @JsonInclude(JsonInclude.Include.NON_NULL)
+        T data
+) {
     @Override
     public String toString() {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -23,7 +21,8 @@ public class BaseResponse {
         response.put("success", success);
         response.put("message", message);
         if(data != null) {
-            response.put("data", data);
+            objectMapper.registerModule(new JavaTimeModule());
+            response.put("data", objectMapper.valueToTree(data));
         }
         return response.toString();
     }

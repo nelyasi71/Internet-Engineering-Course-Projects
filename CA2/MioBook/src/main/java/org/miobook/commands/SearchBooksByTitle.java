@@ -8,7 +8,7 @@ import org.miobook.responses.BaseResponse;
 
 @Getter
 @Setter
-public class SearchBooksByTitle extends BaseCommand {
+public class SearchBooksByTitle implements BaseCommand<Void> {
 
     private String title;
     private String name;
@@ -19,7 +19,7 @@ public class SearchBooksByTitle extends BaseCommand {
     public void validate() {
     }
     @Override
-    public BaseResponse execute() {
+    public BaseResponse<Void> execute() {
         return null;
 
     }
