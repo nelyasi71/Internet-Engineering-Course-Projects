@@ -4,11 +4,14 @@ package org.miobook.commands;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+import org.miobook.repositories.Repositories;
 import org.miobook.responses.BaseResponse;
+import org.miobook.responses.BookRecord;
+import org.miobook.responses.CartRecord;
 
 @Getter
 @Setter
-public class ShowCart implements BaseCommand<Void> {
+public class ShowCart implements BaseCommand<CartRecord> {
 
     @NotNull
     private String username;
@@ -17,8 +20,13 @@ public class ShowCart implements BaseCommand<Void> {
     public void validate() {
     }
     @Override
-    public BaseResponse<Void> execute() {
-        return null;
-
+    public BaseResponse<CartRecord> execute() {
+        try {
+            this.validate();
+            CartRecord data = Repositories.userRepository.showCart(this);
+            return new BaseResponse<>(true, "Buy cart retrieved successfully.", data);
+        } catch (IllegalArgumentException exp) {
+            return new BaseResponse<>(false, exp.getMessage(), null);
+        }
     }
 }

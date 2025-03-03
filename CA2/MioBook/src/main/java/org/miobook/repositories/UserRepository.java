@@ -2,6 +2,8 @@ package org.miobook.repositories;
 
 import org.miobook.commands.*;
 import org.miobook.models.*;
+import org.miobook.responses.CartItemRecord;
+import org.miobook.responses.CartRecord;
 import org.miobook.responses.PurchaseCartRecord;
 import org.miobook.responses.UserRecord;
 
@@ -159,6 +161,24 @@ public class UserRepository {
             return new UserRecord(admin.getUsername(), "admin", admin.getEmail(), admin.getAddress(), null);
         }
 
+    }
+    public CartRecord showCart(ShowCart dto) {
+        if(Repositories.userRepository.doesAdminExist(dto.getUsername())) {
+            throw new IllegalArgumentException("not aaa");
+        }
+
+        Optional<Customer> _customer = Repositories.userRepository.getCustomerByUsername(dto.getUsername());
+        if(_customer.isEmpty()) {
+            throw new IllegalArgumentException("not aaa");
+        }
+
+        Customer customer = _customer.get();
+        Cart cart = _customer.get().getShoppingCart();
+        List<CartItemRecord> cartItemRecords = cart.getItems().stream()
+                .map(PurchaseItem::createRecord)
+                .toList();
+
+        return new CartRecord(customer.getUsername(), cart.price(), cartItemRecords);
     }
 
     public Optional<Customer> getCustomerByUsername(String username) {

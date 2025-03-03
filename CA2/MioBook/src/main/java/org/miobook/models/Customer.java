@@ -1,12 +1,13 @@
 package org.miobook.models;
 
+import lombok.Getter;
 import org.miobook.responses.PurchaseCartRecord;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Customer extends User {
-
+    @Getter
     private final Cart shoppingCart;
     private final List<Purchase> purchasesHistory = new ArrayList<>();
     private Wallet wallet;

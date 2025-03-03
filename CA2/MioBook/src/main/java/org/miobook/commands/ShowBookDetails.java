@@ -27,6 +27,5 @@ public class ShowBookDetails implements BaseCommand<BookRecord> {
         } catch (IllegalArgumentException exp) {
             return new BaseResponse<>(false, exp.getMessage(), null);
         }
-
     }
 }
