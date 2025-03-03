@@ -5,11 +5,15 @@ import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Range;
+import org.miobook.repositories.Repositories;
+import org.miobook.responses.BaseResponse;
+import org.miobook.responses.PurchaseCartRecord;
+import org.miobook.services.JsonValidator;
 
 
 @Getter
 @Setter
-public class BorrowBook extends BaseCommand {
+public class BorrowBook implements BaseCommand<Void> {
     @NotNull
     @Pattern(regexp = "^[a-zA-Z0-9-_]+$", message = "Username can only contain letters, numbers, dash and underscores")
     private String username;
@@ -24,10 +28,18 @@ public class BorrowBook extends BaseCommand {
 
     @Override
     public void validate() {
+        JsonValidator.validate(this);
     }
 
     @Override
-    public void execute() {
-
+    public BaseResponse<Void> execute() {
+        this.validate();
+        try {
+            this.validate();
+            Repositories.userRepository.borrowBook(this);
+            return new BaseResponse<>(true, "Added borrowed book to cart.", null);
+        } catch (IllegalArgumentException exp) {
+            return new BaseResponse<>(false, exp.getMessage(), null);
+        }
     }
 }

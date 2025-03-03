@@ -6,13 +6,14 @@ import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
 import org.miobook.repositories.Repositories;
+import org.miobook.responses.BaseResponse;
 import org.miobook.services.JsonValidator;
 
 import java.time.LocalDate;
 
 @Getter
 @Setter
-public class AddAuthor extends BaseCommand {
+public class AddAuthor implements BaseCommand<Void> {
     @NotNull
     @Pattern(regexp = "^[a-zA-Z0-9-_]+$", message = "Username can only contain letters, numbers, underscores, and dots")
     private String username;
@@ -22,6 +23,8 @@ public class AddAuthor extends BaseCommand {
 
     @NotNull
     private String penName;
+
+    private String nationality;
 
     @NotNull
     @JsonFormat(pattern = "yyyy-MM-dd")
@@ -41,7 +44,13 @@ public class AddAuthor extends BaseCommand {
     }
 
     @Override
-    public void execute() {
-        Repositories.authorRepository.addAuthor(this);
+    public BaseResponse<Void> execute() {
+        try {
+            this.validate();
+            Repositories.authorRepository.addAuthor(this);
+            return new BaseResponse<>(true, "Author added successfully.", null);
+        } catch (IllegalArgumentException exp) {
+            return new BaseResponse<>(false, exp.getMessage(), null);
+        }
     }
 }

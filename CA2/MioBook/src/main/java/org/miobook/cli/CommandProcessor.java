@@ -4,6 +4,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.apache.commons.text.WordUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.miobook.commands.*;
+import org.miobook.responses.BaseResponse;
 import org.miobook.services.JsonValidator;
 
 public class CommandProcessor {
@@ -23,10 +24,9 @@ public class CommandProcessor {
 
             Class<?> commandClass = Class.forName("org.miobook.commands." + className);
             BaseCommand command = (BaseCommand) objectMapper.readValue(jsonString, commandClass);
+            BaseResponse response = command.execute();
 
-            command.validate();
-            command.execute();
-
+            System.out.println(response);
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -8,10 +8,11 @@ import org.hibernate.validator.constraints.Range;
 import org.miobook.repositories.Repositories;
 import org.miobook.services.JsonValidator;
 import jakarta.validation.constraints.Digits;
+import org.miobook.responses.BaseResponse;
 
 @Getter
 @Setter
-public class AddReview extends BaseCommand {
+public class AddReview implements BaseCommand<Void> {
     @NotNull
     @Pattern(regexp = "^[a-zA-Z0-9-_]+$", message = "Username can only contain letters, numbers, dash and underscores")
     private String username;
@@ -37,7 +38,8 @@ public class AddReview extends BaseCommand {
     }
 
     @Override
-    public void execute() {
-        Repositories.bookRepository.addReview(this);
+    public BaseResponse<Void> execute() {
+        return null;
+
     }
 }

@@ -1,7 +1,12 @@
 package org.miobook.repositories;
 
 import org.miobook.commands.AddAuthor;
+import org.miobook.commands.ShowAuthorDetails;
+import org.miobook.commands.ShowUserDetails;
 import org.miobook.models.Author;
+import org.miobook.models.User;
+import org.miobook.responses.AuthorRecord;
+import org.miobook.responses.UserRecord;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +33,18 @@ public class AuthorRepository {
             throw new IllegalArgumentException("not aaa");
         }
 
-        authors.add(new Author(dto.getName(), dto.getPenName(), dto.getBorn(), dto.getDeath()));
-        System.out.println("aaa");
+        authors.add(new Author(dto.getName(), dto.getPenName(), dto.getNationality(), dto.getBorn(), dto.getDeath()));
+    }
+
+    public AuthorRecord showAuthorDetails(ShowAuthorDetails dto) {
+        Optional<Author> _author = Repositories.authorRepository.getAuthorByName(dto.getUsername());
+        if(_author.isEmpty()) {
+            throw new IllegalArgumentException("not aaa");
+        }
+
+        Author author = _author.get();
+
+        return new AuthorRecord(author.getName(), author.getPenName(), author.getNationality(), author.getBorn(), author.getDeath());
+
     }
 }

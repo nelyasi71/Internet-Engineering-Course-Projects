@@ -1,10 +1,11 @@
 package org.miobook.repositories;
 
-import org.miobook.commands.AddCart;
-import org.miobook.commands.AddCredit;
-import org.miobook.commands.AddUser;
-import org.miobook.commands.RemoveCart;
+import org.miobook.commands.*;
 import org.miobook.models.*;
+import org.miobook.responses.CartItemRecord;
+import org.miobook.responses.CartRecord;
+import org.miobook.responses.PurchaseCartRecord;
+import org.miobook.responses.UserRecord;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,18 +18,18 @@ public class UserRepository {
 
     public boolean doesCustomerExist(String username) {
         return customers.stream()
-                .anyMatch(customer -> customer.getUserName().equals(username));
+                .anyMatch(customer -> customer.getUsername().equals(username));
     }
 
     public boolean doesAdminExist(String username) {
         return admins.stream()
-                .anyMatch(admin -> admin.getUserName().equals(username));
+                .anyMatch(admin -> admin.getUsername().equals(username));
     }
 
     public boolean doesUserExist(String username) {
-        if(admins.stream().noneMatch(admin -> admin.getUserName().equals(username))) {
+        if(admins.stream().noneMatch(admin -> admin.getUsername().equals(username))) {
             return customers.stream()
-                    .anyMatch(customer -> customer.getUserName().equals(username));
+                    .anyMatch(customer -> customer.getUsername().equals(username));
         } else {
             return true;
         }
@@ -57,12 +58,11 @@ public class UserRepository {
             admins.add(new Admin(dto.getUsername(), dto.getPassword(), dto.getEmail(), dto.getAddress()));
         }
 
-        System.out.println("aaa");
     }
 
     public void addCredit(AddCredit dto) {
         Optional<Customer> customerOptional = customers.stream()
-        .filter(customer -> customer.getUserName().equals(dto.getUsername()))
+        .filter(customer -> customer.getUsername().equals(dto.getUsername()))
                 .findFirst();
 
         if(customerOptional.isEmpty()) {
@@ -75,11 +75,6 @@ public class UserRepository {
         customer.addCredit(dto.getCredit());
     }
 
-//    public Optional<User> getUserByUsername(String username) {
-//        return users.stream()
-//                .filter(user -> user.getUserName().equals(username))
-//                .findFirst();
-//    }
     public void addCart(AddCart dto) throws IllegalArgumentException {
         if(Repositories.userRepository.doesAdminExist(dto.getUsername())) {
             throw new IllegalArgumentException("not aaa");
@@ -118,9 +113,82 @@ public class UserRepository {
         customer.get().removeCard(item);
     }
 
+    public PurchaseCartRecord purchaseCart(PurchaseCart dto) {
+        if(Repositories.userRepository.doesAdminExist(dto.getUsername())) {
+            throw new IllegalArgumentException("not aaa");
+        }
+
+        Optional<Customer> customer = Repositories.userRepository.getCustomerByUsername(dto.getUsername());
+        if(customer.isEmpty()) {
+            throw new IllegalArgumentException("not aaa");
+        }
+
+        Purchase purchase = customer.get().purchaseCart();
+        return new PurchaseCartRecord(
+                purchase.size(), purchase.getPrice(), purchase.getDate()
+        );
+
+    }
+
+    public void borrowBook(BorrowBook dto) {
+        if(Repositories.userRepository.doesAdminExist(dto.getUsername())) {
+            throw new IllegalArgumentException("not aaa");
+        }
+
+        Optional<Customer> customer = Repositories.userRepository.getCustomerByUsername(dto.getUsername());
+        if(customer.isEmpty()) {
+            throw new IllegalArgumentException("not aaa");
+        }
+
+        Optional<Book> book = Repositories.bookRepository.getBookByTitle(dto.getTitle());
+        if(book.isEmpty()) {
+            throw new IllegalArgumentException("not aaa");
+        }
+
+        customer.get().addCart(new BorrowItem(book.get(), dto.getDays()));
+
+    }
+
+    public UserRecord showUserDetails(ShowUserDetails dto) {
+        Optional<User> user = Repositories.userRepository.getUserByUsername(dto.getUsername());
+        if(user.isEmpty()) {
+            throw new IllegalArgumentException("not aaa");
+        }
+        if(user.get() instanceof Customer customer) {
+            return new UserRecord(customer.getUsername(), "customer", customer.getEmail(), customer.getAddress(), customer.getBalance());
+        } else {
+            Admin admin = (Admin) user.get();
+            return new UserRecord(admin.getUsername(), "admin", admin.getEmail(), admin.getAddress(), null);
+        }
+
+    }
+    public CartRecord showCart(ShowCart dto) {
+        if(Repositories.userRepository.doesAdminExist(dto.getUsername())) {
+            throw new IllegalArgumentException("not aaa");
+        }
+
+        Optional<Customer> _customer = Repositories.userRepository.getCustomerByUsername(dto.getUsername());
+        if(_customer.isEmpty()) {
+            throw new IllegalArgumentException("not aaa");
+        }
+
+        Customer customer = _customer.get();
+        Cart cart = _customer.get().getShoppingCart();
+        List<CartItemRecord> cartItemRecords = cart.getItems().stream()
+                .map(PurchaseItem::createRecord)
+                .toList();
+
+        return new CartRecord(customer.getUsername(), cart.price(), cartItemRecords);
+    }
+
     public Optional<Customer> getCustomerByUsername(String username) {
         return customers.stream()
-                .filter(customer -> customer.getUserName().equals(username))
+                .filter(customer -> customer.getUsername().equals(username))
+                .findFirst();
+    }
+    public Optional<User> getUserByUsername(String username) {
+        return Stream.concat(customers.stream(), admins.stream())
+                .filter(user -> user.getUsername().equals(username))
                 .findFirst();
     }
 }

@@ -2,10 +2,14 @@ package org.miobook.repositories;
 
 import org.miobook.commands.AddBook;
 import org.miobook.commands.AddReview;
+import org.miobook.commands.ShowBookContent;
+import org.miobook.commands.ShowBookDetails;
 import org.miobook.models.*;
 import org.miobook.commands.*;
 import java.util.Optional;
 import java.time.LocalDateTime;
+import org.miobook.responses.BookContentRecord;
+import org.miobook.responses.BookRecord;
 
 import java.util.*;
 
@@ -42,7 +46,37 @@ public class BookRepository {
         Repositories.bookRepository.books.add(
                 new Book(dto.getTitle(), author.get(), dto.getPublisher(), dto.getYear(), dto.getGenres(), dto.getPrice(), dto.getContent(), dto.getSynopsis())
         );
-        System.out.println("aaa");
+    }
+
+    public BookRecord showBookDetails(ShowBookDetails dto) {
+        Optional<Book> _book = Repositories.bookRepository.getBookByTitle(dto.getTitle());
+        if(_book.isEmpty()) {
+            throw new IllegalArgumentException("not aaa");
+        }
+        Book book = _book.get();
+        double averageRating = book.getReviews().stream()
+                .mapToDouble(Review::getScore)
+                .average()
+                .orElse(0);
+        return new BookRecord(book.getTitle(), book.getAuthor().getName(), book.getPublisher(), book.getGenres(), book.getPublishedYear(), book.getPrice(), book.getSynopsis(), averageRating);
+    }
+
+    public BookContentRecord showBookContent(ShowBookContent dto) {
+        Optional<Customer> customer = Repositories.userRepository.getCustomerByUsername(dto.getUsername());
+        if(customer.isEmpty()) {
+            throw new IllegalArgumentException("not aaa");
+        }
+
+        Optional<Book> book = Repositories.bookRepository.getBookByTitle(dto.getTitle());
+        if(book.isEmpty()) {
+            throw new IllegalArgumentException("not aaa");
+        }
+
+        if(!customer.get().hasBook(book.get().getTitle())) {
+            throw new IllegalArgumentException("not aaa");
+        }
+
+        return new BookContentRecord(dto.getTitle(), book.get().getContent());
     }
 
     public void addReview(AddReview dto) {

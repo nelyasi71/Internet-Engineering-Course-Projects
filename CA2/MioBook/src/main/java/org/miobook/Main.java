@@ -2,24 +2,44 @@ package org.miobook;
 
 import org.miobook.cli.CommandProcessor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Main {
     public static void main(String[] args) {
         CommandProcessor cm = new CommandProcessor();
-        cm.processCommand(
-                "add_user {\"role\": \"admin\", \"username\": \"admin_user\", \"password\": \"1234\", \"email\":\n" +
-                        "\"my.mail@mail.com\", \"address\": {\"country\": \"Iran\", \"city\": \"Iran\"}}"
-        );
+//        Scanner scanner = new Scanner(System.in);
+        List<String> commands = new ArrayList<>();
+        commands.add("add_user {\"role\": \"customer\", \"username\": \"user\", \"password\": \"1234\", \"email\": \"my.mail@mail.com\", \"address\": {\"country\": \"Iran\", \"city\": \"Karaj\"}}");
+        commands.add("add_user {\"role\": \"admin\", \"username\": \"admin\", \"password\": \"1234\", \"email\": \"my.mail2@mail.com\", \"address\": {\"country\": \"Iran\", \"city\": \"Karaj\"}}");
+        commands.add("add_author {\"username\": \"admin\", \"nationality\": \"IRAN\", \"name\": \"author\", \"penName\": \"abc\", \"born\": \"1982-04-12\"}");
+        commands.add("add_book {\"username\": \"admin\", \"title\": \"book\", \"author\": \"author\", \"publisher\": \"name\", \"year\": 2012, \"price\": 250, \"synopsis\": \"lorem\", \"content\": \"lorem ipsum\", \"genres\": [\"horror\", \"thriller\"]}");
+//        commands.add("add_cart {\"username\": \"user\", \"title\": \"book\"}");
+        commands.add("borrow_book {\"username\": \"user\", \"title\": \"book\", \"days\": 1}");
+        commands.add("add_credit {\"username\": \"user\", \"credit\": 8200}");
+//        commands.add("purchase_cart {\"username\": \"user\"}");
+//        commands.add("show_user_details {\"username\": \"user\"}");
+//        commands.add("show_user_details {\"username\": \"admin\"}");
+//        commands.add("show_author_details {\"username\": \"author\"}");
+//        commands.add("show_book_details {\"title\": \"book\"}");
+//        commands.add("show_book_content {\"username\": \"user\", \"title\": \"book\"}");
+        commands.add("show_cart {\"username\": \"user\"}");
+        commands.add("purchase_cart {\"username\": \"user\"}");
+        commands.add("show_cart {\"username\": \"user\"}");
+        for (String command : commands) {
+//        while (true) {
+//            System.out.print("Enter command (or 'exit' to quit): ");
+//            String input = scanner.nextLine().trim();
+//
+//            if ("exit".equalsIgnoreCase(input)) {
+//                System.out.println("Exiting...");
+//                break;
+//            }
 
-          cm.processCommand(
-                "add_author {\"username\": \"admin_user\", \"name\": \"author name\", \"penName\": \"abc\",\n" +
-                        "\"born\": \"1982-04-12\"}"
-        );
+            cm.processCommand(command);
+        }
 
-//        cm.processCommand(
-//                "add_book {\"username\": \"admin_user\", \"title\": \"sample book\", \"author\": \"sample" +
-//                        "        name\", \"publisher\": \"name\", \"year\": 2012, \"price\": 250, \"synopsis\": \"lorem\",\n" +
-//                        "        \"content\": \"lorem ipsum\", \"genres\": [\"horror\", \"thriller\"]}"
-//        );
+//        scanner.close();
 
     }
 }

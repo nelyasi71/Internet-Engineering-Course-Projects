@@ -1,10 +1,10 @@
 package org.miobook.commands;
 
-public abstract class BaseCommand {
+import org.miobook.responses.BaseResponse;
 
-    public BaseCommand() {}
+public interface BaseCommand<T> {
 
-    public abstract void validate();
+    void validate();
 
-    public abstract void execute();
+    BaseResponse<T> execute();
 }

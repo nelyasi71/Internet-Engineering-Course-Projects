@@ -6,19 +6,15 @@ import lombok.Setter;
 @Getter
 @Setter
 public class User {
-    private String userName;
-    private String password;
-    private String email;
-    private Address address;
-    private Wallet wallet;
+    protected String username;
+    protected String password;
+    protected String email;
+    protected Address address;
 
-    public User(String userName, String password, String email, Address address) {
-        this.userName = userName;
+    public User(String username, String password, String email, Address address) {
+        this.username = username;
         this.password = password;
         this.email = email;
         this.address = address;
-        this.wallet = new Wallet();
     }
-
-
 }

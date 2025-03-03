@@ -8,13 +8,14 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Range;
 import org.miobook.repositories.Repositories;
+import org.miobook.responses.BaseResponse;
 import org.miobook.services.IntDeserializer;
 import org.miobook.services.JsonValidator;
 
 
 @Getter
 @Setter
-public class AddCredit extends BaseCommand {
+public class AddCredit implements BaseCommand<Void> {
 
     @NotNull
     @Pattern(regexp = "^[a-zA-Z0-9-_]+$", message = "Username can only contain letters, numbers, dash and underscores")
@@ -25,9 +26,6 @@ public class AddCredit extends BaseCommand {
     @JsonDeserialize(using = IntDeserializer.class)
     private int credit;
 
-    public AddCredit() {
-        super();
-    }
 
     @Override
     public void validate() {
@@ -35,7 +33,13 @@ public class AddCredit extends BaseCommand {
     }
 
     @Override
-    public void execute() {
-        Repositories.userRepository.addCredit(this);
+    public BaseResponse<Void> execute() {
+        try {
+            this.validate();
+            Repositories.userRepository.addCredit(this);
+            return new BaseResponse<Void>(true, "Credit added successfully.", null);
+        } catch (IllegalArgumentException exp) {
+            return new BaseResponse<Void>(false, exp.getMessage(), null);
+        }
     }
 }

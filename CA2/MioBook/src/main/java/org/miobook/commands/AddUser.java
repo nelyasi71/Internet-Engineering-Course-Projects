@@ -7,11 +7,12 @@ import lombok.Getter;
 import lombok.Setter;
 import org.miobook.models.Address;
 import org.miobook.repositories.Repositories;
+import org.miobook.responses.BaseResponse;
 import org.miobook.services.JsonValidator;
 
 @Getter
 @Setter
-public class AddUser extends BaseCommand {
+public class AddUser implements BaseCommand<Void> {
 
     @Pattern(regexp = "^(customer|admin)$", message = "Role must be either 'customer' or 'admin'")
     @NotNull
@@ -32,7 +33,6 @@ public class AddUser extends BaseCommand {
     private Address address;
 
     public AddUser() {
-        super();
     }
 
     @Override
@@ -41,7 +41,13 @@ public class AddUser extends BaseCommand {
         JsonValidator.validate(address);
     }
     @Override
-    public void execute() {
-        Repositories.userRepository.addUser(this);
+    public BaseResponse<Void> execute() {
+        try {
+            this.validate();
+            Repositories.userRepository.addUser(this);
+            return new BaseResponse<>(true, "User added successfully.", null);
+        } catch (IllegalArgumentException exp) {
+            return new BaseResponse<>(false, exp.getMessage(), null);
+        }
     }
 }
