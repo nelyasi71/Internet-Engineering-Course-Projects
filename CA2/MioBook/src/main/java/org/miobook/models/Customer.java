@@ -53,4 +53,8 @@ public class Customer extends User {
     public void addCredit(int credit) throws IllegalArgumentException {
         wallet.addCredit(credit);
     }
+
+    public int getBalance() {
+        return wallet.getCredit();
+    }
 }

@@ -1,10 +1,9 @@
 package org.miobook.repositories;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.miobook.commands.*;
 import org.miobook.models.*;
 import org.miobook.responses.PurchaseCartRecord;
+import org.miobook.responses.UserRecord;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,18 +16,18 @@ public class UserRepository {
 
     public boolean doesCustomerExist(String username) {
         return customers.stream()
-                .anyMatch(customer -> customer.getUserName().equals(username));
+                .anyMatch(customer -> customer.getUsername().equals(username));
     }
 
     public boolean doesAdminExist(String username) {
         return admins.stream()
-                .anyMatch(admin -> admin.getUserName().equals(username));
+                .anyMatch(admin -> admin.getUsername().equals(username));
     }
 
     public boolean doesUserExist(String username) {
-        if(admins.stream().noneMatch(admin -> admin.getUserName().equals(username))) {
+        if(admins.stream().noneMatch(admin -> admin.getUsername().equals(username))) {
             return customers.stream()
-                    .anyMatch(customer -> customer.getUserName().equals(username));
+                    .anyMatch(customer -> customer.getUsername().equals(username));
         } else {
             return true;
         }
@@ -61,7 +60,7 @@ public class UserRepository {
 
     public void addCredit(AddCredit dto) {
         Optional<Customer> customerOptional = customers.stream()
-        .filter(customer -> customer.getUserName().equals(dto.getUsername()))
+        .filter(customer -> customer.getUsername().equals(dto.getUsername()))
                 .findFirst();
 
         if(customerOptional.isEmpty()) {
@@ -148,9 +147,28 @@ public class UserRepository {
 
     }
 
+    public UserRecord showUserDetails(ShowUserDetails dto) {
+        Optional<User> user = Repositories.userRepository.getUserByUsername(dto.getUsername());
+        if(user.isEmpty()) {
+            throw new IllegalArgumentException("not aaa");
+        }
+        if(user.get() instanceof Customer customer) {
+            return new UserRecord(customer.getUsername(), "customer", customer.getEmail(), customer.getAddress(), customer.getBalance());
+        } else {
+            Admin admin = (Admin) user.get();
+            return new UserRecord(admin.getUsername(), "admin", admin.getEmail(), admin.getAddress(), null);
+        }
+
+    }
+
     public Optional<Customer> getCustomerByUsername(String username) {
         return customers.stream()
-                .filter(customer -> customer.getUserName().equals(username))
+                .filter(customer -> customer.getUsername().equals(username))
+                .findFirst();
+    }
+    public Optional<User> getUserByUsername(String username) {
+        return Stream.concat(customers.stream(), admins.stream())
+                .filter(user -> user.getUsername().equals(username))
                 .findFirst();
     }
 }
