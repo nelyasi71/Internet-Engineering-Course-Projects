@@ -23,10 +23,9 @@ public class ShowAuthorDetails implements BaseCommand<AuthorRecord> {
         try {
             this.validate();
             AuthorRecord data = Repositories.authorRepository.showAuthorDetails(this);
-            return new BaseResponse<>(true, "User details retrieved successfully.", data);
+            return new BaseResponse<>(true, "Author details retrieved successfully.", data);
         } catch (IllegalArgumentException exp) {
             return new BaseResponse<>(false, exp.getMessage(), null);
         }
-
     }
 }
