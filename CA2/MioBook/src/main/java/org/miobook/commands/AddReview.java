@@ -39,7 +39,13 @@ public class AddReview implements BaseCommand<Void> {
 
     @Override
     public BaseResponse<Void> execute() {
-        return null;
+        try {
+            this.validate();
+            Repositories.bookRepository.addReview(this);
+            return new BaseResponse<>(true, "Review added successfully.", null);
+        } catch (IllegalArgumentException exp) {
+            return new BaseResponse<>(false, exp.getMessage(), null);
+        }
 
     }
 }
