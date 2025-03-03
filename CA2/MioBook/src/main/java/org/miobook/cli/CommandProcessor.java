@@ -24,10 +24,9 @@ public class CommandProcessor {
 
             Class<?> commandClass = Class.forName("org.miobook.commands." + className);
             BaseCommand command = (BaseCommand) objectMapper.readValue(jsonString, commandClass);
-
             BaseResponse response = command.execute();
-            System.out.println(response);
 
+            System.out.println(response);
         } catch (Exception e) {
             e.printStackTrace();
         }

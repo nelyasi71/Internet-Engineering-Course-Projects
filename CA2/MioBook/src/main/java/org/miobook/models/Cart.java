@@ -26,7 +26,7 @@ public class Cart {
 
     public int price() {
         return items.stream()
-                .mapToInt(item -> item.getBook().getPrice())
+                .mapToInt(PurchaseItem::getPrice)
                 .sum();
     }
 

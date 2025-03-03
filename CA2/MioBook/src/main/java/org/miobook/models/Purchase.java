@@ -13,23 +13,23 @@ public class Purchase {
     private List<PurchaseItem> purchaseItems;
 
     @Getter
+    private int price;
+
+    @Getter
     private LocalDateTime date;
 
-    public Purchase(List<PurchaseItem> purchaseItems) {
+
+    public Purchase(List<PurchaseItem> purchaseItems, int price) {
         this.purchaseItems = purchaseItems.stream()
                 .map(PurchaseItem::new)
                 .collect(Collectors.toList());
         date = LocalDateTime.now();
-
+        this.price = price;
     }
 
     public int size() {
         return purchaseItems.size();
     }
 
-    public int price() {
-        return purchaseItems.stream()
-                .mapToInt(item -> item.getBook().getPrice())
-                .sum();
-    }
+
 }

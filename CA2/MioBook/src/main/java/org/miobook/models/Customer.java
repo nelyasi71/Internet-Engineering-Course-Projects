@@ -40,7 +40,7 @@ public class Customer extends User {
         }
 
 
-        Purchase newPurchase = new Purchase(shoppingCart.getItems());
+        Purchase newPurchase = new Purchase(shoppingCart.getItems(), shoppingCart.price());
         wallet.decreaseCredit(cartPrice);
         shoppingCart.clear();
         purchasesHistory.add(newPurchase);

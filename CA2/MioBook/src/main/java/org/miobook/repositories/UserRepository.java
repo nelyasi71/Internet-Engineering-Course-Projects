@@ -124,7 +124,7 @@ public class UserRepository {
 
         Purchase purchase = customer.get().purchaseCart();
         return new PurchaseCartRecord(
-                purchase.size(), purchase.price(), purchase.getDate()
+                purchase.size(), purchase.getPrice(), purchase.getDate()
         );
 
     }

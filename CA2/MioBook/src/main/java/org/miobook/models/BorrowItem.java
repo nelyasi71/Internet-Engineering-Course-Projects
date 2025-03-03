@@ -10,5 +10,6 @@ public class BorrowItem extends PurchaseItem {
         super(book);
 
         this.borrowDays = borrowDays;
+        this.price = (int) book.getPrice() * this.borrowDays / 10;
     }
 }
