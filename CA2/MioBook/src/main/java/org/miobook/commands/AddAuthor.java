@@ -24,6 +24,8 @@ public class AddAuthor implements BaseCommand<Void> {
     @NotNull
     private String penName;
 
+    private String nationality;
+
     @NotNull
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate born;

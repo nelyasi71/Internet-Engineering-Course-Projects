@@ -33,7 +33,7 @@ public class AuthorRepository {
             throw new IllegalArgumentException("not aaa");
         }
 
-        authors.add(new Author(dto.getName(), dto.getPenName(), dto.getBorn(), dto.getDeath()));
+        authors.add(new Author(dto.getName(), dto.getPenName(), dto.getNationality(), dto.getBorn(), dto.getDeath()));
     }
 
     public AuthorRecord showAuthorDetails(ShowAuthorDetails dto) {
@@ -44,7 +44,7 @@ public class AuthorRepository {
 
         Author author = _author.get();
 
-        return new AuthorRecord(author.getName(), author.getPenName(), "", author.getBorn(), author.getDeath());
+        return new AuthorRecord(author.getName(), author.getPenName(), author.getNationality(), author.getBorn(), author.getDeath());
 
     }
 }
