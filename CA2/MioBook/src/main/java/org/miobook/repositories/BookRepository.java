@@ -55,7 +55,7 @@ public class BookRepository {
         }
         Book book = _book.get();
         double averageRating = book.getReviews().stream()
-                .mapToDouble(Review::getScore)
+                .mapToDouble(Review::getRate)
                 .average()
                 .orElse(0);
         return new BookRecord(book.getTitle(), book.getAuthor().getName(), book.getPublisher(), book.getGenres(), book.getPublishedYear(), book.getPrice(), book.getSynopsis(), averageRating);
@@ -89,6 +89,7 @@ public class BookRepository {
         if(bookOptional.isEmpty()) {
             throw new IllegalArgumentException("not aaa");
         }
+
         Customer customer = customerOptional.get();
         Book book = bookOptional.get();
 
