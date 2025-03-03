@@ -31,5 +31,16 @@ public class Purchase {
         return purchaseItems.size();
     }
 
+    public boolean hasBook(String title) {
+        return purchaseItems.stream()
+                .filter(item -> item.getBook().getTitle().equals(title))
+                .anyMatch(item -> {
+                    if (item instanceof BorrowItem borrowItem) {
+                        return borrowItem.isValid(this.date);
+                    } else  {
+                        return true;
+                    }
+                });
+    }
 
 }

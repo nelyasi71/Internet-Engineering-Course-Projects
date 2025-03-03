@@ -4,11 +4,14 @@ package org.miobook.commands;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+import org.miobook.repositories.Repositories;
+import org.miobook.responses.AuthorRecord;
 import org.miobook.responses.BaseResponse;
+import org.miobook.responses.BookContentRecord;
 
 @Getter
 @Setter
-public class ShowBookContent implements BaseCommand<Void> {
+public class ShowBookContent implements BaseCommand<BookContentRecord> {
 
     @NotNull
     private String username;
@@ -18,8 +21,13 @@ public class ShowBookContent implements BaseCommand<Void> {
     public void validate() {
     }
     @Override
-    public BaseResponse<Void> execute() {
-        return null;
-
+    public BaseResponse<BookContentRecord> execute() {
+        try {
+            this.validate();
+            BookContentRecord data = Repositories.bookRepository.showBookContent(this);
+            return new BaseResponse<>(true, "Book content retrieved successfully.", data);
+        } catch (IllegalArgumentException exp) {
+            return new BaseResponse<>(false, exp.getMessage(), null);
+        }
     }
 }

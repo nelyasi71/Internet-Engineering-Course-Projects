@@ -1,8 +1,10 @@
 package org.miobook.repositories;
 
 import org.miobook.commands.AddBook;
+import org.miobook.commands.ShowBookContent;
 import org.miobook.commands.ShowBookDetails;
 import org.miobook.models.*;
+import org.miobook.responses.BookContentRecord;
 import org.miobook.responses.BookRecord;
 
 import java.util.*;
@@ -52,5 +54,23 @@ public class BookRepository {
                 .average()
                 .orElse(0);
         return new BookRecord(book.getTitle(), book.getAuthor().getName(), book.getPublisher(), book.getGenres(), book.getPublishedYear(), book.getPrice(), book.getSynopsis(), averageRating);
+    }
+
+    public BookContentRecord showBookContent(ShowBookContent dto) {
+        Optional<Customer> customer = Repositories.userRepository.getCustomerByUsername(dto.getUsername());
+        if(customer.isEmpty()) {
+            throw new IllegalArgumentException("not aaa");
+        }
+
+        Optional<Book> book = Repositories.bookRepository.getBookByTitle(dto.getTitle());
+        if(book.isEmpty()) {
+            throw new IllegalArgumentException("not aaa");
+        }
+
+        if(!customer.get().hasBook(book.get().getTitle())) {
+            throw new IllegalArgumentException("not aaa");
+        }
+
+        return new BookContentRecord(dto.getTitle(), book.get().getContent());
     }
 }

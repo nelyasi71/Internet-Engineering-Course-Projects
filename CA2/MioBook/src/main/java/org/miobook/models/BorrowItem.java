@@ -12,4 +12,8 @@ public class BorrowItem extends PurchaseItem {
         this.borrowDays = borrowDays;
         this.price = (int) book.getPrice() * this.borrowDays / 10;
     }
+
+    public boolean isValid(LocalDateTime borrowDate) {
+        return borrowDate.plusDays(borrowDays).isBefore(LocalDateTime.now());
+    }
 }

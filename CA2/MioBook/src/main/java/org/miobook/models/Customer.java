@@ -57,4 +57,9 @@ public class Customer extends User {
     public int getBalance() {
         return wallet.getCredit();
     }
+
+    public boolean hasBook(String title) {
+        return purchasesHistory.stream()
+                .anyMatch(item -> item.hasBook(title));
+    }
 }
