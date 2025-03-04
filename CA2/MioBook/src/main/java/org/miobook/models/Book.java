@@ -32,4 +32,11 @@ public class Book {
     public void addReview(Review review) {
         this.reviews.add(review);
     }
+
+    public double averageRating() {
+        return this.reviews.stream()
+                .mapToDouble(Review::getRate)
+                .average()
+                .orElse(0);
+    }
 }

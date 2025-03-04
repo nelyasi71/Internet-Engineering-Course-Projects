@@ -7,6 +7,7 @@ import lombok.Setter;
 import org.miobook.repositories.Repositories;
 import org.miobook.responses.BaseResponse;
 import org.miobook.responses.BookReviewRecord;
+import org.miobook.services.BookServices;
 
 @Getter
 @Setter
@@ -23,7 +24,7 @@ public class ShowBookReviews implements BaseCommand<BookReviewRecord> {
     public BaseResponse<BookReviewRecord> execute() {
         try {
             this.validate();
-            BookReviewRecord data = Repositories.bookRepository.showBookReviews(this);
+            BookReviewRecord data = BookServices.showBookReviews(this);
             return new BaseResponse<>(true, "Book reviews retrieved successfully.", data);
         } catch (IllegalArgumentException exp){
             return new BaseResponse<>(false, exp.getMessage(), null);

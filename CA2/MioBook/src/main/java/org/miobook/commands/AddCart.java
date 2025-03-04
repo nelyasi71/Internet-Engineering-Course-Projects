@@ -6,8 +6,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.miobook.repositories.Repositories;
 import org.miobook.responses.BaseResponse;
-import org.miobook.responses.PurchaseCartRecord;
-import org.miobook.services.JsonValidator;
+import org.miobook.infrastructure.JsonValidator;
+import org.miobook.services.CartServices;
 
 
 @Getter
@@ -31,7 +31,7 @@ public class AddCart implements BaseCommand<Void> {
     public BaseResponse<Void> execute() {
         try {
             this.validate();
-            Repositories.userRepository.addCart(this);
+            CartServices.addCart(this);
             return new BaseResponse<>(true, "Added book to cart.", null);
         } catch (IllegalArgumentException exp) {
             return new BaseResponse<>(false, exp.getMessage(), null);

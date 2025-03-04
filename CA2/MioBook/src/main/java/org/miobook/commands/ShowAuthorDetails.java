@@ -8,6 +8,7 @@ import org.miobook.repositories.Repositories;
 import org.miobook.responses.AuthorRecord;
 import org.miobook.responses.BaseResponse;
 import org.miobook.responses.UserRecord;
+import org.miobook.services.AuthorServices;
 
 @Getter
 @Setter
@@ -22,7 +23,7 @@ public class ShowAuthorDetails implements BaseCommand<AuthorRecord> {
     public BaseResponse<AuthorRecord> execute() {
         try {
             this.validate();
-            AuthorRecord data = Repositories.authorRepository.showAuthorDetails(this);
+            AuthorRecord data = AuthorServices.showAuthorDetails(this);
             return new BaseResponse<>(true, "Author details retrieved successfully.", data);
         } catch (IllegalArgumentException exp) {
             return new BaseResponse<>(false, exp.getMessage(), null);

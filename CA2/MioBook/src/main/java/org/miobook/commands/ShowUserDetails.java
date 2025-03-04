@@ -7,6 +7,7 @@ import lombok.Setter;
 import org.miobook.repositories.Repositories;
 import org.miobook.responses.BaseResponse;
 import org.miobook.responses.UserRecord;
+import org.miobook.services.UserServices;
 
 @Getter
 @Setter
@@ -22,7 +23,7 @@ public class ShowUserDetails implements BaseCommand<UserRecord> {
     public BaseResponse<UserRecord> execute() {
         try {
             this.validate();
-            UserRecord data = Repositories.userRepository.showUserDetails(this);
+            UserRecord data = UserServices.showUserDetails(this);
             return new BaseResponse<>(true, "User details retrieved successfully.", data);
         } catch (IllegalArgumentException exp) {
             return new BaseResponse<>(false, exp.getMessage(), null);

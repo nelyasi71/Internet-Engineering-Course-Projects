@@ -7,7 +7,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.miobook.repositories.Repositories;
 import org.miobook.responses.BaseResponse;
-import org.miobook.services.JsonValidator;
+import org.miobook.infrastructure.JsonValidator;
+import org.miobook.services.AuthorServices;
 
 import java.time.LocalDate;
 
@@ -47,7 +48,7 @@ public class AddAuthor implements BaseCommand<Void> {
     public BaseResponse<Void> execute() {
         try {
             this.validate();
-            Repositories.authorRepository.addAuthor(this);
+            AuthorServices.addAuthor(this);
             return new BaseResponse<>(true, "Author added successfully.", null);
         } catch (IllegalArgumentException exp) {
             return new BaseResponse<>(false, exp.getMessage(), null);

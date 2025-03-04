@@ -5,6 +5,7 @@ import lombok.NonNull;
 import lombok.Setter;
 import org.miobook.repositories.Repositories;
 import org.miobook.responses.*;
+import org.miobook.services.BookServices;
 
 import java.util.List;
 
@@ -23,7 +24,7 @@ public class SearchBooksByTitle implements BaseCommand<SearchedBooksRecord> {
     public BaseResponse<SearchedBooksRecord> execute() {
         try {
             this.validate();
-            SearchedBooksRecord data = Repositories.bookRepository.searchBooksByTitle(this);
+            SearchedBooksRecord data = BookServices.searchBooksByTitle(this);
             SearchedBooksRecord responseData = new SearchedBooksRecord(this.title, data.books());
             return new BaseResponse<>(true, "Books containing '" + this.title + "' in their title:", responseData);
         } catch (IllegalArgumentException exp) {

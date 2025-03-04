@@ -8,7 +8,8 @@ import lombok.Setter;
 import org.miobook.repositories.Repositories;
 import org.miobook.responses.BaseResponse;
 import org.miobook.responses.PurchaseCartRecord;
-import org.miobook.services.JsonValidator;
+import org.miobook.infrastructure.JsonValidator;
+import org.miobook.services.CartServices;
 
 @Getter
 @Setter
@@ -26,7 +27,7 @@ public class PurchaseCart implements BaseCommand<PurchaseCartRecord> {
     public BaseResponse<PurchaseCartRecord> execute() {
         try {
             this.validate();
-            PurchaseCartRecord data = Repositories.userRepository.purchaseCart(this);
+            PurchaseCartRecord data = CartServices.purchaseCart(this);
             return new BaseResponse<>(true, "Purchase completed successfully.", data);
         } catch (IllegalArgumentException exp) {
             return new BaseResponse<>(false, exp.getMessage(), null);

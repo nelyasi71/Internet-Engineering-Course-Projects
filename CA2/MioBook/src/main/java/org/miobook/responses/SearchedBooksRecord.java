@@ -4,6 +4,6 @@ import java.util.List;
 
 public record SearchedBooksRecord(
         String search,
-        List<SearchedBookRecord> books
+        List<SearchedBookItemRecord> books
 ) {
 }

@@ -1,4 +1,4 @@
-package org.miobook.services;
+package org.miobook.infrastructure;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;

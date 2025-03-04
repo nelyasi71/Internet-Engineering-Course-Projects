@@ -2,7 +2,7 @@ package org.miobook.services;
 
 import java.util.List;
 
-public class ValidationService {
+public class ValidationServices {
     public static boolean isBookNameUnic(String bookName) {return true;}
     public static boolean doesAuthorExist(String authorName){return true;}
     public static boolean isPublisherValid(String publisher){return true;}

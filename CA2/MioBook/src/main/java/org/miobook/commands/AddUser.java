@@ -7,8 +7,10 @@ import lombok.Getter;
 import lombok.Setter;
 import org.miobook.models.Address;
 import org.miobook.repositories.Repositories;
+import org.miobook.repositories.UserRepository;
 import org.miobook.responses.BaseResponse;
-import org.miobook.services.JsonValidator;
+import org.miobook.infrastructure.JsonValidator;
+import org.miobook.services.UserServices;
 
 @Getter
 @Setter
@@ -44,7 +46,7 @@ public class AddUser implements BaseCommand<Void> {
     public BaseResponse<Void> execute() {
         try {
             this.validate();
-            Repositories.userRepository.addUser(this);
+            UserServices.addUser(this);
             return new BaseResponse<>(true, "User added successfully.", null);
         } catch (IllegalArgumentException exp) {
             return new BaseResponse<>(false, exp.getMessage(), null);

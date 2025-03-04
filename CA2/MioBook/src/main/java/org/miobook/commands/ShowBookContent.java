@@ -8,6 +8,7 @@ import org.miobook.repositories.Repositories;
 import org.miobook.responses.AuthorRecord;
 import org.miobook.responses.BaseResponse;
 import org.miobook.responses.BookContentRecord;
+import org.miobook.services.BookServices;
 
 @Getter
 @Setter
@@ -24,7 +25,7 @@ public class ShowBookContent implements BaseCommand<BookContentRecord> {
     public BaseResponse<BookContentRecord> execute() {
         try {
             this.validate();
-            BookContentRecord data = Repositories.bookRepository.showBookContent(this);
+            BookContentRecord data = BookServices.showBookContent(this);
             return new BaseResponse<>(true, "Book content retrieved successfully.", data);
         } catch (IllegalArgumentException exp) {
             return new BaseResponse<>(false, exp.getMessage(), null);

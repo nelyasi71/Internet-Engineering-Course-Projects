@@ -9,8 +9,9 @@ import lombok.Setter;
 import org.hibernate.validator.constraints.Range;
 import org.miobook.repositories.Repositories;
 import org.miobook.responses.BaseResponse;
-import org.miobook.services.IntDeserializer;
-import org.miobook.services.JsonValidator;
+import org.miobook.infrastructure.IntDeserializer;
+import org.miobook.infrastructure.JsonValidator;
+import org.miobook.services.UserServices;
 
 
 @Getter
@@ -36,7 +37,7 @@ public class AddCredit implements BaseCommand<Void> {
     public BaseResponse<Void> execute() {
         try {
             this.validate();
-            Repositories.userRepository.addCredit(this);
+            UserServices.addCredit(this);
             return new BaseResponse<Void>(true, "Credit added successfully.", null);
         } catch (IllegalArgumentException exp) {
             return new BaseResponse<Void>(false, exp.getMessage(), null);

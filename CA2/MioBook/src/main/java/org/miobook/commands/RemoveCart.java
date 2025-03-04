@@ -6,7 +6,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.miobook.repositories.Repositories;
 import org.miobook.responses.BaseResponse;
-import org.miobook.services.JsonValidator;
+import org.miobook.infrastructure.JsonValidator;
+import org.miobook.services.CartServices;
 
 
 @Getter
@@ -29,7 +30,7 @@ public class RemoveCart implements BaseCommand<Void> {
     public BaseResponse<Void> execute() {
         try {
             this.validate();
-            Repositories.userRepository.removeCart(this);
+            CartServices.removeCart(this);
             return new BaseResponse<>(true, "Removed book from cart.", null);
         } catch (IllegalArgumentException exp) {
             return new BaseResponse<>(false, exp.getMessage(), null);

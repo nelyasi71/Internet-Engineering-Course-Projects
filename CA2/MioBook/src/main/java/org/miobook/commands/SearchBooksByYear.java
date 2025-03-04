@@ -5,6 +5,7 @@ import lombok.NonNull;
 import lombok.Setter;
 import org.miobook.repositories.Repositories;
 import org.miobook.responses.*;
+import org.miobook.services.BookServices;
 
 import java.util.List;
 
@@ -28,7 +29,7 @@ public class SearchBooksByYear implements BaseCommand<SearchedBooksRecord> {
     public BaseResponse<SearchedBooksRecord> execute() {
         try {
             this.validate();
-            SearchedBooksRecord data = Repositories.bookRepository.searchBooksByYear(this);
+            SearchedBooksRecord data = BookServices.searchBooksByYear(this);
             SearchedBooksRecord responseData = new SearchedBooksRecord(from + " - " + to, data.books());
             return new BaseResponse<>(true, "Books published between " + from + " and " + to + ":", responseData);
         } catch (IllegalArgumentException exp) {

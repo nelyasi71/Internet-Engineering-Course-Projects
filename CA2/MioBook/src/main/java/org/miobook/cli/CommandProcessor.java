@@ -5,7 +5,6 @@ import org.apache.commons.text.WordUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.miobook.commands.*;
 import org.miobook.responses.BaseResponse;
-import org.miobook.services.JsonValidator;
 
 public class CommandProcessor {
 

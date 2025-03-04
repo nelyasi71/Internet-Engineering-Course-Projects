@@ -5,6 +5,7 @@ import lombok.NonNull;
 import lombok.Setter;
 import org.miobook.repositories.Repositories;
 import org.miobook.responses.*;
+import org.miobook.services.BookServices;
 
 import java.util.List;
 
@@ -23,7 +24,7 @@ public class SearchBooksByAuthor implements BaseCommand<SearchedBooksRecord> {
     public BaseResponse<SearchedBooksRecord> execute() {
         try {
             this.validate();
-            SearchedBooksRecord data = Repositories.bookRepository.searchBooksByAuthor(this);
+            SearchedBooksRecord data = BookServices.searchBooksByAuthor(this);
             SearchedBooksRecord responseData = new SearchedBooksRecord(this.name, data.books());
             return new BaseResponse<>(true, "Books by '" + this.name + "' :", responseData);
         } catch (IllegalArgumentException exp) {

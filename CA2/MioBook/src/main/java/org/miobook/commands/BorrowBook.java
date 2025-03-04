@@ -7,8 +7,8 @@ import lombok.Setter;
 import org.hibernate.validator.constraints.Range;
 import org.miobook.repositories.Repositories;
 import org.miobook.responses.BaseResponse;
-import org.miobook.responses.PurchaseCartRecord;
-import org.miobook.services.JsonValidator;
+import org.miobook.infrastructure.JsonValidator;
+import org.miobook.services.CartServices;
 
 
 @Getter
@@ -36,7 +36,7 @@ public class BorrowBook implements BaseCommand<Void> {
         this.validate();
         try {
             this.validate();
-            Repositories.userRepository.borrowBook(this);
+            CartServices.borrowBook(this);
             return new BaseResponse<>(true, "Added borrowed book to cart.", null);
         } catch (IllegalArgumentException exp) {
             return new BaseResponse<>(false, exp.getMessage(), null);

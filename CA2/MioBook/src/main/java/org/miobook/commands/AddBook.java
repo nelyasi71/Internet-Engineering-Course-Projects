@@ -7,8 +7,9 @@ import lombok.Setter;
 import org.hibernate.validator.constraints.Range;
 import org.miobook.repositories.Repositories;
 import org.miobook.responses.BaseResponse;
-import org.miobook.services.IntDeserializer;
-import org.miobook.services.JsonValidator;
+import org.miobook.infrastructure.IntDeserializer;
+import org.miobook.infrastructure.JsonValidator;
+import org.miobook.services.BookServices;
 
 import java.util.List;
 
@@ -60,7 +61,7 @@ public class AddBook implements BaseCommand<Void> {
     public BaseResponse<Void> execute() {
         try {
             this.validate();
-            Repositories.bookRepository.addBook(this);
+            BookServices.addBook(this);
             return new BaseResponse<>(true, "Book added successfully.", null);
         } catch (IllegalArgumentException exp) {
             return new BaseResponse<>(false, exp.getMessage(), null);
