@@ -186,4 +186,24 @@ public class BookRepository {
         }
         return new SearchedBooksRecord(dto.getGenre(),matchedBooks);
     }
+
+    public SearchedBooksRecord searchBooksByYear(SearchBooksByYear dto) {
+        List<SearchedBookRecord> matchedBooks = books.stream()
+                .filter(book -> book.getPublishedYear() >= dto.getFrom() && book.getPublishedYear() <= dto.getTo())
+                .map(book -> new SearchedBookRecord(
+                        book.getTitle(),
+                        book.getAuthor().getName(),
+                        book.getPublisher(),
+                        book.getGenres(),
+                        book.getPublishedYear(),
+                        book.getPrice(),
+                        book.getSynopsis()
+                ))
+                .collect(Collectors.toList());
+
+        if (matchedBooks.isEmpty()) {
+            throw new IllegalArgumentException("No books found in the given year range.");
+        }
+        return new SearchedBooksRecord(dto.getFrom() + " - " + dto.getTo(), matchedBooks);
+    }
 }
