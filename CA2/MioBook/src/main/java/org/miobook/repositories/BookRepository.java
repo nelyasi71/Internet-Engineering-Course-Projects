@@ -142,4 +142,25 @@ public class BookRepository {
         return new BookReviewRecord(dto.getTitle(), reviewResponses, averageRating);
 
     }
+
+    public SearchedBooksRecord searchBooksByAuthor(SearchBooksByAuthor dto) {
+
+        List<SearchedBookRecord> matchedBooks = books.stream()
+                .filter(book -> book.getAuthor().getName().toLowerCase().contains(dto.getName().toLowerCase()))
+                .map(book -> new SearchedBookRecord(
+                        book.getTitle(),
+                        book.getAuthor().getName(),
+                        book.getPublisher(),
+                        book.getGenres(),
+                        book.getPublishedYear(),
+                        book.getPrice(),
+                        book.getSynopsis()
+                ))
+                .collect(Collectors.toList());
+
+        if (matchedBooks.isEmpty()) {
+            throw new IllegalArgumentException("not aaa");
+        }
+        return new SearchedBooksRecord(dto.getName(),matchedBooks);
+    }
 }
