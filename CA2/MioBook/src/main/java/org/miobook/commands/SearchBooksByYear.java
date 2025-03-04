@@ -1,8 +1,11 @@
 package org.miobook.commands;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import org.miobook.infrastructure.IntDeserializer;
+import org.miobook.infrastructure.JsonValidator;
 import org.miobook.repositories.Repositories;
 import org.miobook.responses.*;
 import org.miobook.services.BookServices;
@@ -14,12 +17,15 @@ import java.util.List;
 public class SearchBooksByYear implements BaseCommand<SearchedBooksRecord> {
 
     @NonNull
+    @JsonDeserialize(using = IntDeserializer.class)
     private int from;
+    @JsonDeserialize(using = IntDeserializer.class)
     @NonNull
     private int to;
 
     @Override
     public void validate() {
+        JsonValidator.validate(this);
         if (from > to) {
             throw new IllegalArgumentException("Invalid range: 'from' must be less than or equal to 'to'.");
         }

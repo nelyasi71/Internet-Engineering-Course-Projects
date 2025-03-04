@@ -4,6 +4,7 @@ package org.miobook.commands;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+import org.miobook.infrastructure.JsonValidator;
 import org.miobook.repositories.Repositories;
 import org.miobook.responses.BaseResponse;
 import org.miobook.responses.BookRecord;
@@ -19,6 +20,7 @@ public class ShowCart implements BaseCommand<CartRecord> {
 
     @Override
     public void validate() {
+        JsonValidator.validate(this);
     }
     @Override
     public BaseResponse<CartRecord> execute() {

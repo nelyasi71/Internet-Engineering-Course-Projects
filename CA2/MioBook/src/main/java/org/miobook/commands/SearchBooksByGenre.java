@@ -3,6 +3,7 @@ package org.miobook.commands;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import org.miobook.infrastructure.JsonValidator;
 import org.miobook.repositories.Repositories;
 import org.miobook.responses.*;
 import org.miobook.services.BookServices;
@@ -18,6 +19,8 @@ public class SearchBooksByGenre implements BaseCommand<SearchedBooksRecord> {
 
     @Override
     public void validate() {
+        JsonValidator.validate(this);
+
     }
 
     @Override

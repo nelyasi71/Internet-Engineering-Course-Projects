@@ -1,10 +1,12 @@
 package org.miobook.commands;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Range;
+import org.miobook.infrastructure.IntDeserializer;
 import org.miobook.repositories.Repositories;
 import org.miobook.infrastructure.JsonValidator;
 import jakarta.validation.constraints.Digits;
@@ -26,7 +28,7 @@ public class AddReview implements BaseCommand<Void> {
 
     @NotNull
     @Range(min = 1, max = 5)
-    @Digits(integer = 1, fraction = 0)
+    @JsonDeserialize(using = IntDeserializer.class)
     private Integer rate;
 
     public AddReview() {

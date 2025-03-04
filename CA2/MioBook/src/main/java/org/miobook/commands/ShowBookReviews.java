@@ -4,6 +4,7 @@ package org.miobook.commands;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+import org.miobook.infrastructure.JsonValidator;
 import org.miobook.repositories.Repositories;
 import org.miobook.responses.BaseResponse;
 import org.miobook.responses.BookReviewRecord;
@@ -18,6 +19,7 @@ public class ShowBookReviews implements BaseCommand<BookReviewRecord> {
 
     @Override
     public void validate() {
+        JsonValidator.validate(this);
     }
 
     @Override
