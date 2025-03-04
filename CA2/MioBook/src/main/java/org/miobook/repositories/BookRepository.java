@@ -163,4 +163,27 @@ public class BookRepository {
         }
         return new SearchedBooksRecord(dto.getName(),matchedBooks);
     }
+
+    public SearchedBooksRecord searchBooksByGenre(SearchBooksByGenre dto) {
+
+        List<SearchedBookRecord> matchedBooks = books.stream()
+                .filter(book -> book.getGenres().stream()
+                        .anyMatch(genre -> genre.toLowerCase().contains(dto.getGenre().toLowerCase()))
+                )
+                .map(book -> new SearchedBookRecord(
+                        book.getTitle(),
+                        book.getAuthor().getName(),
+                        book.getPublisher(),
+                        book.getGenres(),
+                        book.getPublishedYear(),
+                        book.getPrice(),
+                        book.getSynopsis()
+                ))
+                .collect(Collectors.toList());
+
+        if (matchedBooks.isEmpty()) {
+            throw new IllegalArgumentException("not aaa");
+        }
+        return new SearchedBooksRecord(dto.getGenre(),matchedBooks);
+    }
 }
