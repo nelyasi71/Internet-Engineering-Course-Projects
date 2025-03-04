@@ -33,10 +33,10 @@ public class Cart {
     public void add(PurchaseItem purchaseItem) {
         Optional<PurchaseItem> item = this.getItemByBookTitle(purchaseItem.getBook().getTitle());
         if(item.isPresent()) {
-            throw new IllegalArgumentException("not aaa");
+            throw new IllegalArgumentException("This book is already in the purchase list.");
         }
         if(items.size() > 10) {
-            throw new IllegalArgumentException("not aaa");
+            throw new IllegalArgumentException("Cannot add more than 10 items to the purchase list.");
         }
         items.add(purchaseItem);
     }
@@ -44,7 +44,7 @@ public class Cart {
     public void remove(PurchaseItem purchaseItem) {
         Optional<PurchaseItem> item = this.getItemByBookTitle(purchaseItem.getBook().getTitle());
         if(item.isEmpty()) {
-            throw new IllegalArgumentException("not aaa");
+            throw new IllegalArgumentException("The item you are trying to remove does not exist in the purchase list.");
         }
         items.remove(item.get());
     }

@@ -46,10 +46,10 @@ public class UserRepository {
 
     public void addUser(AddUser dto) {
         if(doesUserExist(dto.getUsername())) {
-            throw new IllegalArgumentException("not aaa");
+            throw new IllegalArgumentException("User with the username '" + dto.getUsername() + "' already exists.");
         }
         if(doesEmailExist(dto.getEmail())) {
-            throw new IllegalArgumentException("not aaa");
+            throw new IllegalArgumentException("An account with the email '" + dto.getEmail() + "' already exists.");
         }
 
         if(dto.getRole().equals("customer")) {
@@ -66,10 +66,10 @@ public class UserRepository {
                 .findFirst();
 
         if(customerOptional.isEmpty()) {
-            throw new IllegalArgumentException("not aaa");
+            throw new IllegalArgumentException("Customer with username '" + dto.getUsername() + "' not found.");
         }
         if (!isCreditValid(dto.getCredit())){
-            throw new IllegalArgumentException("not aaa");
+            throw new IllegalArgumentException("Invalid credit amount: \" + dto.getCredit() + \". Please enter a positive value.");
         }
         Customer customer = customerOptional.get();
         customer.addCredit(dto.getCredit());
@@ -77,17 +77,17 @@ public class UserRepository {
 
     public void addCart(AddCart dto) throws IllegalArgumentException {
         if(Repositories.userRepository.doesAdminExist(dto.getUsername())) {
-            throw new IllegalArgumentException("not aaa");
+            throw new IllegalArgumentException("Admin with username '" + dto.getUsername() + "' cannot add items to the cart. Only customers can.");
         }
 
         Optional<Customer> customer = Repositories.userRepository.getCustomerByUsername(dto.getUsername());
         if(customer.isEmpty()) {
-            throw new IllegalArgumentException("not aaa");
+            throw new IllegalArgumentException("Customer with username '" + dto.getUsername() + "' does not exist.");
         }
 
         Optional<Book> book = Repositories.bookRepository.getBookByTitle(dto.getTitle());
         if(book.isEmpty()) {
-            throw new IllegalArgumentException("not aaa");
+            throw new IllegalArgumentException("Book with title '" + dto.getTitle() + "' not found.");
         }
 
         customer.get().addCart(new BuyItem(book.get()));
@@ -96,17 +96,17 @@ public class UserRepository {
 
     public void removeCart(RemoveCart dto) {
         if(Repositories.userRepository.doesAdminExist(dto.getUsername())) {
-            throw new IllegalArgumentException("not aaa");
+            throw new IllegalArgumentException("Admin with username '" + dto.getUsername() + "' cannot remove items from the cart. Only customers can.");
         }
 
         Optional<Customer> customer = Repositories.userRepository.getCustomerByUsername(dto.getUsername());
         if(customer.isEmpty()) {
-            throw new IllegalArgumentException("not aaa");
+            throw new IllegalArgumentException("Customer with username '" + dto.getUsername() + "' does not exist.");
         }
 
         Optional<Book> book = Repositories.bookRepository.getBookByTitle(dto.getTitle());
         if(book.isEmpty()) {
-            throw new IllegalArgumentException("not aaa");
+            throw new IllegalArgumentException("Book with title '" + dto.getTitle() + "' not found in the catalog.");
         }
 
         PurchaseItem item = new PurchaseItem(book.get());
@@ -115,12 +115,12 @@ public class UserRepository {
 
     public PurchaseCartRecord purchaseCart(PurchaseCart dto) {
         if(Repositories.userRepository.doesAdminExist(dto.getUsername())) {
-            throw new IllegalArgumentException("not aaa");
+            throw new IllegalArgumentException("Admin with username '\" + dto.getUsername() + \"' cannot make a purchase. Only customers can.");
         }
 
         Optional<Customer> customer = Repositories.userRepository.getCustomerByUsername(dto.getUsername());
         if(customer.isEmpty()) {
-            throw new IllegalArgumentException("not aaa");
+            throw new IllegalArgumentException("Customer with username '\" + dto.getUsername() + \"' not found.");
         }
 
         Purchase purchase = customer.get().purchaseCart();
@@ -132,17 +132,17 @@ public class UserRepository {
 
     public void borrowBook(BorrowBook dto) {
         if(Repositories.userRepository.doesAdminExist(dto.getUsername())) {
-            throw new IllegalArgumentException("not aaa");
+            throw new IllegalArgumentException("Admin with username '\" + dto.getUsername() + \"' cannot borrow books. Only customers can.");
         }
 
         Optional<Customer> customer = Repositories.userRepository.getCustomerByUsername(dto.getUsername());
         if(customer.isEmpty()) {
-            throw new IllegalArgumentException("not aaa");
+            throw new IllegalArgumentException("Customer with username '\" + dto.getUsername() + \"' not found.");
         }
 
         Optional<Book> book = Repositories.bookRepository.getBookByTitle(dto.getTitle());
         if(book.isEmpty()) {
-            throw new IllegalArgumentException("not aaa");
+            throw new IllegalArgumentException("Book with title '\" + dto.getTitle() + \"' not found.");
         }
 
         customer.get().addCart(new BorrowItem(book.get(), dto.getDays()));
@@ -152,7 +152,7 @@ public class UserRepository {
     public UserRecord showUserDetails(ShowUserDetails dto) {
         Optional<User> user = Repositories.userRepository.getUserByUsername(dto.getUsername());
         if(user.isEmpty()) {
-            throw new IllegalArgumentException("not aaa");
+            throw new IllegalArgumentException("User with username '" + dto.getUsername() + "' not found.");
         }
         if(user.get() instanceof Customer customer) {
             return new UserRecord(customer.getUsername(), "customer", customer.getEmail(), customer.getAddress(), customer.getBalance());
@@ -162,14 +162,15 @@ public class UserRepository {
         }
 
     }
+
     public CartRecord showCart(ShowCart dto) {
         if(Repositories.userRepository.doesAdminExist(dto.getUsername())) {
-            throw new IllegalArgumentException("not aaa");
+            throw new IllegalArgumentException("Admin with username '" + dto.getUsername() + "' cannot view carts. Only customers can.");
         }
 
         Optional<Customer> _customer = Repositories.userRepository.getCustomerByUsername(dto.getUsername());
         if(_customer.isEmpty()) {
-            throw new IllegalArgumentException("not aaa");
+            throw new IllegalArgumentException("Customer with username '" + dto.getUsername() + "' not found.");
         }
 
         Customer customer = _customer.get();

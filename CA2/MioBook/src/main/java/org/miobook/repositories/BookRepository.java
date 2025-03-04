@@ -32,16 +32,16 @@ public class BookRepository {
 
     public void addBook(AddBook dto) {
         if(!Repositories.userRepository.doesAdminExist(dto.getUsername())) {
-            throw new IllegalArgumentException("not aaa");
+            throw new IllegalArgumentException("Admin with username '" + dto.getUsername() + "' does not exist. Only admins can add books.");
         }
         if(doesBookExist(dto.getTitle())) {
-            throw new IllegalArgumentException("not aaa");
+            throw new IllegalArgumentException("A book with the title '" + dto.getTitle() + "' already exists.");
         }
 
         Optional<Author> author = Repositories.authorRepository.getAuthorByName(dto.getAuthor());
 
         if(author.isEmpty()) {
-            throw new IllegalArgumentException("not aaa");
+            throw new IllegalArgumentException("Author with the name '" + dto.getAuthor() + "' does not exist.");
         }
 
         Repositories.bookRepository.books.add(
@@ -52,7 +52,7 @@ public class BookRepository {
     public BookRecord showBookDetails(ShowBookDetails dto) {
         Optional<Book> _book = Repositories.bookRepository.getBookByTitle(dto.getTitle());
         if(_book.isEmpty()) {
-            throw new IllegalArgumentException("not aaa");
+            throw new IllegalArgumentException("Book with the title '" + dto.getTitle() + "' not found.");
         }
         Book book = _book.get();
         double averageRating = book.getReviews().stream()
@@ -65,16 +65,16 @@ public class BookRepository {
     public BookContentRecord showBookContent(ShowBookContent dto) {
         Optional<Customer> customer = Repositories.userRepository.getCustomerByUsername(dto.getUsername());
         if(customer.isEmpty()) {
-            throw new IllegalArgumentException("not aaa");
+            throw new IllegalArgumentException("Customer with username '" + dto.getUsername() + "' not found.");
         }
 
         Optional<Book> book = Repositories.bookRepository.getBookByTitle(dto.getTitle());
         if(book.isEmpty()) {
-            throw new IllegalArgumentException("not aaa");
+            throw new IllegalArgumentException("Book with title '" + dto.getTitle() + "' not found.");
         }
 
         if(!customer.get().hasBook(book.get().getTitle())) {
-            throw new IllegalArgumentException("not aaa");
+            throw new IllegalArgumentException("Customer with username '" + dto.getUsername() + "' does not own the book '" + dto.getTitle() + "'.");
         }
 
         return new BookContentRecord(dto.getTitle(), book.get().getContent());
@@ -83,12 +83,12 @@ public class BookRepository {
     public void addReview(AddReview dto) {
         Optional<Customer> customerOptional = Repositories.userRepository.getCustomerByUsername(dto.getUsername());
         if(customerOptional.isEmpty()) {
-            throw new IllegalArgumentException("not aaa");
+            throw new IllegalArgumentException("Customer with username '" + dto.getUsername() + "' not found.");
         }
 
         Optional<Book> bookOptional = Repositories.bookRepository.getBookByTitle(dto.getTitle());
         if(bookOptional.isEmpty()) {
-            throw new IllegalArgumentException("not aaa");
+            throw new IllegalArgumentException("Book with title '" + dto.getTitle() + "' not found.");
         }
 
         Customer customer = customerOptional.get();
@@ -114,7 +114,7 @@ public class BookRepository {
                 .collect(Collectors.toList());
 
         if (matchedBooks.isEmpty()) {
-            throw new IllegalArgumentException("not aaa");
+            throw new IllegalArgumentException("No books found matching the title '" + dto.getTitle() + "'. Please try with a different search term.");
         }
         return new SearchedBooksRecord(dto.getTitle(),matchedBooks);
     }
@@ -122,7 +122,7 @@ public class BookRepository {
     public BookReviewRecord showBookReviews(ShowBookReviews dto) {
         Optional<Book> bookOptional = Repositories.bookRepository.getBookByTitle(dto.getTitle());
         if(bookOptional.isEmpty()) {
-            throw new IllegalArgumentException("not aaa");
+            throw new IllegalArgumentException("Book with title '" + dto.getTitle() + "' not found. Please check the title and try again.");
         }
         Book book = bookOptional.get();
 
@@ -159,7 +159,7 @@ public class BookRepository {
                 .collect(Collectors.toList());
 
         if (matchedBooks.isEmpty()) {
-            throw new IllegalArgumentException("not aaa");
+            throw new IllegalArgumentException("No books found for the author '" + dto.getName() + "'. Please try a different author name.");
         }
         return new SearchedBooksRecord(dto.getName(),matchedBooks);
     }
@@ -182,7 +182,7 @@ public class BookRepository {
                 .collect(Collectors.toList());
 
         if (matchedBooks.isEmpty()) {
-            throw new IllegalArgumentException("not aaa");
+            throw new IllegalArgumentException("No books found for the genre '" + dto.getGenre() + "'. Please try a different genre.");
         }
         return new SearchedBooksRecord(dto.getGenre(),matchedBooks);
     }

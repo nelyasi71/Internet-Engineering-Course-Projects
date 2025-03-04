@@ -27,10 +27,10 @@ public class AuthorRepository {
 
     public void addAuthor(AddAuthor dto) {
         if(doesAuthorExist(dto.getName())) {
-            throw new IllegalArgumentException("not aaa");
+            throw new IllegalArgumentException("Author with the name '" + dto.getName() + "' already exists.");
         }
         if(!Repositories.userRepository.doesAdminExist(dto.getUsername())) {
-            throw new IllegalArgumentException("not aaa");
+            throw new IllegalArgumentException("Only admins can add authors.");
         }
 
         authors.add(new Author(dto.getName(), dto.getPenName(), dto.getNationality(), dto.getBorn(), dto.getDeath()));
@@ -39,7 +39,7 @@ public class AuthorRepository {
     public AuthorRecord showAuthorDetails(ShowAuthorDetails dto) {
         Optional<Author> _author = Repositories.authorRepository.getAuthorByName(dto.getUsername());
         if(_author.isEmpty()) {
-            throw new IllegalArgumentException("not aaa");
+            throw new IllegalArgumentException("Author with the name '" + dto.getUsername() + "' does not exist.");
         }
 
         Author author = _author.get();

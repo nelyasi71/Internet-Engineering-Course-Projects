@@ -20,7 +20,7 @@ public class SearchBooksByYear implements BaseCommand<SearchedBooksRecord> {
     @Override
     public void validate() {
         if (from > to) {
-            throw new IllegalArgumentException("not aaa");
+            throw new IllegalArgumentException("Invalid range: 'from' must be less than or equal to 'to'.");
         }
     }
 
