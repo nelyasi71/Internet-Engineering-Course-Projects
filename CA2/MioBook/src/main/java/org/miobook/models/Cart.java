@@ -41,8 +41,8 @@ public class Cart {
         items.add(purchaseItem);
     }
 
-    public void remove(PurchaseItem purchaseItem) {
-        Optional<PurchaseItem> item = this.getItemByBookTitle(purchaseItem.getBook().getTitle());
+    public void remove(String title) {
+        Optional<PurchaseItem> item = this.getItemByBookTitle(title);
         if(item.isEmpty()) {
             throw new IllegalArgumentException("The item you are trying to remove does not exist in the purchase list.");
         }

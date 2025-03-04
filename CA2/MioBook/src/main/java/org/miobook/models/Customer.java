@@ -2,6 +2,8 @@ package org.miobook.models;
 
 import lombok.Getter;
 import org.miobook.responses.PurchaseCartRecord;
+import org.miobook.responses.PurchasedBookItemRecord;
+import org.miobook.responses.PurchasedBooksRecord;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +11,7 @@ import java.util.List;
 public class Customer extends User {
     @Getter
     private final Cart shoppingCart;
+    @Getter
     private final List<Purchase> purchasesHistory = new ArrayList<>();
     private Wallet wallet;
 
@@ -26,8 +29,8 @@ public class Customer extends User {
         this.shoppingCart.add(purchaseItem);
     }
 
-    public void removeCard(PurchaseItem purchaseItem) {
-        this.shoppingCart.remove(purchaseItem);
+    public void removeCard(String title) {
+        this.shoppingCart.remove(title);
     }
 
     public Purchase purchaseCart() {
@@ -46,8 +49,6 @@ public class Customer extends User {
         shoppingCart.clear();
         purchasesHistory.add(newPurchase);
 
-        System.out.println(newPurchase);
-
         return newPurchase;
     }
 
@@ -62,5 +63,24 @@ public class Customer extends User {
     public boolean hasBook(String title) {
         return purchasesHistory.stream()
                 .anyMatch(item -> item.hasBook(title));
+    }
+
+    public PurchasedBooksRecord createPurchasedBooksRecord() {
+        List<PurchasedBookItemRecord> purchasedBookItemRecords = this.purchasesHistory.stream()
+                .flatMap(purchase -> purchase.getPurchaseItems().stream()
+                .filter(purchaseItem -> !(purchaseItem instanceof BorrowItem) || ((BorrowItem) purchaseItem).isValid(purchase.getDate()))
+                .map(purchaseItem -> {
+                    return new PurchasedBookItemRecord(
+                            purchaseItem.getBook().getTitle(),
+                            purchaseItem.getBook().getAuthor().getName(),
+                            purchaseItem.getBook().getPublisher(),
+                            purchaseItem.getBook().getGenres(),
+                            purchaseItem.getBook().getPublishedYear(),
+                            purchaseItem.getBook().getPrice(),
+                            (purchaseItem instanceof BorrowItem)
+                    );
+                }))
+                .toList();
+        return new PurchasedBooksRecord(this.username, purchasedBookItemRecords);
     }
 }

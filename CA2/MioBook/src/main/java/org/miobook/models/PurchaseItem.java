@@ -2,10 +2,10 @@ package org.miobook.models;
 
 
 import lombok.Getter;
-import org.miobook.responses.CartItemRecord;
+import org.miobook.responses.PurchaseItemRecord;
 
 @Getter
-public class PurchaseItem {
+public abstract class PurchaseItem {
     protected Book book;
     int price;
 
@@ -13,12 +13,7 @@ public class PurchaseItem {
         this.book = book;
     }
 
-    public PurchaseItem(PurchaseItem other) {
-        this.book = other.book;
-        this.price = other.price;
-    }
-
-    public CartItemRecord createRecord() {
+    public PurchaseItemRecord createRecord() {
         return null;
     }
 }

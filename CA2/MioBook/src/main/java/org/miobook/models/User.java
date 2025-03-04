@@ -2,6 +2,7 @@ package org.miobook.models;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.miobook.responses.PurchasedBooksRecord;
 
 @Getter
 @Setter
@@ -17,4 +18,5 @@ public class User {
         this.email = email;
         this.address = address;
     }
+
 }

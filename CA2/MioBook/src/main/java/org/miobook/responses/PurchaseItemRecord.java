@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.util.List;
 
-public record CartItemRecord (
+public record PurchaseItemRecord(
         String title,
         String author,
         String publisher,

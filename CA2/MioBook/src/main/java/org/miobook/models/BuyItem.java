@@ -1,6 +1,6 @@
 package org.miobook.models;
 
-import org.miobook.responses.CartItemRecord;
+import org.miobook.responses.PurchaseItemRecord;
 
 public class BuyItem extends PurchaseItem {
     public BuyItem(Book book) {
@@ -8,8 +8,14 @@ public class BuyItem extends PurchaseItem {
         this.price = book.getPrice();
     }
 
-    public CartItemRecord createRecord() {
-        return new CartItemRecord(
+    public BuyItem(BuyItem other) {
+        super(other.book);
+        this.price = other.price;
+    }
+
+    @Override
+    public PurchaseItemRecord createRecord() {
+        return new PurchaseItemRecord(
                 this.book.getTitle(),
                 this.book.getAuthor().getName(),
                 this.book.getPublisher(),

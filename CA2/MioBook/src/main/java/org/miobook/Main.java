@@ -19,15 +19,19 @@ public class Main {
 //        commands.add("add_cart {\"username\": \"user\", \"title\": \"book\"}");
         commands.add("borrow_book {\"username\": \"user\", \"title\": \"book\", \"days\": 1}");
         commands.add("add_credit {\"username\": \"user\", \"credit\": 8200}");
-//        commands.add("purchase_cart {\"username\": \"user\"}");
+        commands.add("show_purchase_history {\"username\": \"user\"}");
+        commands.add("purchase_cart {\"username\": \"user\"}");
 //        commands.add("show_user_details {\"username\": \"user\"}");
 //        commands.add("show_user_details {\"username\": \"admin\"}");
 //        commands.add("show_author_details {\"username\": \"author\"}");
 //        commands.add("show_book_details {\"title\": \"book\"}");
 //        commands.add("show_book_content {\"username\": \"user\", \"title\": \"book\"}");
-        commands.add("show_cart {\"username\": \"user\"}");
-        commands.add("purchase_cart {\"username\": \"user\"}");
-        commands.add("show_cart {\"username\": \"user\"}");
+//        commands.add("show_cart {\"username\": \"user\"}");
+//        commands.add("purchase_cart {\"username\": \"user\"}");
+//        commands.add("show_cart {\"username\": \"user\"}");
+//        commands.add("show_purchase_history {\"username\": \"user\"}");
+        commands.add("show_purchased_books {\"username\": \"user\"}");
+
         commands.add("add_review {\"username\": \"user\", \"title\": \"book1\", \"rate\": 4, \"comment\": \"This is the perfect book\"}");
         commands.add("add_review {\"username\": \"user\", \"title\": \"book1\", \"rate\": 1, \"comment\": \"This is the worst book ever\"}");
         commands.add("search_books_by_title {\"title\": \"book\"}");

@@ -2,10 +2,7 @@ package org.miobook.repositories;
 
 import org.miobook.commands.*;
 import org.miobook.models.*;
-import org.miobook.responses.CartItemRecord;
-import org.miobook.responses.CartRecord;
-import org.miobook.responses.PurchaseCartRecord;
-import org.miobook.responses.UserRecord;
+import org.miobook.responses.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -109,8 +106,7 @@ public class UserRepository {
             throw new IllegalArgumentException("Book with title '" + dto.getTitle() + "' not found in the catalog.");
         }
 
-        PurchaseItem item = new PurchaseItem(book.get());
-        customer.get().removeCard(item);
+        customer.get().removeCard(dto.getTitle());
     }
 
     public PurchaseCartRecord purchaseCart(PurchaseCart dto) {
@@ -175,11 +171,43 @@ public class UserRepository {
 
         Customer customer = _customer.get();
         Cart cart = _customer.get().getShoppingCart();
-        List<CartItemRecord> cartItemRecords = cart.getItems().stream()
+        List<PurchaseItemRecord> purchaseItemRecords = cart.getItems().stream()
                 .map(PurchaseItem::createRecord)
                 .toList();
 
-        return new CartRecord(customer.getUsername(), cart.price(), cartItemRecords);
+        return new CartRecord(customer.getUsername(), cart.price(), purchaseItemRecords);
+    }
+
+    public PurchaseHistoryRecord showPurchaseHistory(ShowPurchaseHistory dto) {
+        if(Repositories.userRepository.doesAdminExist(dto.getUsername())) {
+            throw new IllegalArgumentException("not aaa");
+        }
+
+        Optional<Customer> _customer = Repositories.userRepository.getCustomerByUsername(dto.getUsername());
+        if(_customer.isEmpty()) {
+            throw new IllegalArgumentException("not aaa");
+        }
+
+        Customer customer = _customer.get();
+        List<Purchase> purchases = _customer.get().getPurchasesHistory();
+        List<PurchaseRecord> purchaseRecords = purchases.stream()
+                .map(Purchase::createRecord)
+                .toList();
+
+
+        return new PurchaseHistoryRecord(customer.getUsername(), purchaseRecords);
+    }
+    public PurchasedBooksRecord showPurchasedBooks(ShowPurchasedBooks dto) {
+        if(Repositories.userRepository.doesAdminExist(dto.getUsername())) {
+            throw new IllegalArgumentException("not aaa");
+        }
+
+        Optional<Customer> customer = Repositories.userRepository.getCustomerByUsername(dto.getUsername());
+        if(customer.isEmpty()) {
+            throw new IllegalArgumentException("not aaa");
+        }
+
+        return customer.get().createPurchasedBooksRecord();
     }
 
     public Optional<Customer> getCustomerByUsername(String username) {
