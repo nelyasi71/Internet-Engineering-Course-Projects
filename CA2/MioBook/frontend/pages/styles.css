@@ -74,3 +74,8 @@ button {
     padding: 15px;
     border-radius: 0px;
 }
+
+.card-body {
+    background-color: #F7F3ED;
+
+}
