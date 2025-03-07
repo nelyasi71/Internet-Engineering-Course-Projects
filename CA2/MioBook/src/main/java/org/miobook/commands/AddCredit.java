@@ -25,8 +25,7 @@ public class AddCredit implements BaseCommand<Void> {
     @NotNull
     @Range(min = 1000)
     @JsonDeserialize(using = IntDeserializer.class)
-    private int credit;
-
+    private Integer credit;
 
     @Override
     public void validate() {

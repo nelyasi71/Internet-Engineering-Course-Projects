@@ -1,31 +1,31 @@
 package org.miobook.commands;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.Setter;
 import org.miobook.infrastructure.IntDeserializer;
 import org.miobook.infrastructure.JsonValidator;
-import org.miobook.repositories.Repositories;
 import org.miobook.responses.*;
 import org.miobook.services.BookServices;
-
-import java.util.List;
 
 @Getter
 @Setter
 public class SearchBooksByYear implements BaseCommand<SearchedBooksRecord> {
 
-    @NonNull
+    @NotNull
     @JsonDeserialize(using = IntDeserializer.class)
-    private int from;
+    private Integer from;
+
+    @NotNull
     @JsonDeserialize(using = IntDeserializer.class)
-    @NonNull
-    private int to;
+    private Integer to;
 
     @Override
     public void validate() {
         JsonValidator.validate(this);
+        System.out.println(to);
         if (from > to) {
             throw new IllegalArgumentException("Invalid range: 'from' must be less than or equal to 'to'.");
         }
@@ -36,7 +36,7 @@ public class SearchBooksByYear implements BaseCommand<SearchedBooksRecord> {
         try {
             this.validate();
             SearchedBooksRecord data = BookServices.searchBooksByYear(this);
-            SearchedBooksRecord responseData = new SearchedBooksRecord(from + " - " + to, data.books());
+            SearchedBooksRecord responseData = new SearchedBooksRecord(from + "-" + to, data.books());
             return new BaseResponse<>(true, "Books published between " + from + " and " + to + ":", responseData);
         } catch (IllegalArgumentException exp) {
             return new BaseResponse<>(false, exp.getMessage(), null);

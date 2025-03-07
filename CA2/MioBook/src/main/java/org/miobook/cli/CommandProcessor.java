@@ -19,8 +19,6 @@ public class CommandProcessor {
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.registerModule(new JavaTimeModule());
 
-            System.out.println(className);
-
             Class<?> commandClass = Class.forName("org.miobook.commands." + className);
             BaseCommand command = (BaseCommand) objectMapper.readValue(jsonString, commandClass);
             BaseResponse response = command.execute();

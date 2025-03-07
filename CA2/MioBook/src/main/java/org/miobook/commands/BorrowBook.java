@@ -23,7 +23,7 @@ public class BorrowBook implements BaseCommand<Void> {
 
     @NotNull
     @Range(min = 1, max = 9)
-    private int days;
+    private Integer days;
 
 
     @Override

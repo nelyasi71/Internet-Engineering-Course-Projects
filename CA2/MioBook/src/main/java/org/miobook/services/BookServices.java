@@ -97,9 +97,9 @@ public class BookServices {
                 ))
                 .toList();
 
-        if (matchedBooks.isEmpty()) {
-            throw new IllegalArgumentException("No books found matching the title '" + dto.getTitle() + "'. Please try with a different search term.");
-        }
+//        if (matchedBooks.isEmpty()) {
+//            throw new IllegalArgumentException("No books found matching the title '" + dto.getTitle() + "'. Please try with a different search term.");
+//        }
         return new SearchedBooksRecord(dto.getTitle(),matchedBooks);
     }
 
@@ -137,9 +137,9 @@ public class BookServices {
                 ))
                 .toList();
 
-        if (matchedBooks.isEmpty()) {
-            throw new IllegalArgumentException("No books found for the author '" + dto.getName() + "'. Please try a different author name.");
-        }
+//        if (matchedBooks.isEmpty()) {
+//            throw new IllegalArgumentException("No books found for the author '" + dto.getName() + "'. Please try a different author name.");
+//        }
         return new SearchedBooksRecord(dto.getName(),matchedBooks);
     }
 
@@ -147,7 +147,7 @@ public class BookServices {
 
         List<SearchedBookItemRecord> matchedBooks = Repositories.bookRepository.getBooks().stream()
                 .filter(book -> book.getGenres().stream()
-                        .anyMatch(genre -> genre.toLowerCase().contains(dto.getGenre().toLowerCase()))
+                        .anyMatch(genre -> genre.equalsIgnoreCase(dto.getGenre()))
                 )
                 .map(book -> new SearchedBookItemRecord(
                         book.getTitle(),
@@ -160,9 +160,9 @@ public class BookServices {
                 ))
                 .toList();
 
-        if (matchedBooks.isEmpty()) {
-            throw new IllegalArgumentException("No books found for the genre '" + dto.getGenre() + "'. Please try a different genre.");
-        }
+//        if (matchedBooks.isEmpty()) {
+//            throw new IllegalArgumentException("No books found for the genre '" + dto.getGenre() + "'. Please try a different genre.");
+//        }
         return new SearchedBooksRecord(dto.getGenre(),matchedBooks);
     }
 
@@ -180,9 +180,9 @@ public class BookServices {
                 ))
                 .toList();
 
-        if (matchedBooks.isEmpty()) {
-            throw new IllegalArgumentException("No books found in the given year range.");
-        }
+//        if (matchedBooks.isEmpty()) {
+//            throw new IllegalArgumentException("No books found in the given year range.");
+//        }
         return new SearchedBooksRecord(dto.getFrom() + " - " + dto.getTo(), matchedBooks);
     }
 }

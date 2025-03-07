@@ -42,10 +42,10 @@ public class AddBook implements BaseCommand<Void> {
     @NotNull
     @JsonDeserialize(using = IntDeserializer.class)
     @Range(min = 1)
-    int year;
+    private Integer year;
 
     @NotNull
-    int price;
+    private int price;
 
 
     public AddBook() {

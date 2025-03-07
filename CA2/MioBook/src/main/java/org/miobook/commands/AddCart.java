@@ -21,7 +21,6 @@ public class AddCart implements BaseCommand<Void> {
     @NotNull
     private String title;
 
-
     @Override
     public void validate() {
         JsonValidator.validate(this);

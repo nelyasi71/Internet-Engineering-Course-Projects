@@ -1,5 +1,6 @@
 package org.miobook.commands;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -14,7 +15,7 @@ import java.util.List;
 @Setter
 public class SearchBooksByGenre implements BaseCommand<SearchedBooksRecord> {
 
-    @NonNull
+    @NotNull
     private String genre;
 
     @Override
