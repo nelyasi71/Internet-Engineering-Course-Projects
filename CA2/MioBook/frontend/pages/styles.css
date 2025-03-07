@@ -1,0 +1,76 @@
+/* styles.css */
+:root {
+    --main-color: #16423C;
+    --secondary-color: #F5EFE7;
+    --background-color: #D9D9D9;
+}
+
+body {
+    padding-bottom: 80px;
+    background-color: #f8f9fa;
+
+}
+
+.hyperlink {
+    color: #16423C; 
+    font-weight: 600;
+}
+
+.book-icon {
+    width: 30px;
+    height: auto;
+}
+
+.table {
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+footer {
+    position: fixed;
+    background-color: var(--main-color);
+    bottom: 0;
+    width: 100%;
+}
+
+form input {
+    height: 50px; 
+    margin: 0 auto; 
+    display: block; 
+}
+
+form button {
+    height: 50px; 
+    margin: 0 auto; 
+    display: block;
+}
+
+.btn-grey {
+    background-color: #D9D9D9; 
+    color: gray ;
+}
+
+.btn-green {
+    color: white; 
+    background-color: #16423C;
+}
+
+button {
+    font-weight: 600 !important;
+}
+
+.btn-group .btn {
+    width: 50%;
+}
+
+.selected-btn {
+    color: var(--main-color);
+    background-color: var(--secondary-color); 
+    border-color: var(--main-color);
+}
+
+.balance-box, .profile-box, .cart-section, .history-section {
+    background: white;
+    padding: 15px;
+    border-radius: 0px;
+}
