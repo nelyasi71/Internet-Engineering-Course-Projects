@@ -65,22 +65,26 @@ public class BookServices {
     }
 
     public static void addReview(AddReview dto) {
-        Optional<Customer> customerOptional = Repositories.userRepository.getCustomerByUsername(dto.getUsername());
-        if(customerOptional.isEmpty()) {
-            throw new IllegalArgumentException("Customer with username '" + dto.getUsername() + "' not found.");
-        }
-
         Optional<Book> bookOptional = Repositories.bookRepository.getBookByTitle(dto.getTitle());
         if(bookOptional.isEmpty()) {
             throw new IllegalArgumentException("Book with title '" + dto.getTitle() + "' not found.");
         }
-
-        Customer customer = customerOptional.get();
         Book book = bookOptional.get();
+
+        Optional<Customer> customerOptional = Repositories.userRepository.getCustomerByUsername(dto.getUsername());
+        if(customerOptional.isEmpty()) {
+            throw new IllegalArgumentException("Customer with username '" + dto.getUsername() + "' not found.");
+        }
+        Customer customer = customerOptional.get();
+
+        if (!customer.hasBook(book.getTitle())) {
+            throw new IllegalArgumentException("Customer has not purchased this book and cannot add a review.");
+        }
 
         Review review = new Review(customer, dto.getComment(), dto.getRate(), LocalDateTime.now());
         book.addReview(review);
     }
+
 
     public static SearchedBooksRecord searchBooksByTitle(SearchBooksByTitle dto) {
 
