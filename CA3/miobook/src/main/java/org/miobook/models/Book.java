@@ -30,7 +30,19 @@ public class Book {
     }
 
     public void addReview(Review review) {
-        this.reviews.add(review);
+        reviews.stream()
+                .filter(r -> r.getCustomer().equals(review.getCustomer()))
+                .findFirst()
+                .ifPresentOrElse(
+                        existingReview -> updateReview(existingReview, review),
+                        () -> reviews.add(review)
+                );
+    }
+
+    private void updateReview(Review existingReview, Review newReview) {
+        existingReview.setComment(newReview.getComment());
+        existingReview.setRate(newReview.getRate());
+        existingReview.setDate(LocalDateTime.now());
     }
 
     public double averageRating() {
