@@ -104,6 +104,9 @@ button {
 }
 
 .custom-border {
+    border-left: none !important;
+    border-right: none !important;
+    border-top: none !important;
     border-bottom: 2px solid #804900 !important;
     background-color: white;
 }
@@ -121,6 +124,10 @@ button {
     background: #f2f2f2 !important;
 }
 
+.custom-page {
+    background: #F7F9FB;
+}
+
 .card-round {
     border-radius: 20px;
 }
@@ -130,4 +137,7 @@ button {
     size: 32px;
 }
 
+.review-box{
+    padding: 20px;
+}
 
