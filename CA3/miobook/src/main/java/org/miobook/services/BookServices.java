@@ -100,7 +100,9 @@ public class BookServices {
                             book.getGenres(),
                             book.getPublishedYear(),
                             book.getPrice(),
-                            book.getSynopsis()
+                            book.getSynopsis(),
+                            book.averageRating(),
+                            book.ReviewCount()
                     ))
                     .toList());
         }
@@ -156,7 +158,9 @@ public class BookServices {
                         book.getGenres(),
                         book.getPublishedYear(),
                         book.getPrice(),
-                        book.getSynopsis()
+                        book.getSynopsis(),
+                        book.averageRating(),
+                        book.ReviewCount()
                 ))
                 .toList();
 
@@ -196,7 +200,9 @@ public class BookServices {
                         book.getGenres(),
                         book.getPublishedYear(),
                         book.getPrice(),
-                        book.getSynopsis()
+                        book.getSynopsis(),
+                        book.averageRating(),
+                        book.ReviewCount()
                 ))
                 .toList();
 
@@ -219,7 +225,9 @@ public class BookServices {
                         book.getGenres(),
                         book.getPublishedYear(),
                         book.getPrice(),
-                        book.getSynopsis()
+                        book.getSynopsis(),
+                        book.averageRating(),
+                        book.ReviewCount()
                 ))
                 .toList();
 
@@ -239,7 +247,9 @@ public class BookServices {
                         book.getGenres(),
                         book.getPublishedYear(),
                         book.getPrice(),
-                        book.getSynopsis()
+                        book.getSynopsis(),
+                        book.averageRating(),
+                        book.ReviewCount()
                 ))
                 .toList();
 

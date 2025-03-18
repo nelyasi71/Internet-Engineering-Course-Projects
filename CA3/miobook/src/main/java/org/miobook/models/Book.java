@@ -53,4 +53,8 @@ public class Book {
                 .average()
                 .orElse(0);
     }
+
+    public int ReviewCount() {
+        return reviews.size();
+    }
 }

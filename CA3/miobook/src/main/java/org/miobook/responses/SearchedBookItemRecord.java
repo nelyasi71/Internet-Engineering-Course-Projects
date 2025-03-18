@@ -9,5 +9,8 @@ public record SearchedBookItemRecord(
         List<String> genres,
         int year,
         int price,
-        String synopsis) {
+        String synopsis,
+        double averageRate,
+        int reviewCount
+) {
 }
