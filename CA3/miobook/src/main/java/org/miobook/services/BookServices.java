@@ -12,7 +12,10 @@ import org.miobook.responses.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
+
 
 public class BookServices {
 
@@ -84,6 +87,62 @@ public class BookServices {
         Review review = new Review(customer, dto.getComment(), dto.getRate(), LocalDateTime.now());
         book.addReview(review);
     }
+
+    public static SearchedBooksRecord searchBooks(SearchBooks dto) {
+        List<SearchedBooksRecord> searchResults = new ArrayList<>();
+
+        if (dto.getTitle() == null && dto.getAuthor() == null && dto.getGenre() == null && dto.getFrom() == null) {
+            return new SearchedBooksRecord("All Books", Repositories.bookRepository.getBooks().stream()
+                    .map(book -> new SearchedBookItemRecord(
+                            book.getTitle(),
+                            book.getAuthor().getName(),
+                            book.getPublisher(),
+                            book.getGenres(),
+                            book.getPublishedYear(),
+                            book.getPrice(),
+                            book.getSynopsis()
+                    ))
+                    .toList());
+        }
+
+        if (dto.getTitle() != null) {
+            SearchBooksByTitle titleDto = new SearchBooksByTitle();
+            titleDto.setTitle(dto.getTitle());
+            searchResults.add(searchBooksByTitle(titleDto));
+        }
+        if (dto.getAuthor() != null) {
+            SearchBooksByAuthor authorDto = new SearchBooksByAuthor();
+            authorDto.setName(dto.getAuthor());
+            searchResults.add(searchBooksByAuthor(authorDto));
+        }
+        if (dto.getGenre() != null) {
+            SearchBooksByGenre genreDto = new SearchBooksByGenre();
+            genreDto.setGenre(dto.getGenre());
+            searchResults.add(searchBooksByGenre(genreDto));
+        }
+
+        if (dto.getFrom() != null){
+            SearchBooksByYear yearDto = new SearchBooksByYear();
+            yearDto.setTo(dto.getTo());
+            yearDto.setFrom(dto.getFrom());
+            searchResults.add(searchBooksByYear(yearDto));
+        }
+
+        List<SearchedBookItemRecord> commonBooks = findCommonBooks(searchResults);
+        return new SearchedBooksRecord("Common Books", commonBooks);
+    }
+
+    public static List<SearchedBookItemRecord> findCommonBooks(List<SearchedBooksRecord> searchResults) {
+        if (searchResults.isEmpty()) {
+            return new ArrayList<>();
+        }
+        Set<SearchedBookItemRecord> commonBooks = new HashSet<>(searchResults.get(0).books());
+        for (int i = 1; i < searchResults.size(); i++) {
+            commonBooks.retainAll(new HashSet<>(searchResults.get(i).books()));
+        }
+        return new ArrayList<>(commonBooks);
+    }
+
 
 
     public static SearchedBooksRecord searchBooksByTitle(SearchBooksByTitle dto) {
