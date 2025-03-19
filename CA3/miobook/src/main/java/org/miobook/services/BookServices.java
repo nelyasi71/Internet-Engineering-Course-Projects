@@ -133,9 +133,10 @@ public class BookServices {
 
         List<SearchedBookItemRecord> commonBooks = findCommonBooks(searchResults);
         List<SearchedBookItemRecord> sortedBooks = applySorting(commonBooks, dto.getSortBy(),dto.getOrder());
+        List<SearchedBookItemRecord> paginatedBooks = applyPagination(sortedBooks, dto.getPage(), dto.getSize());
         return new SearchedBooksRecord(
-                "Books By " + dto.getSortBy() + " in " + dto.getOrder() + " order",
-                sortedBooks
+                "Books By " + dto.getSortBy() + " in " + dto.getOrder() + " order in Page: " + dto.getPage(),
+                paginatedBooks
         );
     }
 
@@ -159,6 +160,17 @@ public class BookServices {
                 .sorted(comparator)
                 .collect(Collectors.toList());
         return books;
+    }
+
+    public static List<SearchedBookItemRecord> applyPagination(List<SearchedBookItemRecord> books, int page, int size) {
+        int fromIndex = (page - 1) * size;
+        int toIndex = Math.min(fromIndex + size, books.size());
+
+        if (fromIndex >= books.size()) {
+            return List.of();
+        }
+
+        return books.subList(fromIndex, toIndex);
     }
 
     public static List<SearchedBookItemRecord> findCommonBooks(List<SearchedBooksRecord> searchResults) {
