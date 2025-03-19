@@ -1,6 +1,9 @@
 package org.miobook.commands;
 
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
 import org.miobook.infrastructure.JsonValidator;
@@ -19,11 +22,24 @@ public class SearchBooks implements BaseCommand<SearchedBooksRecord> {
     private String title;
     private String author;
     private String genre;
+
+    @Max(value = 2100)
     private Integer from;
+
+    @Max(value = 2100)
     private Integer to;
+
+    @Pattern(regexp = "^(review_count|average_rating)$")
     private String sortBy;
+
+    @Pattern(regexp = "^(asc|desc)$")
     private String order;
+
+    @Min(value = 1)
     int page;
+
+    @Min(value = 1)
+    @Max(value = 100)
     int size;
 
     @Override
