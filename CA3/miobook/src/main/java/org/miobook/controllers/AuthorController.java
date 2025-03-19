@@ -11,10 +11,7 @@ import org.miobook.responses.AuthorRecord;
 import org.miobook.responses.BaseResponse;
 import org.miobook.services.AuthorServices;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class AuthorController {
@@ -30,7 +27,7 @@ public class AuthorController {
         return command.execute(authorServices);
     }
 
-    @PostMapping("/author/{username}")
+    @GetMapping("/authors/{username}")
     public BaseResponse<AuthorRecord> show_author(@PathVariable String username, HttpServletRequest request) {
         ShowAuthorDetails command = new ShowAuthorDetails();
         command.setUsername(username);

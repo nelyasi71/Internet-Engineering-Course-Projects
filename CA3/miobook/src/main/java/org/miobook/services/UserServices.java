@@ -1,10 +1,8 @@
 package org.miobook.services;
 
-import jakarta.servlet.http.HttpSession;
 import org.miobook.commands.*;
 import org.miobook.models.*;
 import org.miobook.repositories.Repositories;
-import org.miobook.repositories.UserRepository;
 import org.miobook.responses.*;
 import org.springframework.stereotype.Service;
 

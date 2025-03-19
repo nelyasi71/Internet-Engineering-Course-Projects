@@ -28,7 +28,7 @@ public class CartController {
     }
 
     @Authenticated(roles = {"customer"})
-    @PostMapping("/remove")
+    @DeleteMapping("/remove")
     public BaseResponse<Void> remove_cart(@RequestBody RemoveCart command, HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         command.setUsername((String) session.getAttribute("username"));
@@ -36,7 +36,7 @@ public class CartController {
     }
 
     @Authenticated(roles = {"customer"})
-    @PostMapping("/purchase")
+    @PostMapping("/borrow")
     public BaseResponse<Void> borrow_nook(@RequestBody BorrowBook command, HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         command.setUsername((String) session.getAttribute("username"));
@@ -44,7 +44,7 @@ public class CartController {
     }
 
     @Authenticated(roles = {"customer"})
-    @PostMapping("/borrow")
+    @PostMapping("/purchase")
     public BaseResponse<PurchaseCartRecord> purchase_cart(@RequestBody PurchaseCart command, HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         command.setUsername((String) session.getAttribute("username"));
@@ -52,8 +52,8 @@ public class CartController {
     }
 
     @Authenticated(roles = {"customer"})
-    @GetMapping("")
-    public BaseResponse<CartRecord> show_cart(@PathVariable String username, HttpServletRequest request) {
+    @GetMapping("/list")
+    public BaseResponse<CartRecord> show_cart(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         ShowCart command = new ShowCart();
         command.setUsername((String) session.getAttribute("username"));

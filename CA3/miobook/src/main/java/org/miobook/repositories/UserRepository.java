@@ -3,12 +3,14 @@ package org.miobook.repositories;
 import org.miobook.commands.*;
 import org.miobook.models.*;
 import org.miobook.responses.*;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+@Repository
 public class UserRepository {
     private final List<Customer> customers = new ArrayList<>();
     private final List<Admin> admins = new ArrayList<>();
