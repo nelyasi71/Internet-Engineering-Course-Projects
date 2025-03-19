@@ -5,11 +5,10 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import org.miobook.infrastructure.JsonValidator;
-import org.miobook.repositories.Repositories;
 import org.miobook.responses.AuthorRecord;
 import org.miobook.responses.BaseResponse;
-import org.miobook.responses.UserRecord;
 import org.miobook.services.AuthorServices;
+import org.miobook.services.Services;
 
 @Getter
 @Setter
@@ -22,10 +21,10 @@ public class ShowAuthorDetails implements BaseCommand<AuthorRecord> {
         JsonValidator.validate(this);
     }
     @Override
-    public BaseResponse<AuthorRecord> execute() {
+    public BaseResponse<AuthorRecord> execute(Services services) {
         try {
             this.validate();
-            AuthorRecord data = AuthorServices.showAuthorDetails(this);
+            AuthorRecord data = ((AuthorServices) services).showAuthorDetails(this);
             return new BaseResponse<>(true, "Author details retrieved successfully.", data);
         } catch (IllegalArgumentException exp) {
             return new BaseResponse<>(false, exp.getMessage(), null);

@@ -5,11 +5,13 @@ import org.miobook.commands.ShowAuthorDetails;
 import org.miobook.models.Author;
 import org.miobook.repositories.Repositories;
 import org.miobook.responses.AuthorRecord;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-public class AuthorServices {
-    public static void addAuthor(AddAuthor dto) {
+@Service
+public class AuthorServices implements Services {
+    public void addAuthor(AddAuthor dto) {
         if(!Repositories.userRepository.doesAdminExist(dto.getUsername())) {
             throw new IllegalArgumentException("Only admins can add authors.");
         }
@@ -20,7 +22,7 @@ public class AuthorServices {
         Repositories.authorRepository.add(dto);
     }
 
-    public static AuthorRecord showAuthorDetails(ShowAuthorDetails dto) {
+    public AuthorRecord showAuthorDetails(ShowAuthorDetails dto) {
         Optional<Author> _author = Repositories.authorRepository.getByName(dto.getUsername());
         if(_author.isEmpty()) {
             throw new IllegalArgumentException("Author with the name '" + dto.getUsername() + "' does not exist.");

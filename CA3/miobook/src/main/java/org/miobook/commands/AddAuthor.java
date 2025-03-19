@@ -5,10 +5,10 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
-import org.miobook.repositories.Repositories;
 import org.miobook.responses.BaseResponse;
 import org.miobook.infrastructure.JsonValidator;
 import org.miobook.services.AuthorServices;
+import org.miobook.services.Services;
 
 import java.time.LocalDate;
 
@@ -45,10 +45,10 @@ public class AddAuthor implements BaseCommand<Void> {
     }
 
     @Override
-    public BaseResponse<Void> execute() {
+    public BaseResponse<Void> execute(Services services) {
         try {
             this.validate();
-            AuthorServices.addAuthor(this);
+            ((AuthorServices) services).addAuthor(this);
             return new BaseResponse<>(true, "Author added successfully.", null);
         } catch (IllegalArgumentException exp) {
             return new BaseResponse<>(false, exp.getMessage(), null);
