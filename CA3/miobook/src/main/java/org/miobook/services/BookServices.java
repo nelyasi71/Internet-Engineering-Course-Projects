@@ -135,10 +135,8 @@ public class BookServices implements Services{
         }
 
         if (dto.getFrom() != null){
-            SearchBooksByYear yearDto = new SearchBooksByYear();
-            yearDto.setTo(dto.getTo());
-            yearDto.setFrom(dto.getFrom());
-            searchResults.add(searchBooksByYear(yearDto));
+            SearchedBooksRecord yearSearchResult = searchBooksByYear(dto.getFrom(),dto.getTo());
+            searchResults.add(yearSearchResult);
         }
 
         List<SearchedBookItemRecord> commonBooks = findCommonBooks(searchResults);
@@ -240,9 +238,9 @@ public class BookServices implements Services{
         return new SearchedBooksRecord(bookGenre,matchedBooks);
     }
 
-    public SearchedBooksRecord searchBooksByYear(SearchBooksByYear dto) {
+    public SearchedBooksRecord searchBooksByYear(Integer from, Integer to) {
         List<SearchedBookItemRecord> matchedBooks = bookRepository.getBooks().stream()
-                .filter(book -> book.getPublishedYear() >= dto.getFrom() && book.getPublishedYear() <= dto.getTo())
+                .filter(book -> book.getPublishedYear() >= from && book.getPublishedYear() <= to)
                 .map(book -> new SearchedBookItemRecord(
                         book.getTitle(),
                         book.getAuthor().getName(),
@@ -259,6 +257,6 @@ public class BookServices implements Services{
 //        if (matchedBooks.isEmpty()) {
 //            throw new IllegalArgumentException("No books found in the given year range.");
 //        }
-        return new SearchedBooksRecord(dto.getFrom() + " - " + dto.getTo(), matchedBooks);
+        return new SearchedBooksRecord(from + " - " + to, matchedBooks);
     }
 }
