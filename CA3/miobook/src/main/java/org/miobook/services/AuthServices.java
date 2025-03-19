@@ -6,7 +6,8 @@ import lombok.Getter;
 import org.miobook.commands.Login;
 import org.miobook.commands.Logout;
 import org.miobook.models.User;
-import org.miobook.repositories.Repositories;
+import org.miobook.repositories.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -14,6 +15,10 @@ import java.util.Optional;
 @Service
 @Getter
 public class AuthServices implements Services {
+
+    @Autowired
+    private UserRepository userRepository;
+
     public void login(Login dto) {
         HttpSession session = dto.getSession();
 
@@ -21,7 +26,7 @@ public class AuthServices implements Services {
             throw new IllegalArgumentException("Already logged in as: " + session.getAttribute("username"));
         }
 
-        Optional<User> user = Repositories.userRepository.getUserByUsername(dto.getUsername());
+        Optional<User> user = userRepository.getUserByUsername(dto.getUsername());
         if(user.isEmpty()) {
             throw new IllegalArgumentException("User with username '" + dto.getUsername() + "' not found.");
         }

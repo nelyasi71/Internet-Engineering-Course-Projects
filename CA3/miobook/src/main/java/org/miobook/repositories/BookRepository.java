@@ -11,12 +11,14 @@ import java.util.Optional;
 import java.time.LocalDateTime;
 
 import org.miobook.responses.*;
+import org.springframework.stereotype.Repository;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Getter
+@Repository
 public class BookRepository {
-    @Getter
     private final List<Book> books = new ArrayList<>();
 
 
