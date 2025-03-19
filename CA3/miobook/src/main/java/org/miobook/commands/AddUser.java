@@ -6,10 +6,9 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import org.miobook.models.Address;
-import org.miobook.repositories.Repositories;
-import org.miobook.repositories.UserRepository;
 import org.miobook.responses.BaseResponse;
 import org.miobook.infrastructure.JsonValidator;
+import org.miobook.services.Services;
 import org.miobook.services.UserServices;
 
 @Getter
@@ -43,10 +42,11 @@ public class AddUser implements BaseCommand<Void> {
         JsonValidator.validate(address);
     }
     @Override
-    public BaseResponse<Void> execute() {
+    public BaseResponse<Void> execute(Services services) {
         try {
             this.validate();
-            UserServices.addUser(this);
+
+            ((UserServices)services).addUser(this);
             return new BaseResponse<>(true, "User added successfully.", null);
         } catch (IllegalArgumentException exp) {
             return new BaseResponse<>(false, exp.getMessage(), null);

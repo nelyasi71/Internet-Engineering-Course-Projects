@@ -1,17 +1,20 @@
 package org.miobook.services;
 
+import jakarta.servlet.http.HttpSession;
 import org.miobook.commands.*;
 import org.miobook.models.*;
 import org.miobook.repositories.Repositories;
 import org.miobook.repositories.UserRepository;
 import org.miobook.responses.*;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
-public class UserServices {
+@Service
+public class UserServices implements Services {
 
-    public static void addUser(AddUser dto) {
+    public void addUser(AddUser dto) {
         if(Repositories.userRepository.doesUserExist(dto.getUsername())) {
             throw new IllegalArgumentException("User with the username '" + dto.getUsername() + "' already exists.");
         }
@@ -22,10 +25,8 @@ public class UserServices {
         Repositories.userRepository.add(dto);
     }
 
-    public static void addCredit(AddCredit dto) {
-
+    public void addCredit(AddCredit dto) {
         Optional<Customer> customerOptional = Repositories.userRepository.getCustomerByUsername(dto.getUsername());
-
         if(customerOptional.isEmpty()) {
             throw new IllegalArgumentException("Customer with username '" + dto.getUsername() + "' not found.");
         }
@@ -49,15 +50,14 @@ public class UserServices {
 
     }
 
-
     public static PurchaseHistoryRecord showPurchaseHistory(ShowPurchaseHistory dto) {
         if(Repositories.userRepository.doesAdminExist(dto.getUsername())) {
-            throw new IllegalArgumentException("not aaa");
+            throw new IllegalArgumentException("Not available for 'Admin' role");
         }
 
         Optional<Customer> _customer = Repositories.userRepository.getCustomerByUsername(dto.getUsername());
         if(_customer.isEmpty()) {
-            throw new IllegalArgumentException("not aaa");
+            throw new IllegalArgumentException("User with username '" + dto.getUsername() + "' not found.");
         }
 
         Customer customer = _customer.get();
@@ -71,12 +71,12 @@ public class UserServices {
     }
     public static PurchasedBooksRecord showPurchasedBooks(ShowPurchasedBooks dto) {
         if(Repositories.userRepository.doesAdminExist(dto.getUsername())) {
-            throw new IllegalArgumentException("not aaa");
+            throw new IllegalArgumentException("Not available for 'Admin' role");
         }
 
         Optional<Customer> customer = Repositories.userRepository.getCustomerByUsername(dto.getUsername());
         if(customer.isEmpty()) {
-            throw new IllegalArgumentException("not aaa");
+            throw new IllegalArgumentException("User with username '" + dto.getUsername() + "' not found.");
         }
 
         return customer.get().createPurchasedBooksRecord();

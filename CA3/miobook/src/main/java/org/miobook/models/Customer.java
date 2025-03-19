@@ -25,6 +25,11 @@ public class Customer extends User {
         this.wallet = new Wallet();
     }
 
+    @Override
+    public String getRole() {
+        return "customer";
+    }
+
     public void addCart(PurchaseItem purchaseItem) {
         this.shoppingCart.add(purchaseItem);
     }

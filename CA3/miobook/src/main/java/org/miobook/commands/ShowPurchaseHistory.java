@@ -1,13 +1,14 @@
 package org.miobook.commands;
 
 
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import org.miobook.infrastructure.JsonValidator;
-import org.miobook.repositories.Repositories;
 import org.miobook.responses.BaseResponse;
 import org.miobook.responses.PurchaseHistoryRecord;
+import org.miobook.services.Services;
 import org.miobook.services.UserServices;
 
 @Getter
@@ -22,7 +23,7 @@ public class ShowPurchaseHistory implements BaseCommand<PurchaseHistoryRecord> {
         JsonValidator.validate(this);
     }
     @Override
-    public BaseResponse<PurchaseHistoryRecord> execute() {
+    public BaseResponse<PurchaseHistoryRecord> execute(Services services) {
         try {
             this.validate();
             PurchaseHistoryRecord data = UserServices.showPurchaseHistory(this);
