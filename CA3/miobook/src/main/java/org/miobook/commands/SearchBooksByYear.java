@@ -1,7 +1,6 @@
 package org.miobook.commands;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,6 +8,7 @@ import org.miobook.infrastructure.IntDeserializer;
 import org.miobook.infrastructure.JsonValidator;
 import org.miobook.responses.*;
 import org.miobook.services.BookServices;
+import org.miobook.services.Services;
 
 @Getter
 @Setter
@@ -25,14 +25,13 @@ public class SearchBooksByYear implements BaseCommand<SearchedBooksRecord> {
     @Override
     public void validate() {
         JsonValidator.validate(this);
-        System.out.println(to);
         if (from > to) {
             throw new IllegalArgumentException("Invalid range: 'from' must be less than or equal to 'to'.");
         }
     }
 
     @Override
-    public BaseResponse<SearchedBooksRecord> execute() {
+    public BaseResponse<SearchedBooksRecord> execute(Services services) {
         try {
             this.validate();
             SearchedBooksRecord data = BookServices.searchBooksByYear(this);

@@ -7,6 +7,7 @@ import org.miobook.infrastructure.JsonValidator;
 import org.miobook.responses.*;
 import org.miobook.services.BookServices;
 import org.miobook.services.BookServices;
+import org.miobook.services.Services;
 
 
 import java.lang.reflect.Method;
@@ -20,10 +21,10 @@ public class SearchBooks implements BaseCommand<SearchedBooksRecord> {
     private String genre;
     private Integer from;
     private Integer to;
-    private String sortBy = "none";
-    private String order = "asc";
-    int page = 1;
-    int size = 10;
+    private String sortBy;
+    private String order;
+    int page;
+    int size;
 
     @Override
     public void validate() {
@@ -31,10 +32,10 @@ public class SearchBooks implements BaseCommand<SearchedBooksRecord> {
     }
 
     @Override
-    public BaseResponse<SearchedBooksRecord> execute() {
+    public BaseResponse<SearchedBooksRecord> execute(Services services) {
         try {
             this.validate();
-            SearchedBooksRecord data = BookServices.searchBooks(this);
+            SearchedBooksRecord data = ((BookServices) services).searchBooks(this);
             return new BaseResponse<>(true, "Common books found:", data);
         } catch (IllegalArgumentException exp) {
             return new BaseResponse<>(false, exp.getMessage(), null);

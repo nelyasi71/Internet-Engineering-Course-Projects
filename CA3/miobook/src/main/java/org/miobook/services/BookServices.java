@@ -5,7 +5,6 @@ import org.miobook.models.Author;
 import org.miobook.models.Book;
 import org.miobook.models.Customer;
 import org.miobook.models.Review;
-import org.miobook.repositories.BookRepository;
 import org.miobook.repositories.Repositories;
 import org.miobook.responses.*;
 import org.springframework.stereotype.Service;

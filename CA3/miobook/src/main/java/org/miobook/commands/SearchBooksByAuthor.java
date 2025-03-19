@@ -1,16 +1,12 @@
 package org.miobook.commands;
 
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.Setter;
 import org.miobook.infrastructure.JsonValidator;
-import org.miobook.repositories.Repositories;
 import org.miobook.responses.*;
 import org.miobook.services.BookServices;
-
-import java.util.List;
+import org.miobook.services.Services;
 
 @Getter
 @Setter
@@ -25,7 +21,7 @@ public class SearchBooksByAuthor implements BaseCommand<SearchedBooksRecord> {
     }
 
     @Override
-    public BaseResponse<SearchedBooksRecord> execute() {
+    public BaseResponse<SearchedBooksRecord> execute(Services services) {
         try {
             this.validate();
             SearchedBooksRecord data = BookServices.searchBooksByAuthor(this);

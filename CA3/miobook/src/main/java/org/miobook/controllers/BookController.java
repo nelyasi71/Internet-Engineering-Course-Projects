@@ -5,10 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.miobook.auth.Authenticated;
 import org.miobook.commands.*;
-import org.miobook.responses.BaseResponse;
-import org.miobook.responses.BookContentRecord;
-import org.miobook.responses.BookRecord;
-import org.miobook.responses.BookReviewRecord;
+import org.miobook.responses.*;
 import org.miobook.services.BookServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -27,7 +24,7 @@ public class BookController {
         return command.execute(bookServices);
     }
 
-    @GetMapping("/book/{title}")
+    @GetMapping("/books/{title}")
     public BaseResponse<BookRecord> show_details(@PathVariable String title) {
         ShowBookDetails command = new ShowBookDetails();
         command.setTitle(title);
@@ -35,7 +32,7 @@ public class BookController {
     }
 
     @Authenticated(roles = {"customer"})
-    @GetMapping("/book/{title}/content")
+    @GetMapping("/books/{title}/content")
     public BaseResponse<BookContentRecord> show_content(@PathVariable String title, HttpServletRequest request) {
         ShowBookContent command = new ShowBookContent();
         HttpSession session = request.getSession(false);
@@ -45,8 +42,8 @@ public class BookController {
         return command.execute(bookServices);
     }
 
-    @GetMapping("/book/{title}/reviews")
-    public BaseResponse<BookReviewRecord> show_reviews(@RequestBody String title) {
+    @GetMapping("/books/{title}/reviews")
+    public BaseResponse<BookReviewRecord> show_reviews(@PathVariable String title) {
         ShowBookReviews command = new ShowBookReviews();
         command.setTitle(title);
 
@@ -54,10 +51,38 @@ public class BookController {
     }
 
     @Authenticated(roles = {"customer"})
-    @PostMapping("/book/{title}/review")
+    @PostMapping("/books/{title}/review")
     public BaseResponse<Void> add_review(@RequestBody AddReview command, HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         command.setUsername((String) session.getAttribute("username"));
+
+        return command.execute(bookServices);
+    }
+
+    @GetMapping("/books")
+    public BaseResponse<SearchedBooksRecord> search_book(
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) String author,
+            @RequestParam(required = false) String genre,
+            @RequestParam(required = false) Integer from,
+            @RequestParam(required = false) Integer to,
+            @RequestParam(defaultValue = "none") String sortBy,
+            @RequestParam(defaultValue = "asc") String order,
+            @RequestParam(defaultValue = "1") Integer page,
+            @RequestParam(defaultValue = "20") Integer size
+            ) {
+
+        SearchBooks command = new SearchBooks();
+        command.setTitle(title);
+        command.setAuthor(author);
+        command.setGenre(genre);
+        command.setFrom(from);
+        command.setTo(to);
+        command.setSortBy(sortBy);
+        command.setOrder(order);
+        command.setPage(page);
+        command.setSize(size);
+
 
         return command.execute(bookServices);
     }
