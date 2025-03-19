@@ -139,6 +139,8 @@ public class BookServices implements Services{
             searchResults.add(yearSearchResult);
         }
 
+
+
         List<SearchedBookItemRecord> commonBooks = findCommonBooks(searchResults);
         List<SearchedBookItemRecord> sortedBooks = applySorting(commonBooks, dto.getSortBy(),dto.getOrder());
         List<SearchedBookItemRecord> paginatedBooks = applyPagination(sortedBooks, dto.getPage(), dto.getSize());
@@ -240,7 +242,8 @@ public class BookServices implements Services{
 
     public SearchedBooksRecord searchBooksByYear(Integer from, Integer to) {
         List<SearchedBookItemRecord> matchedBooks = bookRepository.getBooks().stream()
-                .filter(book -> book.getPublishedYear() >= from && book.getPublishedYear() <= to)
+                .filter(book -> (from == null || book.getPublishedYear() >= from) &&
+                        (to == null || book.getPublishedYear() <= to))
                 .map(book -> new SearchedBookItemRecord(
                         book.getTitle(),
                         book.getAuthor().getName(),
