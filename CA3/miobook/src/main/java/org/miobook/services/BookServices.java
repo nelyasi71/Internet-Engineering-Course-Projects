@@ -122,9 +122,8 @@ public class BookServices implements Services{
         }
 
         if (dto.getTitle() != null) {
-            SearchBooksByTitle titleDto = new SearchBooksByTitle();
-            titleDto.setTitle(dto.getTitle());
-            searchResults.add(searchBooksByTitle(titleDto));
+            SearchedBooksRecord titleSearchResult = searchBooksByTitle(dto.getTitle());
+            searchResults.add(titleSearchResult);
         }
         if (dto.getAuthor() != null) {
             SearchBooksByAuthor authorDto = new SearchBooksByAuthor();
@@ -154,10 +153,10 @@ public class BookServices implements Services{
     }
 
 
-    public SearchedBooksRecord searchBooksByTitle(SearchBooksByTitle dto) {
+    public SearchedBooksRecord searchBooksByTitle(String title) {
 
         List<SearchedBookItemRecord> matchedBooks = bookRepository.getBooks().stream()
-                .filter(book -> book.getTitle().toLowerCase().contains(dto.getTitle().toLowerCase()))
+                .filter(book -> book.getTitle().toLowerCase().contains(title.toLowerCase()))
                 .map(book -> new SearchedBookItemRecord(
                         book.getTitle(),
                         book.getAuthor().getName(),
@@ -174,7 +173,7 @@ public class BookServices implements Services{
 //        if (matchedBooks.isEmpty()) {
 //            throw new IllegalArgumentException("No books found matching the title '" + dto.getTitle() + "'. Please try with a different search term.");
 //        }
-        return new SearchedBooksRecord(dto.getTitle(),matchedBooks);
+        return new SearchedBooksRecord(title,matchedBooks);
     }
 
     public BookReviewRecord showBookReviews(ShowBookReviews dto) {
