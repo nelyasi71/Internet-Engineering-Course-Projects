@@ -126,9 +126,8 @@ public class BookServices implements Services{
             searchResults.add(titleSearchResult);
         }
         if (dto.getAuthor() != null) {
-            SearchBooksByAuthor authorDto = new SearchBooksByAuthor();
-            authorDto.setName(dto.getAuthor());
-            searchResults.add(searchBooksByAuthor(authorDto));
+            SearchedBooksRecord authorSearchResult = searchBooksByAuthor(dto.getAuthor());
+            searchResults.add(authorSearchResult);
         }
         if (dto.getGenre() != null) {
             SearchBooksByGenre genreDto = new SearchBooksByGenre();
@@ -195,10 +194,10 @@ public class BookServices implements Services{
 
     }
 
-    public SearchedBooksRecord searchBooksByAuthor(SearchBooksByAuthor dto) {
+    public SearchedBooksRecord searchBooksByAuthor(String name) {
 
         List<SearchedBookItemRecord> matchedBooks = bookRepository.getBooks().stream()
-                .filter(book -> book.getAuthor().getName().toLowerCase().contains(dto.getName().toLowerCase()))
+                .filter(book -> book.getAuthor().getName().toLowerCase().contains(name.toLowerCase()))
                 .map(book -> new SearchedBookItemRecord(
                         book.getTitle(),
                         book.getAuthor().getName(),
@@ -215,7 +214,7 @@ public class BookServices implements Services{
 //        if (matchedBooks.isEmpty()) {
 //            throw new IllegalArgumentException("No books found for the author '" + dto.getName() + "'. Please try a different author name.");
 //        }
-        return new SearchedBooksRecord(dto.getName(),matchedBooks);
+        return new SearchedBooksRecord(name,matchedBooks);
     }
 
     public SearchedBooksRecord searchBooksByGenre(SearchBooksByGenre dto) {
