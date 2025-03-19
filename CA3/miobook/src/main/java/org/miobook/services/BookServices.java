@@ -13,12 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.Comparator;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -96,9 +91,13 @@ public class BookServices implements Services{
         if (!customer.hasBook(book.getTitle())) {
             throw new IllegalArgumentException("Customer has not purchased this book and cannot add a review.");
         }
-
-        Review review = new Review(customer, dto.getComment(), dto.getRate(), LocalDateTime.now());
+        Review review = new Review(customer, dto.getComment(), dto.getRate(), setDateIfPresent(dto.getDate()));
         book.addReview(review);
+    }
+
+    public LocalDateTime setDateIfPresent(LocalDateTime date) {
+        date = Objects.requireNonNullElseGet(date, LocalDateTime::now);
+        return date;
     }
 
     public SearchedBooksRecord searchBooks(SearchBooks dto) {

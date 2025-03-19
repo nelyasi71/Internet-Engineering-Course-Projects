@@ -1,5 +1,6 @@
 package org.miobook.commands;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -11,6 +12,8 @@ import org.miobook.infrastructure.JsonValidator;
 import org.miobook.responses.BaseResponse;
 import org.miobook.services.BookServices;
 import org.miobook.services.Services;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -29,6 +32,9 @@ public class AddReview implements BaseCommand<Void> {
     @Range(min = 1, max = 5)
     @JsonDeserialize(using = IntDeserializer.class)
     private Integer rate;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime date;
 
     public AddReview() {
         super();
