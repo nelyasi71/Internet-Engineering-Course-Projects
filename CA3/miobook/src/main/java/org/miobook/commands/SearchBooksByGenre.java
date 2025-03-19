@@ -25,7 +25,7 @@ public class SearchBooksByGenre implements BaseCommand<SearchedBooksRecord> {
     public BaseResponse<SearchedBooksRecord> execute(Services services) {
         try {
             this.validate();
-            SearchedBooksRecord data = BookServices.searchBooksByGenre(this);
+            SearchedBooksRecord data = ((BookServices) services).searchBooksByGenre(this);
             SearchedBooksRecord responseData = new SearchedBooksRecord(this.genre, data.books());
             return new BaseResponse<>(true, "Books in the '" + this.genre + "' genre:", responseData);
         } catch (IllegalArgumentException exp) {

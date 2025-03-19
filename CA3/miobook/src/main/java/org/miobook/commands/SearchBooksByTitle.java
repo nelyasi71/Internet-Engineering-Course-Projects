@@ -24,7 +24,7 @@ public class SearchBooksByTitle implements BaseCommand<SearchedBooksRecord> {
     public BaseResponse<SearchedBooksRecord> execute(Services services) {
         try {
             this.validate();
-            SearchedBooksRecord data = BookServices.searchBooksByTitle(this);
+            SearchedBooksRecord data = ((BookServices) services).searchBooksByTitle(this);
             SearchedBooksRecord responseData = new SearchedBooksRecord(this.title, data.books());
             return new BaseResponse<>(true, "Books containing '" + this.title + "' in their title:", responseData);
         } catch (IllegalArgumentException exp) {

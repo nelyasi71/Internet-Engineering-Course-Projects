@@ -34,7 +34,7 @@ public class SearchBooksByYear implements BaseCommand<SearchedBooksRecord> {
     public BaseResponse<SearchedBooksRecord> execute(Services services) {
         try {
             this.validate();
-            SearchedBooksRecord data = BookServices.searchBooksByYear(this);
+            SearchedBooksRecord data = ((BookServices) services).searchBooksByYear(this);
             SearchedBooksRecord responseData = new SearchedBooksRecord(from + "-" + to, data.books());
             return new BaseResponse<>(true, "Books published between " + from + " and " + to + ":", responseData);
         } catch (IllegalArgumentException exp) {
