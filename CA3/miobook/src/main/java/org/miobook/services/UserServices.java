@@ -36,7 +36,7 @@ public class UserServices implements Services {
 
 
 
-    public static UserRecord showUserDetails(ShowUserDetails dto) {
+    public UserRecord showUserDetails(ShowUserDetails dto) {
         Optional<User> user = Repositories.userRepository.getUserByUsername(dto.getUsername());
         if(user.isEmpty()) {
             throw new IllegalArgumentException("User with username '" + dto.getUsername() + "' not found.");
@@ -50,7 +50,7 @@ public class UserServices implements Services {
 
     }
 
-    public static PurchaseHistoryRecord showPurchaseHistory(ShowPurchaseHistory dto) {
+    public PurchaseHistoryRecord showPurchaseHistory(ShowPurchaseHistory dto) {
         if(Repositories.userRepository.doesAdminExist(dto.getUsername())) {
             throw new IllegalArgumentException("Not available for 'Admin' role");
         }
@@ -69,7 +69,7 @@ public class UserServices implements Services {
 
         return new PurchaseHistoryRecord(customer.getUsername(), purchaseRecords);
     }
-    public static PurchasedBooksRecord showPurchasedBooks(ShowPurchasedBooks dto) {
+    public PurchasedBooksRecord showPurchasedBooks(ShowPurchasedBooks dto) {
         if(Repositories.userRepository.doesAdminExist(dto.getUsername())) {
             throw new IllegalArgumentException("Not available for 'Admin' role");
         }
