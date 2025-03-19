@@ -20,6 +20,10 @@ public class SearchBooks implements BaseCommand<SearchedBooksRecord> {
     private String genre;
     private Integer from;
     private Integer to;
+    private String sortBy = "none";
+    private String order = "asc";
+    int page = 1;
+    int size = 10;
 
     @Override
     public void validate() {
