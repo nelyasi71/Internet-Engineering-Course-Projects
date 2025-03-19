@@ -5,11 +5,11 @@ import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Range;
-import org.miobook.repositories.Repositories;
 import org.miobook.responses.BaseResponse;
 import org.miobook.infrastructure.IntDeserializer;
 import org.miobook.infrastructure.JsonValidator;
 import org.miobook.services.BookServices;
+import org.miobook.services.Services;
 
 import java.util.List;
 
@@ -58,10 +58,10 @@ public class AddBook implements BaseCommand<Void> {
     }
 
     @Override
-    public BaseResponse<Void> execute() {
+    public BaseResponse<Void> execute(Services services) {
         try {
             this.validate();
-            BookServices.addBook(this);
+            ((BookServices)services).addBook(this);
             return new BaseResponse<>(true, "Book added successfully.", null);
         } catch (IllegalArgumentException exp) {
             return new BaseResponse<>(false, exp.getMessage(), null);

@@ -8,6 +8,7 @@ import org.miobook.models.Review;
 import org.miobook.repositories.BookRepository;
 import org.miobook.repositories.Repositories;
 import org.miobook.responses.*;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,11 +19,10 @@ import java.util.Set;
 import java.util.Comparator;
 import java.util.stream.Collectors;
 
-public class BookServices {
 
-
-
-    public static void addBook(AddBook dto) {
+@Service
+public class BookServices implements Services{
+    public void addBook(AddBook dto) {
         if(!Repositories.userRepository.doesAdminExist(dto.getUsername())) {
             throw new IllegalArgumentException("Admin with username '" + dto.getUsername() + "' does not exist. Only admins can add books.");
         }
@@ -41,7 +41,7 @@ public class BookServices {
         );
     }
 
-    public static BookRecord showBookDetails(ShowBookDetails dto) {
+    public BookRecord showBookDetails(ShowBookDetails dto) {
         Optional<Book> _book = Repositories.bookRepository.getBookByTitle(dto.getTitle());
         if(_book.isEmpty()) {
             throw new IllegalArgumentException("Book with the title '" + dto.getTitle() + "' not found.");
@@ -50,7 +50,7 @@ public class BookServices {
         return new BookRecord(book.getTitle(), book.getAuthor().getName(), book.getPublisher(), book.getGenres(), book.getPublishedYear(), book.getPrice(), book.getSynopsis(), book.averageRating());
     }
 
-    public static BookContentRecord showBookContent(ShowBookContent dto) {
+    public BookContentRecord showBookContent(ShowBookContent dto) {
         Optional<Customer> customer = Repositories.userRepository.getCustomerByUsername(dto.getUsername());
         if(customer.isEmpty()) {
             throw new IllegalArgumentException("Customer with username '" + dto.getUsername() + "' not found.");
@@ -68,7 +68,7 @@ public class BookServices {
         return new BookContentRecord(dto.getTitle(), book.get().getContent());
     }
 
-    public static void addReview(AddReview dto) {
+    public void addReview(AddReview dto) {
         Optional<Book> bookOptional = Repositories.bookRepository.getBookByTitle(dto.getTitle());
         if(bookOptional.isEmpty()) {
             throw new IllegalArgumentException("Book with title '" + dto.getTitle() + "' not found.");
@@ -89,7 +89,7 @@ public class BookServices {
         book.addReview(review);
     }
 
-    public static SearchedBooksRecord searchBooks(SearchBooks dto) {
+    public SearchedBooksRecord searchBooks(SearchBooks dto) {
         List<SearchedBooksRecord> searchResults = new ArrayList<>();
 
         if (dto.getTitle() == null && dto.getAuthor() == null && dto.getGenre() == null && dto.getFrom() == null) {
@@ -207,7 +207,7 @@ public class BookServices {
         return new SearchedBooksRecord(dto.getTitle(),matchedBooks);
     }
 
-    public static BookReviewRecord showBookReviews(ShowBookReviews dto) {
+    public BookReviewRecord showBookReviews(ShowBookReviews dto) {
         Optional<Book> bookOptional = Repositories.bookRepository.getBookByTitle(dto.getTitle());
         if(bookOptional.isEmpty()) {
             throw new IllegalArgumentException("Book with title '" + dto.getTitle() + "' not found. Please check the title and try again.");
