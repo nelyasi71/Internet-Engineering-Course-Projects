@@ -34,7 +34,7 @@ public class ExternalDataFetcher {
         fetchUsers();
         fetchAuthors();
         fetchBooks();
-//        fetchReviews();
+        fetchReviews();
     }
 
     public void fetchUsers() {
