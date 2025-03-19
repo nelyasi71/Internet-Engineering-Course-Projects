@@ -26,7 +26,7 @@ public class ShowPurchasedBooks implements BaseCommand<PurchasedBooksRecord> {
     public BaseResponse<PurchasedBooksRecord> execute(Services services) {
         try {
             this.validate();
-            PurchasedBooksRecord data = UserServices.showPurchasedBooks(this);
+            PurchasedBooksRecord data = ((UserServices) services).showPurchasedBooks(this);
             return new BaseResponse<>(true, "Purchased books retrieved successfully.", data);
         } catch (IllegalArgumentException exp) {
             return new BaseResponse<>(false, exp.getMessage(), null);

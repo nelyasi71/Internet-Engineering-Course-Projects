@@ -26,7 +26,7 @@ public class ShowPurchaseHistory implements BaseCommand<PurchaseHistoryRecord> {
     public BaseResponse<PurchaseHistoryRecord> execute(Services services) {
         try {
             this.validate();
-            PurchaseHistoryRecord data = UserServices.showPurchaseHistory(this);
+            PurchaseHistoryRecord data = ((UserServices) services).showPurchaseHistory(this);
             return new BaseResponse<>(true, "Purchase history retrieved successfully.", data);
         } catch (IllegalArgumentException exp) {
             return new BaseResponse<>(false, exp.getMessage(), null);
