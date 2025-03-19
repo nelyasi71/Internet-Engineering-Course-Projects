@@ -4,10 +4,10 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
-import org.miobook.repositories.Repositories;
 import org.miobook.responses.BaseResponse;
 import org.miobook.infrastructure.JsonValidator;
 import org.miobook.services.CartServices;
+import org.miobook.services.Services;
 
 
 @Getter
@@ -27,10 +27,10 @@ public class RemoveCart implements BaseCommand<Void> {
     }
 
     @Override
-    public BaseResponse<Void> execute() {
+    public BaseResponse<Void> execute(Services services) {
         try {
             this.validate();
-            CartServices.removeCart(this);
+            ((CartServices) services).removeCart(this);
             return new BaseResponse<>(true, "Removed book from cart.", null);
         } catch (IllegalArgumentException exp) {
             return new BaseResponse<>(false, exp.getMessage(), null);

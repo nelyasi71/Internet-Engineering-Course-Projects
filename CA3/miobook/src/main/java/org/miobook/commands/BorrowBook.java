@@ -5,10 +5,10 @@ import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Range;
-import org.miobook.repositories.Repositories;
 import org.miobook.responses.BaseResponse;
 import org.miobook.infrastructure.JsonValidator;
 import org.miobook.services.CartServices;
+import org.miobook.services.Services;
 
 
 @Getter
@@ -32,11 +32,11 @@ public class BorrowBook implements BaseCommand<Void> {
     }
 
     @Override
-    public BaseResponse<Void> execute() {
+    public BaseResponse<Void> execute(Services services) {
         this.validate();
         try {
             this.validate();
-            CartServices.borrowBook(this);
+            ((CartServices) services).borrowBook(this);
             return new BaseResponse<>(true, "Added borrowed book to cart.", null);
         } catch (IllegalArgumentException exp) {
             return new BaseResponse<>(false, exp.getMessage(), null);

@@ -5,11 +5,11 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
-import org.miobook.repositories.Repositories;
 import org.miobook.responses.BaseResponse;
 import org.miobook.responses.PurchaseCartRecord;
 import org.miobook.infrastructure.JsonValidator;
 import org.miobook.services.CartServices;
+import org.miobook.services.Services;
 
 @Getter
 @Setter
@@ -24,10 +24,10 @@ public class PurchaseCart implements BaseCommand<PurchaseCartRecord> {
     }
 
     @Override
-    public BaseResponse<PurchaseCartRecord> execute() {
+    public BaseResponse<PurchaseCartRecord> execute(Services services) {
         try {
             this.validate();
-            PurchaseCartRecord data = CartServices.purchaseCart(this);
+            PurchaseCartRecord data = ((CartServices) services).purchaseCart(this);
             return new BaseResponse<>(true, "Purchase completed successfully.", data);
         } catch (IllegalArgumentException exp) {
             return new BaseResponse<>(false, exp.getMessage(), null);

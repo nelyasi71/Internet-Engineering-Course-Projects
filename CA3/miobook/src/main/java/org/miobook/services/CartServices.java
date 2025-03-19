@@ -6,12 +6,15 @@ import org.miobook.repositories.Repositories;
 import org.miobook.responses.CartRecord;
 import org.miobook.responses.PurchaseCartRecord;
 import org.miobook.responses.PurchaseItemRecord;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
-public class CartServices {
-    public static void addCart(AddCart dto) throws IllegalArgumentException {
+
+@Service
+public class CartServices implements Services {
+    public void addCart(AddCart dto) throws IllegalArgumentException {
         if(Repositories.userRepository.doesAdminExist(dto.getUsername())) {
             throw new IllegalArgumentException("Admin with username '" + dto.getUsername() + "' cannot add items to the cart. Only customers can.");
         }
@@ -30,7 +33,7 @@ public class CartServices {
     }
 
 
-    public static void removeCart(RemoveCart dto) {
+    public void removeCart(RemoveCart dto) {
         if(Repositories.userRepository.doesAdminExist(dto.getUsername())) {
             throw new IllegalArgumentException("Admin with username '" + dto.getUsername() + "' cannot remove items from the cart. Only customers can.");
         }
@@ -48,7 +51,7 @@ public class CartServices {
         customer.get().removeCard(dto.getTitle());
     }
 
-    public static PurchaseCartRecord purchaseCart(PurchaseCart dto) {
+    public PurchaseCartRecord purchaseCart(PurchaseCart dto) {
         if(Repositories.userRepository.doesAdminExist(dto.getUsername())) {
             throw new IllegalArgumentException("Admin with username '\" + dto.getUsername() + \"' cannot make a purchase. Only customers can.");
         }
@@ -65,7 +68,7 @@ public class CartServices {
 
     }
 
-    public static void borrowBook(BorrowBook dto) {
+    public void borrowBook(BorrowBook dto) {
         if(Repositories.userRepository.doesAdminExist(dto.getUsername())) {
             throw new IllegalArgumentException("Admin with username '\" + dto.getUsername() + \"' cannot borrow books. Only customers can.");
         }
@@ -83,7 +86,7 @@ public class CartServices {
         customer.get().addCart(new BorrowItem(book.get(), dto.getDays()));
     }
 
-    public static CartRecord showCart(ShowCart dto) {
+    public CartRecord showCart(ShowCart dto) {
         if(Repositories.userRepository.doesAdminExist(dto.getUsername())) {
             throw new IllegalArgumentException("Admin with username '" + dto.getUsername() + "' cannot view carts. Only customers can.");
         }
