@@ -1,0 +1,28 @@
+:root {
+    --main-color: #16423C;
+    --secondary-color: #F5EFE7;
+    --background-color: #D9D9D9;
+}
+
+body {
+    padding-bottom: 80px;
+    background-color: #f8f9fa;
+}
+
+footer {
+    position: fixed;
+    background-color: var(--main-color);
+    bottom: 0;
+    width: 100%;
+}
+
+.btn.selected-btn {
+    color: var(--main-color);
+    background-color: var(--secondary-color); 
+    border-color: var(--main-color);
+}
+
+input, button {
+    height: 40px;
+    font-size: 16px;
+}
