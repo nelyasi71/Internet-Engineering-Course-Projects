@@ -32,7 +32,7 @@ public class AddAuthor implements BaseCommand<Void> {
     private LocalDate born;
 
     @JsonFormat(pattern = "yyyy-MM-dd")
-    private LocalDate death;
+    private LocalDate died;
 
     public AddAuthor() {
         super();

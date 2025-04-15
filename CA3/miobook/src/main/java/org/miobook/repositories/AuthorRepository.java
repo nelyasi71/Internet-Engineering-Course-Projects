@@ -24,6 +24,6 @@ public class AuthorRepository {
 
     public void add(AddAuthor dto) {
 
-        authors.add(new Author(dto.getName(), dto.getPenName(), dto.getNationality(), dto.getBorn(), dto.getDeath()));
+        authors.add(new Author(dto.getName(), dto.getPenName(), dto.getNationality(), dto.getBorn(), dto.getDied()));
     }
 }

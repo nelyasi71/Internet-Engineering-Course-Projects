@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 
+
 @Service
 public class CartServices implements Services {
 
@@ -29,17 +30,22 @@ public class CartServices implements Services {
             throw new IllegalArgumentException("Admin with username '" + dto.getUsername() + "' cannot add items to the cart. Only customers can.");
         }
 
-        Optional<Customer> customer = userRepository.getCustomerByUsername(dto.getUsername());
-        if(customer.isEmpty()) {
+        Optional<Customer> customerOptional = userRepository.getCustomerByUsername(dto.getUsername());
+        if(customerOptional.isEmpty()) {
             throw new IllegalArgumentException("Customer with username '" + dto.getUsername() + "' does not exist.");
         }
+
+        Customer customer = customerOptional.get();
 
         Optional<Book> book = bookRepository.getBookByTitle(dto.getTitle());
         if(book.isEmpty()) {
             throw new IllegalArgumentException("Book with title '" + dto.getTitle() + "' not found.");
         }
 
-        customer.get().addCart(new BuyItem(book.get()));
+        if (customer.hasBook(dto.getTitle())) {
+            throw new IllegalArgumentException("Cannot add this item to the cart.You have bought it before");
+        }
+        customer.addCart(new BuyItem(book.get()));
     }
 
 

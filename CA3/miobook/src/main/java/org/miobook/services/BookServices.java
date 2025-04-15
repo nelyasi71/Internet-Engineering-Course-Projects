@@ -13,13 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.Comparator;
+import java.util.*;
 import java.util.stream.Collectors;
+
+import static org.miobook.utils.BookUtil.*;
 
 
 @Service
@@ -96,9 +93,13 @@ public class BookServices implements Services{
         if (!customer.hasBook(book.getTitle())) {
             throw new IllegalArgumentException("Customer has not purchased this book and cannot add a review.");
         }
-
-        Review review = new Review(customer, dto.getComment(), dto.getRate(), LocalDateTime.now());
+        Review review = new Review(customer, dto.getComment(), dto.getRate(), setDateIfPresent(dto.getDate()));
         book.addReview(review);
+    }
+
+    public LocalDateTime setDateIfPresent(LocalDateTime date) {
+        date = Objects.requireNonNullElseGet(date, LocalDateTime::now);
+        return date;
     }
 
     public SearchedBooksRecord searchBooks(SearchBooks dto) {
@@ -121,27 +122,24 @@ public class BookServices implements Services{
         }
 
         if (dto.getTitle() != null) {
-            SearchBooksByTitle titleDto = new SearchBooksByTitle();
-            titleDto.setTitle(dto.getTitle());
-            searchResults.add(searchBooksByTitle(titleDto));
+            SearchedBooksRecord titleSearchResult = searchBooksByTitle(dto.getTitle());
+            searchResults.add(titleSearchResult);
         }
         if (dto.getAuthor() != null) {
-            SearchBooksByAuthor authorDto = new SearchBooksByAuthor();
-            authorDto.setName(dto.getAuthor());
-            searchResults.add(searchBooksByAuthor(authorDto));
+            SearchedBooksRecord authorSearchResult = searchBooksByAuthor(dto.getAuthor());
+            searchResults.add(authorSearchResult);
         }
         if (dto.getGenre() != null) {
-            SearchBooksByGenre genreDto = new SearchBooksByGenre();
-            genreDto.setGenre(dto.getGenre());
-            searchResults.add(searchBooksByGenre(genreDto));
+            SearchedBooksRecord genreSearchResult = searchBooksByGenre(dto.getGenre());
+            searchResults.add(genreSearchResult);
         }
 
         if (dto.getFrom() != null){
-            SearchBooksByYear yearDto = new SearchBooksByYear();
-            yearDto.setTo(dto.getTo());
-            yearDto.setFrom(dto.getFrom());
-            searchResults.add(searchBooksByYear(yearDto));
+            SearchedBooksRecord yearSearchResult = searchBooksByYear(dto.getFrom(),dto.getTo());
+            searchResults.add(yearSearchResult);
         }
+
+
 
         List<SearchedBookItemRecord> commonBooks = findCommonBooks(searchResults);
         List<SearchedBookItemRecord> sortedBooks = applySorting(commonBooks, dto.getSortBy(),dto.getOrder());
@@ -152,54 +150,11 @@ public class BookServices implements Services{
         );
     }
 
-    public static List<SearchedBookItemRecord> applySorting(List<SearchedBookItemRecord> books, String sortBy, String order) {
-        Comparator<SearchedBookItemRecord> comparator;
-        switch (sortBy != null ? sortBy.toLowerCase() : "") {
-            case "average_rating":
-                comparator = Comparator.comparing(SearchedBookItemRecord::averageRate);
-                break;
-            case "review_count":
-                comparator = Comparator.comparingInt(SearchedBookItemRecord::reviewCount);
-                break;
-            default:
-                return books;
-        }
-        if ("desc".equalsIgnoreCase(order)) {
-            comparator = comparator.reversed();
-        }
 
-        books = books.stream()
-                .sorted(comparator)
-                .collect(Collectors.toList());
-        return books;
-    }
-
-    public static List<SearchedBookItemRecord> applyPagination(List<SearchedBookItemRecord> books, int page, int size) {
-        int fromIndex = (page - 1) * size;
-        int toIndex = Math.min(fromIndex + size, books.size());
-
-        if (fromIndex >= books.size()) {
-            return List.of();
-        }
-
-        return books.subList(fromIndex, toIndex);
-    }
-
-    public static List<SearchedBookItemRecord> findCommonBooks(List<SearchedBooksRecord> searchResults) {
-        if (searchResults.isEmpty()) {
-            return new ArrayList<>();
-        }
-        Set<SearchedBookItemRecord> commonBooks = new HashSet<>(searchResults.get(0).books());
-        for (int i = 1; i < searchResults.size(); i++) {
-            commonBooks.retainAll(new HashSet<>(searchResults.get(i).books()));
-        }
-        return new ArrayList<>(commonBooks);
-    }
-
-    public SearchedBooksRecord searchBooksByTitle(SearchBooksByTitle dto) {
+    public SearchedBooksRecord searchBooksByTitle(String title) {
 
         List<SearchedBookItemRecord> matchedBooks = bookRepository.getBooks().stream()
-                .filter(book -> book.getTitle().toLowerCase().contains(dto.getTitle().toLowerCase()))
+                .filter(book -> book.getTitle().toLowerCase().contains(title.toLowerCase()))
                 .map(book -> new SearchedBookItemRecord(
                         book.getTitle(),
                         book.getAuthor().getName(),
@@ -216,7 +171,7 @@ public class BookServices implements Services{
 //        if (matchedBooks.isEmpty()) {
 //            throw new IllegalArgumentException("No books found matching the title '" + dto.getTitle() + "'. Please try with a different search term.");
 //        }
-        return new SearchedBooksRecord(dto.getTitle(),matchedBooks);
+        return new SearchedBooksRecord(title,matchedBooks);
     }
 
     public BookReviewRecord showBookReviews(ShowBookReviews dto) {
@@ -238,10 +193,10 @@ public class BookServices implements Services{
 
     }
 
-    public SearchedBooksRecord searchBooksByAuthor(SearchBooksByAuthor dto) {
+    public SearchedBooksRecord searchBooksByAuthor(String name) {
 
         List<SearchedBookItemRecord> matchedBooks = bookRepository.getBooks().stream()
-                .filter(book -> book.getAuthor().getName().toLowerCase().contains(dto.getName().toLowerCase()))
+                .filter(book -> book.getAuthor().getName().toLowerCase().contains(name.toLowerCase()))
                 .map(book -> new SearchedBookItemRecord(
                         book.getTitle(),
                         book.getAuthor().getName(),
@@ -258,14 +213,14 @@ public class BookServices implements Services{
 //        if (matchedBooks.isEmpty()) {
 //            throw new IllegalArgumentException("No books found for the author '" + dto.getName() + "'. Please try a different author name.");
 //        }
-        return new SearchedBooksRecord(dto.getName(),matchedBooks);
+        return new SearchedBooksRecord(name,matchedBooks);
     }
 
-    public SearchedBooksRecord searchBooksByGenre(SearchBooksByGenre dto) {
+    public SearchedBooksRecord searchBooksByGenre(String bookGenre) {
 
         List<SearchedBookItemRecord> matchedBooks = bookRepository.getBooks().stream()
                 .filter(book -> book.getGenres().stream()
-                        .anyMatch(genre -> genre.equalsIgnoreCase(dto.getGenre()))
+                        .anyMatch(genre -> genre.equalsIgnoreCase(bookGenre))  // Compare each genre in the book with the input genre
                 )
                 .map(book -> new SearchedBookItemRecord(
                         book.getTitle(),
@@ -279,16 +234,16 @@ public class BookServices implements Services{
                         book.ReviewCount()
                 ))
                 .toList();
-
 //        if (matchedBooks.isEmpty()) {
 //            throw new IllegalArgumentException("No books found for the genre '" + dto.getGenre() + "'. Please try a different genre.");
 //        }
-        return new SearchedBooksRecord(dto.getGenre(),matchedBooks);
+        return new SearchedBooksRecord(bookGenre,matchedBooks);
     }
 
-    public SearchedBooksRecord searchBooksByYear(SearchBooksByYear dto) {
+    public SearchedBooksRecord searchBooksByYear(Integer from, Integer to) {
         List<SearchedBookItemRecord> matchedBooks = bookRepository.getBooks().stream()
-                .filter(book -> book.getPublishedYear() >= dto.getFrom() && book.getPublishedYear() <= dto.getTo())
+                .filter(book -> (from == null || book.getPublishedYear() >= from) &&
+                        (to == null || book.getPublishedYear() <= to))
                 .map(book -> new SearchedBookItemRecord(
                         book.getTitle(),
                         book.getAuthor().getName(),
@@ -305,6 +260,6 @@ public class BookServices implements Services{
 //        if (matchedBooks.isEmpty()) {
 //            throw new IllegalArgumentException("No books found in the given year range.");
 //        }
-        return new SearchedBooksRecord(dto.getFrom() + " - " + dto.getTo(), matchedBooks);
+        return new SearchedBooksRecord(from + " - " + to, matchedBooks);
     }
 }

@@ -11,7 +11,7 @@ public class Review {
     private Customer customer;
     private String comment;
     private Integer rate;
-    LocalDateTime date;
+    private LocalDateTime date;
 
     public Review(Customer customer, String comment, Integer rate, LocalDateTime date) {
         this.customer = customer;
