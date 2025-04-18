@@ -15,7 +15,7 @@ const SignUp = () => {
     email: "",
     country: "",
     city: "",
-    role: "Customer",
+    role: "customer",
   });
   const [errors, setErrors] = useState({
     username: { hasError: false, message: "" },
@@ -83,8 +83,18 @@ const SignUp = () => {
     if (!validateForm()) return;
 
     try {
-      await axios.post("/api/signin", formData);
-      navigate("/main/signin");
+      let postBody = {
+        username: formData.username,
+        password: formData.password,
+        email: formData.email,
+        address: {
+          country: formData.country,
+          city: formData.city,
+        },
+        role: formData.role,
+      };
+
+      await axios.post("http://localhost:9090/api/user", postBody);
     } catch (error) {
       setErrors({
         ...errors,
@@ -164,7 +174,7 @@ const SignUp = () => {
           </div>
           <button
             type="submit"
-            className="btn btn-primary rounded-3 w-100 border-0"
+            className="btn btn-post rounded-3 w-100 border-0"
             disabled={!isFormValid}
           >
             Sign up
@@ -172,7 +182,7 @@ const SignUp = () => {
         </form>
         <p className="text-center text-muted pt-4">
           Already have an account?{" "}
-          <Link to="/main/signin" className="text-decoration-none">
+          <Link to="/main/signin" className="text-decoration-none link">
             Sign in
           </Link>
         </p>
