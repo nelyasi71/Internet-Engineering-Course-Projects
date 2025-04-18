@@ -39,6 +39,7 @@ public class UserController {
         return command.execute(userServices);
     }
 
+    @CrossOrigin(origins = "http://localhost:5173")
     @Authenticated(roles = {"customer"})
     @GetMapping("/purchase-history")
     public BaseResponse<PurchaseHistoryRecord> show_purchase_history(HttpServletRequest request) {
@@ -48,6 +49,7 @@ public class UserController {
         return command.execute(userServices);
     }
 
+    @CrossOrigin(origins = "http://localhost:5173")
     @Authenticated(roles = {"customer"})
     @GetMapping("/purchased-books")
     public BaseResponse<PurchasedBooksRecord> show_purchased_books(HttpServletRequest request) {

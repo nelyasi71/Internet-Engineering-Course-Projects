@@ -4,6 +4,6 @@ import java.util.List;
 
 public record PurchaseHistoryRecord(
         String username,
-        List<PurchaseRecord> purchaseRecords
+        List<PurchaseRecord> items
 ) {
 }
