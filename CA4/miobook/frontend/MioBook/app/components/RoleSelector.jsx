@@ -6,9 +6,9 @@ const RoleSelector = ({ role, setRole }) => (
     <button
       type="button"
       className={`btn ${
-        role === "Customer" ? "selected-btn" : "btn-light"
+        role === "customer" ? "btn-selected" : "btn-light"
       } rounded-3`}
-      onClick={() => setRole("Customer")}
+      onClick={() => setRole("customer")}
     >
       <i className="bi bi-person pe-2" />
       Customer
@@ -16,9 +16,9 @@ const RoleSelector = ({ role, setRole }) => (
     <button
       type="button"
       className={`btn ${
-        role === "Manager" ? "selected-btn" : "btn-light"
+        role === "admin" ? "btn-selected" : "btn-light"
       } rounded-3`}
-      onClick={() => setRole("Manager")}
+      onClick={() => setRole("admin")}
     >
       <i className="bi bi-briefcase pe-2" />
       Manager
