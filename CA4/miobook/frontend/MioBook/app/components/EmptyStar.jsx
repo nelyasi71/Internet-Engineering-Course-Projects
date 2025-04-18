@@ -1,12 +1,10 @@
 import React from 'react';
-import { Star } from 'lucide-react';
-import './EmptyStar.css';
+import { FaRegStar } from 'react-icons/fa';
+import './styles.css';
 
-const EmptyStar = ({ onClick }) => {
+const EmptyStar = () => {
   return (
-    <div onClick={onClick} className="empty-star">
-      <Star className="text-gray-300" />
-    </div>
+      <FaRegStar color= "#F1F5F7" style="star"/>
   );
 };
 
