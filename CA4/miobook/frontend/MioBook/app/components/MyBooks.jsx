@@ -1,9 +1,9 @@
-import CartItem from "./CartItem";
+import BookItem from "./BookItem";
 
 export default function MyBooks({ items }) {
   return (
     <div className="section bg-white mt-4 p-4">
-      <h2><i className="bi bi-cart3"></i> My Books</h2>
+      <h2 className="p-2"><i className="bi bi-book"></i> My Books</h2>
       <table className="table align-middle">
         <thead className="table-light">
           <tr>
@@ -19,7 +19,7 @@ export default function MyBooks({ items }) {
         </thead>
         <tbody>
           {items.map((item, index) => (
-            <CartItem key={index} item={item} />
+            <BookItem key={index} item={item} />
           ))}
         </tbody>
       </table>
