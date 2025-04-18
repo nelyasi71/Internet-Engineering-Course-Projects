@@ -8,6 +8,14 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import Footer from "../components/footer";
 
+export function meta({}) {
+  return [
+    { title: "Sign In" },
+    { name: "MioBook", content: "MioBook" },
+  ];
+}
+
+
 const SignIn = () => {
   const [formData, setFormData] = useState({
     username: "",
@@ -82,46 +90,49 @@ const SignIn = () => {
   );
 
   return (
-    <div className="container d-flex justify-content-center align-items-center vh-100">
-      <div className="card p-5 border-0 w-75">
-        <h2 className="text-center">Sign In </h2>
-        <p className="text-center text-muted">MioBook</p>
-        <form className="mx-auto w-50" onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <InputField
-              type="text"
-              placeholder="Username"
-              value={formData.username}
-              onChange={handleChange("username")}
-              error={errors.username.hasError}
-              errorMessage={errors.username.message}
-              ref={usernameRef}
-            />
-          </div>
-          <div className="mb-4">
-            <PasswordField
-              value={formData.password}
-              onChange={handleChange("password")}
-              error={errors.password.hasError}
-              errorMessage={errors.password.message}
-            />
-          </div>
-          <button
-            type="submit"
-            className="btn btn-post rounded-3 w-100 border-0"
-            disabled={!isFormValid}
-          >
-            Sign in
-          </button>
-        </form>
-        <p className="text-center text-muted pt-4">
-          Not a member yet?{" "}
-          <Link to="/main/signup" className="text-decoration-none link">
-            Sign up
-          </Link>
-        </p>
+    <div className="bg-light min-vh-100">
+      
+      <div className="container d-flex justify-content-center align-items-center vh-100">
+        <div className="card p-5 border-0 w-75">
+          <h2 className="text-center">Sign In </h2>
+          <p className="text-center text-muted">MioBook</p>
+          <form className="mx-auto w-50" onSubmit={handleSubmit}>
+            <div className="mb-4">
+              <InputField
+                type="text"
+                placeholder="Username"
+                value={formData.username}
+                onChange={handleChange("username")}
+                error={errors.username.hasError}
+                errorMessage={errors.username.message}
+                ref={usernameRef}
+              />
+            </div>
+            <div className="mb-4">
+              <PasswordField
+                value={formData.password}
+                onChange={handleChange("password")}
+                error={errors.password.hasError}
+                errorMessage={errors.password.message}
+              />
+            </div>
+            <button
+              type="submit"
+              className="btn btn-post rounded-3 w-100 border-0"
+              disabled={!isFormValid}
+            >
+              Sign in
+            </button>
+          </form>
+          <p className="text-center text-muted pt-4">
+            Not a member yet?{" "}
+            <Link to="/signup" className="text-decoration-none link">
+              Sign up
+            </Link>
+          </p>
+        </div>
+        <Footer />
       </div>
-      <Footer />
     </div>
   );
 };
