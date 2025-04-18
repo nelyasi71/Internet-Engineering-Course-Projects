@@ -20,6 +20,7 @@ public class UserController {
     UserServices userServices;
 
     @PostMapping("/user")
+    @CrossOrigin(origins = "http://localhost:5173")
     public BaseResponse<Void> add_user(@RequestBody AddUser command) {
         return command.execute(userServices);
     }
