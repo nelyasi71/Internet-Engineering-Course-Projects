@@ -54,10 +54,13 @@ button {
     height: 44px;
     border-radius: 6px;
     padding: 12px;
-    display: flex ;
     justify-content: space-between;
     align-items: center;
     cursor: pointer;
+    display: inline-flex; 
+    cursor: pointer;
+
+
 }
 
 .rating {
@@ -65,5 +68,48 @@ button {
     height: 44px;
     gap: 4px;
     top: 381px;
-    left: 499px;  
+    left: 499px;
+    flex-direction: row;
+    cursor: pointer;
 }
+
+.pagination-wrapper {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+  }
+  
+  .pagination-button {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    padding: 4px 8px;
+    background-color: transparent;
+    border: none;
+    size: 12px;
+    font-family: 'Inter';
+    color: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+  }
+  
+  .pagination-button:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+  
+  .pagination-button:disabled {
+    opacity: 0.3;
+    cursor: default;
+  }
+  
+  .number-button.active {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+  
+  .arrow-icon {
+    width: 28px;
+    height: 28px;
+  }
+  
