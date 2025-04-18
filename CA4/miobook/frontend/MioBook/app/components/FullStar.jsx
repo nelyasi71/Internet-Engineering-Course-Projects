@@ -1,13 +1,10 @@
-import React from 'react';
-import { Star } from 'lucide-react';
+import { FaStar } from 'react-icons/fa';
 import './styles.css';
 
-const FullStar = ({ onClick }) => {
+const StarSelectionFilled = () => {
   return (
-    <div onClick={onClick} className="star">
-      <Star className="text-[#EBA452]" />
-    </div>
+      <FaStar color="#EBA452" style="star" />
   );
 };
 
-export default FullStar;
+export default StarSelectionFilled;
