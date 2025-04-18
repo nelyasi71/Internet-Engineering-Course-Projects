@@ -48,3 +48,15 @@ button {
     height: 45px;
     font-weight: 800;
 }
+
+.empty-star {
+    width: 44px;
+    height: 44px;
+    border-radius: 6px;
+    padding: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+}
+  
