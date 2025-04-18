@@ -1,14 +1,15 @@
+import image from "../static/book-icon.jpg";
+
 export default function CartItem({ item }) {
     return (
       <tr>
-        <td><img src={item.image || "../assets/book-icon.jpg"} className="book-icon" alt="image" /></td>
-        <td>{item.name}</td>
+        <td><img src={item.image || image} className="book-icon" alt="image" /></td>
+        <td>{item.title}</td>
         <td>{item.author}</td>
         <td>${item.price}</td>
+        <td>{item.isBorrowd ? item.borrowDays : "Owened"}</td>
         <td>
-          <button className="btn btn-light">-</button>
-          <span className="mx-2">{item.amount}</span>
-          <button className="btn btn-green">+</button>
+          <button className="btn btn-danger w-100">Remove</button>
         </td>
       </tr>
     );
