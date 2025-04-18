@@ -3,10 +3,12 @@ package org.miobook.services;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.Getter;
+import org.miobook.commands.FetchUser;
 import org.miobook.commands.Login;
 import org.miobook.commands.Logout;
 import org.miobook.models.User;
 import org.miobook.repositories.UserRepository;
+import org.miobook.responses.LoggedInUserRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -37,6 +39,7 @@ public class AuthServices implements Services {
 
         session.setAttribute("userRole", user.get().getRole());
         session.setAttribute("username", user.get().getUsername());
+        session.setAttribute("email", user.get().getEmail());
     }
 
     public void logout(Logout dto) {
@@ -47,5 +50,17 @@ public class AuthServices implements Services {
 
         String loggedInUser = (String) session.getAttribute("username");
         session.invalidate();
+    }
+
+    public LoggedInUserRecord fetchUser(FetchUser dto) {
+        HttpSession session = dto.getSession();
+        if (session == null || session.getAttribute("username") == null) {
+            throw new IllegalArgumentException("No user is currently logged in.");
+        }
+
+        String username = (String) session.getAttribute("username");
+        String email = (String) session.getAttribute("email");
+
+        return new LoggedInUserRecord(username, email);
     }
 }
