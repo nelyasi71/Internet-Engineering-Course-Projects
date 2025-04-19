@@ -54,6 +54,11 @@ button.accordion-button {
     background-color: #f2f2f2;
 }
 
+.container.book-content {
+    background-color: white;
+    border-bottom: 2px solid #b79b75;
+}
+
 .book-icon {
     width: 30px;
     height: auto;

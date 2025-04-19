@@ -77,7 +77,7 @@ public class BookServices implements Services{
             throw new IllegalArgumentException("Customer with username '" + dto.getUsername() + "' does not own the book '" + dto.getTitle() + "'.");
         }
 
-        return new BookContentRecord(dto.getTitle(), book.get().getContent());
+        return new BookContentRecord(dto.getTitle(), book.get().getAuthor().getName(), book.get().getContent());
     }
 
     public void addReview(AddReview dto) {
