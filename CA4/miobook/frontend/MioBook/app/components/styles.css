@@ -1,3 +1,4 @@
+
 :root {
     --main-color: #16423C;
     --secondary-color: #F5EFE7;
@@ -54,13 +55,7 @@ button {
     height: 44px;
     border-radius: 6px;
     padding: 12px;
-    justify-content: space-between;
-    align-items: center;
-    cursor: pointer;
-    display: inline-flex; 
-    cursor: pointer;
-
-
+    display: inline-block; 
 }
 
 .rating {
@@ -77,9 +72,9 @@ button {
     display: flex;
     gap: 4px;
     align-items: center;
-  }
+}
   
-  .pagination-button {
+.pagination-button {
     width: 28px;
     height: 28px;
     border-radius: 8px;
@@ -93,23 +88,42 @@ button {
     justify-content: center;
     align-items: center;
     cursor: pointer;
-  }
+}
   
-  .pagination-button:hover {
+.pagination-button:hover {
     background-color: rgba(0, 0, 0, 0.05);
-  }
+}
   
-  .pagination-button:disabled {
+.pagination-button:disabled {
     opacity: 0.3;
     cursor: default;
-  }
+}
   
-  .number-button.active {
+.number-button.active {
     background-color: rgba(0, 0, 0, 0.05);
-  }
+}
   
-  .arrow-icon {
+.arrow-icon {
     width: 28px;
     height: 28px;
-  }
+}
   
+.book-card {
+    width: 200px;
+    height: 320px;
+    top: 205px;
+    left: 182px;
+    border-radius: 16px;
+}
+  
+.book-cover {
+    width: 200px;
+    height: 160px;
+    object-fit: cover;
+    position: relative;
+    top: -1px;
+}
+  
+.card-body{
+    background: #F5EFE7;
+}
