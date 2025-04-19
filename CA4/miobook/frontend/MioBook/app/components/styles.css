@@ -50,6 +50,21 @@ button {
     font-weight: 800;
 }
 
+button.accordion-button {
+    font-weight: 600;
+    background-color: #f2f2f2;
+}
+
+.container.book-content {
+    background-color: white;
+    border-bottom: 2px solid #b79b75;
+}
+
+.book-icon {
+    width: 30px;
+    height: auto;
+}
+
 .star {
     border-radius: 6px;
     display: inline-block; 

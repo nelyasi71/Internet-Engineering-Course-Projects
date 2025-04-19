@@ -59,7 +59,35 @@ public class BookServices implements Services{
             throw new IllegalArgumentException("Book with the title '" + dto.getTitle() + "' not found.");
         }
         Book book = _book.get();
-        return new BookRecord(book.getTitle(), book.getAuthor().getName(), book.getPublisher(), book.getGenres(), book.getPublishedYear(), book.getPrice(), book.getSynopsis(), book.averageRating());
+        return new BookRecord(
+                book.getTitle(),
+                book.getAuthor().getName(),
+                book.getPublisher(),
+                book.getGenres(),
+                book.getPublishedYear(),
+                book.getPrice(),
+                book.getSynopsis(),
+                book.averageRating(),
+                book.getTotalBuys()
+        );
+    }
+
+    public AllBooksRecord showAllBooks(ShowAllBooks dto) {
+        return new AllBooksRecord(
+                bookRepository.getBooks().stream()
+                        .map(book -> new BookRecord(
+                                book.getTitle(),
+                                book.getAuthor().getName(),
+                                book.getPublisher(),
+                                book.getGenres(),
+                                book.getPublishedYear(),
+                                book.getPrice(),
+                                book.getSynopsis(),
+                                book.averageRating(),
+                                book.getTotalBuys()
+                        ))
+                        .toList()
+        );
     }
 
     public BookContentRecord showBookContent(ShowBookContent dto) {
@@ -77,7 +105,7 @@ public class BookServices implements Services{
             throw new IllegalArgumentException("Customer with username '" + dto.getUsername() + "' does not own the book '" + dto.getTitle() + "'.");
         }
 
-        return new BookContentRecord(dto.getTitle(), book.get().getContent());
+        return new BookContentRecord(dto.getTitle(), book.get().getAuthor().getName(), book.get().getContent());
     }
 
     public void addReview(AddReview dto) {

@@ -1,15 +1,18 @@
 package org.miobook.services;
 
 import org.miobook.commands.AddAuthor;
+import org.miobook.commands.ShowAllAuthors;
 import org.miobook.commands.ShowAuthorDetails;
 import org.miobook.models.Author;
 import org.miobook.repositories.AuthorRepository;
 import org.miobook.repositories.UserRepository;
+import org.miobook.responses.AllAuthorsRecord;
 import org.miobook.responses.AuthorRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class AuthorServices implements Services {
@@ -40,6 +43,19 @@ public class AuthorServices implements Services {
         Author author = _author.get();
 
         return new AuthorRecord(author.getName(), author.getPenName(), author.getNationality(), author.getBorn(), author.getDeath());
+    }
 
+    public AllAuthorsRecord showAllAuthors(ShowAllAuthors dto) {
+        return new AllAuthorsRecord(
+            authorRepository.getAuthors().stream()
+                .map(author -> new AuthorRecord(
+                    author.getName(),
+                    author.getPenName(),
+                    author.getNationality(),
+                    author.getBorn(),
+                    author.getDeath()
+                ))
+                .toList()
+        );
     }
 }

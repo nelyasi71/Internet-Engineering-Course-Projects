@@ -1,5 +1,6 @@
 package org.miobook.repositories;
 
+import lombok.Getter;
 import org.miobook.commands.AddAuthor;
 import org.miobook.models.Author;
 import org.springframework.stereotype.Repository;
@@ -10,6 +11,8 @@ import java.util.Optional;
 
 @Repository
 public class AuthorRepository {
+
+    @Getter
     private final List<Author> authors = new ArrayList<>();
 
     public boolean doesExist(String name) {

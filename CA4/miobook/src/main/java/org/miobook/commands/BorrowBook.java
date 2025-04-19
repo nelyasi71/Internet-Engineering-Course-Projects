@@ -25,7 +25,6 @@ public class BorrowBook implements BaseCommand<Void> {
     @Range(min = 1, max = 9)
     private Integer days;
 
-
     @Override
     public void validate() {
         JsonValidator.validate(this);

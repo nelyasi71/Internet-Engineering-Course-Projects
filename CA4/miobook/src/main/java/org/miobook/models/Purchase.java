@@ -31,6 +31,10 @@ public class Purchase {
                 .collect(Collectors.toList());
         date = LocalDateTime.now();
         this.price = price;
+        this.purchaseItems
+                .forEach(purchaseItem -> {
+                    purchaseItem.getBook().newBuy();
+                });
     }
 
     public int size() {

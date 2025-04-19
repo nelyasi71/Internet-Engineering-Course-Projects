@@ -1,16 +1,17 @@
 import image from "../static/book-icon.jpg";
 
-export default function CartItem({ item }) {
+
+export default function BookItem({ item }) {
     return (
       <tr>
         <td><img src={item.image || image} className="book-icon" alt="image" /></td>
         <td>{item.title}</td>
         <td>{item.author}</td>
+        <td>{item.genres.join(', ')}</td>
+        <td>{item.publisher}</td>
+        <td>{item.year}</td>
         <td>${item.price}</td>
-        <td>{item.isBorrowd ? item.borrowDays : "Owened"}</td>
-        <td>
-          <button className="btn btn-danger w-100">Remove</button>
-        </td>
+        <td>{item.totalBuys}</td>
       </tr>
     );
   }

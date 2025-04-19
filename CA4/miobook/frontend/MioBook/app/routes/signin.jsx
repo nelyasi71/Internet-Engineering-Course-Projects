@@ -3,9 +3,6 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import InputField from "../components/InputField";
 import PasswordField from "../components/PasswordField";
-import RoleSelector from "../components/RoleSelector";
-import "bootstrap/dist/css/bootstrap.min.css";
-import "bootstrap-icons/font/bootstrap-icons.css";
 import Footer from "../components/footer";
 
 export function meta({}) {
@@ -76,12 +73,21 @@ const SignIn = () => {
         password: formData.password,
       };
 
-      await axios.post("http://localhost:9090/auth/login", postBody);
+      const response = await axios.post("http://localhost:9090/api/auth/login", postBody, {withCredentials: true});
+      console.log(response)
+      if(response.data.success) {
+        navigate("/dashboard")
+      }
+
+      else {
+        setErrors({
+          username: { hasError: true, message: "Invalid username or password" },
+          password: { hasError: true, message: "Invalid username or password" },
+        });
+      }
+
     } catch (error) {
-      setErrors({
-        username: { hasError: true, message: "Invalid username or password" },
-        password: { hasError: true, message: "Invalid username or password" },
-      });
+      
     }
   };
 
@@ -120,7 +126,7 @@ const SignIn = () => {
               type="submit"
               className="btn btn-post rounded-3 w-100 border-0"
               disabled={!isFormValid}
-            >
+              >
               Sign in
             </button>
           </form>
