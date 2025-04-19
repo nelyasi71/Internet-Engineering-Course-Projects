@@ -12,6 +12,7 @@ public record BookRecord (
         int year,
         int price,
         String synopsis,
-        double averageRating
+        double averageRating,
+        int totalBuys
 ) {
 }

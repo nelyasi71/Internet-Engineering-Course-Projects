@@ -34,6 +34,16 @@ public class BookController {
     }
 
     @CrossOrigin(origins = "http://localhost:5173")
+    @Authenticated(roles = {"admin"})
+    @GetMapping("/get-books")
+    public BaseResponse<AllBooksRecord> show_details(HttpServletRequest request) {
+        ShowAllBooks command = new ShowAllBooks();
+        HttpSession session = request.getSession(false);
+        command.setUsername((String) session.getAttribute("username"));
+        return command.execute(bookServices);
+    }
+
+    @CrossOrigin(origins = "http://localhost:5173")
     @Authenticated(roles = {"customer"})
     @GetMapping("/books/{title}/content")
     public BaseResponse<BookContentRecord> show_content(@PathVariable String title, HttpServletRequest request) {

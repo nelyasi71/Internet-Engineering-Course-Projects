@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 
 
-export default function UserInfo({ name, email }) {
+export default function UserInfo({ name, email, wide }) {
   const navigate = useNavigate();
   const logout = async () => {
   
@@ -16,14 +16,29 @@ export default function UserInfo({ name, email }) {
   
     }
   };
-    return (
-      <div className="section flex-fill bg-white p-3">
-        <p><i className="bi bi-person-circle me-2"></i><strong>{name}</strong></p>
-        <p><i className="bi bi-envelope-at me-2"></i>{email}</p>
-        <div className="pt-2">
-          <button onClick={logout} className="btn btn-light rounded-3 w-50">Logout</button>
+    if(wide) {
+      return (
+        <div className="container rounded-3 d-flex justify-content-between align-items-center bg-white p-2">
+          <div className="p-3">
+            <p><i className="bi bi-person-circle me-2"></i><strong>{name}</strong></p>
+            <p><i className="bi bi-envelope-at me-2"></i>{email}</p>
+          </div>
+          <div className="w-25">
+            <button onClick={logout} className="btn btn-danger rounded-3 w-50">Logout</button>
+          </div>
         </div>
-      </div>
-    );
+      );
+    } else {
+      return (
+        <div className="container rounded-3 flex-fill bg-white p-3">
+          <p><i className="bi bi-person-circle me-2"></i><strong>{name}</strong></p>
+          <p><i className="bi bi-envelope-at me-2"></i>{email}</p>
+          <div className="pt-2">
+            <button onClick={logout} className="btn btn-light rounded-3 w-50">Logout</button>
+          </div>
+        </div>
+      );
+    }
+
   }
   

@@ -37,7 +37,7 @@ export default function Dashboard() {
             <CreditForm credit={0} />
           </div>
           <div className="col-4">
-            <UserInfo name={user.username} email={user.email} />
+            <UserInfo name={user.username} email={user.email} wide={false} />
           </div>
         </div>
         <MyBooks items={bookItems} />

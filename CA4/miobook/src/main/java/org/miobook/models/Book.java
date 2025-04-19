@@ -18,6 +18,7 @@ public class Book {
     private String synopsis;
     private String content;
     private List<Review> reviews;
+    private int totalBuys;
 
     public Book(String title, Author author, String publisher, int publishedYear, List<String> genres, int price, String content, String synopsis) {
         this.title = title;
@@ -29,6 +30,7 @@ public class Book {
         this.synopsis = synopsis;
         this.content = content;
         this.reviews = new ArrayList<>();
+        this.totalBuys = 0;
     }
 
     public void addReview(Review review) {
@@ -56,5 +58,9 @@ public class Book {
 
     public int ReviewCount() {
         return reviews.size();
+    }
+
+    public void newBuy() {
+        this.totalBuys += 1;
     }
 }

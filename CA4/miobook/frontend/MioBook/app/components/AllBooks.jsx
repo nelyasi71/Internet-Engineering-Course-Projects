@@ -1,9 +1,9 @@
-import UserBookItem from "./UserBookItem";
+import BookItem from "./BookItem";
 
-export default function MyBooks({ items }) {
+export default function AllBooks({ items }) {
   return (
-    <div className="section bg-white mt-4 p-4">
-      <h2 className="p-2"><i className="bi bi-book"></i> My Books</h2>
+    <div className="container rounded-3 bg-white mt-4 p-4">
+      <h2 className="p-2"><i className="bi bi-book"></i> Books</h2>
       <table className="table align-middle">
         <thead className="table-light">
           <tr>
@@ -13,13 +13,13 @@ export default function MyBooks({ items }) {
             <th>Genre</th>
             <th>Publisher</th>
             <th>Published Year</th>
-            <th>Status</th>
-            <th></th>
+            <th>Price</th>
+            <th>Total Buys</th>
           </tr>
         </thead>
         <tbody>
           {items.map((item, index) => (
-            <UserBookItem key={index} item={item} />
+            <BookItem key={index} item={item} />
           ))}
         </tbody>
       </table>
