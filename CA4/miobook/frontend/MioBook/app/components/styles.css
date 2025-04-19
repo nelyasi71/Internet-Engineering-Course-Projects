@@ -51,16 +51,11 @@ button {
 }
 
 .star {
-    width: 44px;
-    height: 44px;
     border-radius: 6px;
-    padding: 12px;
     display: inline-block; 
 }
 
 .rating {
-    width: 87px;
-    height: 44px;
     gap: 4px;
     top: 381px;
     left: 499px;
@@ -127,3 +122,12 @@ button {
 .card-body{
     background: #F5EFE7;
 }
+
+.bg-secondary-subtle {
+    background-color: #e9ecef;
+    width: 40px;
+    height: 40px;
+    font-weight: 600;
+    font-size: 14px;
+  }
+  

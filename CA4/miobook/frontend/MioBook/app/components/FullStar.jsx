@@ -3,7 +3,7 @@ import './styles.css';
 
 const StarSelectionFilled = () => {
   return (
-      <FaStar color="#EBA452" style="star" />
+      <FaStar color="#EBA452" className="star" />
   );
 };
 

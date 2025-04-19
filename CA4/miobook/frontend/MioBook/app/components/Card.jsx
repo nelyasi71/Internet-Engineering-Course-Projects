@@ -11,10 +11,10 @@ const BookCard = ({ title, author, price, image, rating }) => {
           src={image}
           className="rounded-top book-cover"
         />
-        <div className="card-body card-body text-center">
+        <div className="d-flex flex-column card-body card-body text-center">
           <h5 className="card-title fw-bold">{title}</h5>
           <p className="card-text">{author}</p>
-          <div className="d-flex justify-content-center align-items-center gap-2">
+          <div className="d-flex flex-row justify-content-center align-items-center">
             <Rating rating={rating} />
             <p className="fw-bold price mb-0 ms-2">${price}</p>
           </div>

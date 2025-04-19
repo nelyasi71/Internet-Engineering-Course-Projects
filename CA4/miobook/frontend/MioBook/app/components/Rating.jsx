@@ -5,10 +5,12 @@ import './styles.css';
 
 const Rating = ({ rating = 4, total = 5 }) => {  
   return (
-    <div className="rating" >
-      {[...Array(total)].map((_, index) =>
-        index < rating ? <FullStar key={index} /> : <EmptyStar key={index} />
-      )}
+    <div className={"w-100"}>
+      <div className="rating d-flex flex-row" >
+        {[...Array(total)].map((_, index) =>
+          index < rating ? <FullStar key={index} /> : <EmptyStar key={index} />
+        )}
+      </div>
     </div>
   );
 };
