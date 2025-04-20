@@ -21,6 +21,8 @@ export default function Dashboard() {
       .then(res => res.json())
       .then(res => setUser(res.data));
 
+      console.log(user)
+
     fetch("http://localhost:9090/api/purchased-books", {credentials: "include"})
       .then(res => res.json())
       .then(res => setBookItems(res.data.items));
@@ -34,7 +36,7 @@ export default function Dashboard() {
       <div className="container mt-4 p-4">
         <div className="row">
           <div className="col-8 d-flex">
-            <CreditForm credit={0} />
+            <CreditForm user_credit={user.balance} />
           </div>
           <div className="col-4">
             <UserInfo name={user.username} email={user.email} wide={false} />

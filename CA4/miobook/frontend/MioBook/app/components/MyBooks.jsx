@@ -1,6 +1,7 @@
 import UserBookItem from "./UserBookItem";
 
 export default function MyBooks({ items }) {
+
   return (
     <div className="section bg-white mt-4 p-4">
       <h2 className="p-2"><i className="bi bi-book"></i> My Books</h2>

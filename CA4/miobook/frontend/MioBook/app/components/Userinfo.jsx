@@ -5,15 +5,19 @@ import { useNavigate } from "react-router-dom";
 
 export default function UserInfo({ name, email, wide }) {
   const navigate = useNavigate();
-  const logout = async () => {
-  
+  const handleLogout = async () => {
     try {
-      const response = await axios.post("http://localhost:9090/api/auth/logout", {}, {withCredentials: true});
-      if(response.data.success) {
-        navigate("/signin")
-      }
+      await fetch("http://localhost:9090/api/auth/logout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        credentials: "include",
+        body: JSON.stringify({})
+      });
+      navigate("/signin"); 
     } catch (error) {
-  
+      console.error("Logout failed:", error);
     }
   };
     if(wide) {
@@ -24,7 +28,7 @@ export default function UserInfo({ name, email, wide }) {
             <p><i className="bi bi-envelope-at me-2"></i>{email}</p>
           </div>
           <div className="w-25">
-            <button onClick={logout} className="btn btn-danger rounded-3 w-50">Logout</button>
+            <button onClick={handleLogout} className="btn btn-light rounded-3 w-50">Logout</button>
           </div>
         </div>
       );
@@ -34,7 +38,7 @@ export default function UserInfo({ name, email, wide }) {
           <p><i className="bi bi-person-circle me-2"></i><strong>{name}</strong></p>
           <p><i className="bi bi-envelope-at me-2"></i>{email}</p>
           <div className="pt-2">
-            <button onClick={logout} className="btn btn-light rounded-3 w-50">Logout</button>
+            <button onClick={handleLogout} className="btn btn-light rounded-3 w-50">Logout</button>
           </div>
         </div>
       );
