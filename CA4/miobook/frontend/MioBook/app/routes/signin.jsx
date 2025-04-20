@@ -74,9 +74,14 @@ const SignIn = () => {
       };
 
       const response = await axios.post("http://localhost:9090/api/auth/login", postBody, {withCredentials: true});
-      console.log(response)
       if(response.data.success) {
-        navigate("/dashboard")
+        const userRoleResp = await axios.get("http://localhost:9090/api/users/" + formData.username, {withCredentials: true});
+        
+        if(userRoleResp.data.data.role === "admin") {
+          navigate("/panel");
+        } else {
+          navigate("/dashboard");
+        }
       }
 
       else {
