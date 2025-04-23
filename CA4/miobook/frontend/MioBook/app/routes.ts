@@ -10,4 +10,5 @@ export default [
     route("panel", "routes/AdminPanel.jsx"),
     route("authors/:authorName", "routes/Author.jsx"),
     route("books/:bookTitle", "routes/Book.jsx"),
+    route("searchresults", "routes/SearchResult.jsx")
 ] satisfies RouteConfig;
