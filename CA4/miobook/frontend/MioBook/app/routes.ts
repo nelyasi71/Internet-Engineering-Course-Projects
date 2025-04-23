@@ -7,5 +7,6 @@ export default [
     route("cart", "routes/BuyCart.jsx"),
     route("history", "routes/History.jsx"),
     route("books/:title/content", "routes/BookContent.jsx"),
-    route("panel", "routes/AdminPanel.jsx")
+    route("panel", "routes/AdminPanel.jsx"),
+    route("author/:authorName", "routes/Author.jsx"),
 ] satisfies RouteConfig;
