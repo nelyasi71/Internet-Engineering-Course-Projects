@@ -146,3 +146,14 @@ button.accordion-button {
     font-size: 14px;
   }
   
+.page-background{
+    background-color: #e9ecef;
+}
+
+.custom-border {
+    border-left: none !important;
+    border-right: none !important;
+    border-top: none !important;
+    border-bottom: 2px solid #804900 !important;
+    background-color: white;
+}

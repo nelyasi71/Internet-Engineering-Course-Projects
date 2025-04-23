@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.miobook.auth.Authenticated;
 import org.miobook.commands.*;
+import org.miobook.models.Book;
 import org.miobook.responses.*;
 import org.miobook.services.BookServices;
 import org.springframework.beans.factory.annotation.Autowired;

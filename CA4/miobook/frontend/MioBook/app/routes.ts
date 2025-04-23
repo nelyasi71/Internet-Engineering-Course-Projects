@@ -9,4 +9,5 @@ export default [
     route("books/:title/content", "routes/BookContent.jsx"),
     route("panel", "routes/AdminPanel.jsx"),
     route("author/:authorName", "routes/Author.jsx"),
+    route("book/:bookTitle", "routes/Book.jsx")
 ] satisfies RouteConfig;
