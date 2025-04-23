@@ -91,10 +91,12 @@ const reviewCount = book.ReviewCount ? book.ReviewCount() : 0;
             <div className="list-group">
             {book.reviews && reviewCount > 0 ? (
                 book.reviews.map((review, index) => (
-                    <div key={index}>
-                        <p>{review.comment}</p>
-                        <p>Rating: {review.rate}</p>
-                    </div>
+                    <Comment key={index}
+                        name={review.customer.name}
+                        message={review.comment}
+                        rating={review.rate}
+                        date={review.data}
+                    />
                 ))
             ) : (
                 <p>No reviews yet.</p>
