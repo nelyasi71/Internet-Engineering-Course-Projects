@@ -29,7 +29,7 @@ const Pagination = ({ currentPage = 1, totalPages = 20, onChange }) => {
   const pagesToShow = getPaginationRange();
 
   return (
-    <div className="pagination-wrapper">
+    <div className="pagination-wrapper justify-content-center">
       <button
         className="pagination-button icon-button"
         onClick={() => onChange(Math.max(1, currentPage - 1))}
