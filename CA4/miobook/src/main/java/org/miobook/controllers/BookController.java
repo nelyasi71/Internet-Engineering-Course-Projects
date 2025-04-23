@@ -93,21 +93,21 @@ public class BookController {
             @RequestParam(defaultValue = "none") String sortBy,
             @RequestParam(defaultValue = "asc") String order,
             @RequestParam(defaultValue = "1") Integer page,
-            @RequestParam(defaultValue = "20") Integer size
+            @RequestParam(defaultValue = "10") Integer size
             ) {
 
         SearchBooks command = new SearchBooks();
-        command.setTitle(title);
-        command.setAuthor(author);
-        command.setGenre(genre);
-        command.setFrom(from);
-        command.setTo(to);
-        command.setSortBy(sortBy);
+        command.setTitle(title != null && !title.isEmpty() ? title : "");
+        command.setAuthor(author != null && !author.isEmpty() ? author : "");
+        command.setGenre(genre != null && !genre.isEmpty() ? genre : "");
+        command.setFrom(from != null ? from : 0);
+        command.setTo(to !=  null ? to :  Integer.MAX_VALUE);
+        command.setSortBy(sortBy );
         command.setOrder(order);
         command.setPage(page);
         command.setSize(size);
 
-
         return command.execute(bookServices);
     }
+    
 }
