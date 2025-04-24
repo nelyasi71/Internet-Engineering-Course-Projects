@@ -16,50 +16,45 @@ export function meta({}) {
 }
 
 const SignUp = () => {
-  const [formData, setFormData] = useState({
+  const formFields = ["username", "password", "email", "country", "city"];
+  const initialFormData = {
     username: "",
     password: "",
     email: "",
     country: "",
     city: "",
     role: "customer",
-  });
-  const [errors, setErrors] = useState({
-    username: { hasError: false, message: "" },
-    password: { hasError: false, message: "" },
-    email: { hasError: false, message: "" },
-    country: { hasError: false, message: "" },
-    city: { hasError: false, message: "" },
-  });
+  };
+  const initialErrors = formFields.reduce((acc, field) => {
+    acc[field] = { hasError: false, message: "" };
+    return acc;
+  }, {});
+  
+  const [formData, setFormData] = useState(initialFormData);
+  const [errors, setErrors] = useState(initialErrors);
   const navigate = useNavigate();
   const usernameRef = useRef(null);
-
+  
   useEffect(() => {
-    if (usernameRef.current) {
-      usernameRef.current.focus();
-    }
+    usernameRef.current?.focus();
   }, []);
-
+  
   const handleChange = (field) => (e) => {
-    setFormData({ ...formData, [field]: e.target.value });
-    if (errors[field].hasError) {
-      setErrors({
-        ...errors,
+    const value = e.target.value;
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  
+    if (errors[field]?.hasError) {
+      setErrors((prev) => ({
+        ...prev,
         [field]: { hasError: false, message: "" },
-      });
+      }));
     }
   };
-
+  
   const validateForm = () => {
-    const newErrors = {
-      username: { hasError: false, message: "" },
-      password: { hasError: false, message: "" },
-      email: { hasError: false, message: "" },
-      country: { hasError: false, message: "" },
-      city: { hasError: false, message: "" },
-    };
     let isValid = true;
-
+    const newErrors = { ...initialErrors };
+  
     if (!formData.username) {
       newErrors.username = { hasError: true, message: "Username is required" };
       isValid = false;
@@ -80,52 +75,58 @@ const SignUp = () => {
       newErrors.city = { hasError: true, message: "City is required" };
       isValid = false;
     }
-
+  
     setErrors(newErrors);
     return isValid;
   };
-
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
-
+  
+    const postBody = {
+      username: formData.username,
+      password: formData.password,
+      email: formData.email,
+      address: {
+        country: formData.country,
+        city: formData.city,
+      },
+      role: formData.role,
+    };
+  
     try {
-      let postBody = {
-        username: formData.username,
-        password: formData.password,
-        email: formData.email,
-        address: {
-          country: formData.country,
-          city: formData.city,
-        },
-        role: formData.role,
-      };
-
-      const response = await axios.post("http://localhost:9090/api/user", postBody, {withCredentials: true});
-      if(response.data.success) {
-        await axios.post("http://localhost:9090/api/auth/login", {username: postBody.username, password: postBody.password}, {withCredentials: true});
-        const userRoleResp = await axios.get("http://localhost:9090/api/users/" + formData.username, {withCredentials: true});
-        
-        if(userRoleResp.data.data.role === "admin") {
-          navigate("/panel");
-        } else {
-          navigate("/dashboard");
-        }
-      } 
-      else {
-        setErrors({
-          ...errors,
-          username: { hasError: true, message: "Invalid username or password" },
-          password: { hasError: true, message: "Invalid username or password" },
+      const response = await axios.post("http://localhost:9090/api/user", postBody, { withCredentials: true });
+  
+      if (response.data.success) {
+        await axios.post("http://localhost:9090/api/auth/login", {
+          username: postBody.username,
+          password: postBody.password,
+        }, { withCredentials: true });
+  
+        const userRoleResp = await axios.get(`http://localhost:9090/api/users/${formData.username}`, { withCredentials: true });
+        navigate(userRoleResp.data.data.role === "admin" ? "/panel" : "/dashboard");
+      } else {
+        const fieldErrors = response.data.data?.fieldErrors || {};
+        const newErrors = { ...initialErrors };
+  
+        Object.entries(fieldErrors).forEach(([field, message]) => {
+          if (newErrors[field] !== undefined) {
+            newErrors[field] = { hasError: true, message };
+          }
         });
+  
+        setErrors((prev) => ({ ...prev, ...newErrors }));
       }
-    } catch (error) { }
+    } catch (error) {
+      console.error("Submit failed:", error);
+    }
   };
-
-  const isFormValid = Object.values(formData).every(
-    (value) => value.trim() !== "" || value === formData.role
+  
+  const isFormValid = formFields.every(
+    (field) => formData[field].trim() !== ""
   );
-
+  
   return (
     <div className="bg-light min-vh-100">
       <div className="container d-flex justify-content-center align-items-center vh-100">
