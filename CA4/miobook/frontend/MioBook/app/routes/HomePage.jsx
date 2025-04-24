@@ -11,30 +11,37 @@ const HomePage = () => {
 
   const fetchNewReleases = async () => {
     try {
-      const response = await fetch('http://localhost:9090/api/books?sortBy=year&order=asc&size=5', { method: 'GET' });
-      const data = await response.json();
-      setNewReleases(data.data.books); 
-    } catch (error) {
-      console.error("Error fetching new releases:", error);
+      const res  = await fetch('http://localhost:8080/api/books?sortBy=year&order=asc', {
+        method: 'GET'
+      });
+      const data = await res.json();
+      setNewReleases(data.data.books.slice(0, 5));
+    } catch (err) {
+      console.error("Error fetching new releases:", err);
     }
   };
-
+  
   const fetchTopRatedBooks = async () => {
     try {
-      const response = await fetch('http://localhost:9090/api/books?sortBy=rating&order=desc&size=5', { method: 'GET' });
-      const data = await response.json();
-      setTopRatedBooks(data.data.books);
-    } catch (error) {
-      console.error("Error fetching top-rated books:", error);
+      const res  = await fetch('http://localhost:8080/api/books?sortBy=rating&order=desc', {
+        method: 'GET'
+      });
+      const data = await res.json();
+      setTopRatedBooks(data.data.books.slice(0, 5));
+    } catch (err) {
+      console.error("Error fetching top-rated books:", err);
     }
   };
+  
 
   useEffect(() => {
-    fetchNewReleases();
-    fetchTopRatedBooks();
-    setLoading(false);
+    const fetchAll = async () => {
+      await Promise.all([fetchNewReleases(), fetchTopRatedBooks()]);
+      setLoading(false);
+    };
+    fetchAll();
   }, []);
-
+  
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -65,16 +72,16 @@ const HomePage = () => {
     </div>
   </div>
 </section>
-<div class="container mt-4">
+<div class="container ">
   <div class="row mb-4">
     <div class="col-3">
       <h3 class="p-3 me-3 text-end thick-text">New Releases</h3>
     </div>
   </div>
   
-  <div className="row justify-content-center mb-4">
+  <div className="row row-cols-5 g-4 justify-content-center">
           {newReleases.map((book) => (
-            <div className="col-md-2" key={book.id}>
+            <div className="col" key={newReleases.id}>
               <Card
                 title={book.title}
                 author={book.author}
@@ -92,9 +99,9 @@ const HomePage = () => {
     </div>
   </div>
 
-  <div className="row justify-content-center">
+  <div className="row row-cols-5 g-4 justify-content-center">
           {topRatedBooks.map((book) => (
-            <div className="col-md-2" key={book.id}>
+            <div className="col" key={topRatedBooks.id}>
               <Card
                 title={book.title}
                 author={book.author}
