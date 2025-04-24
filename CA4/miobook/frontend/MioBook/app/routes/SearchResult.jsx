@@ -11,23 +11,30 @@ const SearchResult = () => {
   const location = useLocation();
   
   const searchParams = new URLSearchParams(location.search);
-  const title = searchParams.get('title') || '';  
-  const author = searchParams.get('author') || '';  
-  const genre = searchParams.get('genre') || '';  
-  const from = searchParams.get('from') || '';  
-  const to = searchParams.get('to') || '';  
+  const title = searchParams.get('title') ;  
+  const author = searchParams.get('author');  
+  const genre = searchParams.get('genre') ;  
+  const from = searchParams.get('from') ;  
+  const to = searchParams.get('to') ;  
 
   useEffect(() => {
     const fetchBooks = async () => {
       try {
-        const response = await fetch(`http://localhost:9090/api/books?title=${title}&author=${author}&genre=${genre}&from=${from}&to=${to}`, {
+        const params = new URLSearchParams();
+        if (title) params.append("title", title);
+        if (author) params.append("author", author);
+        if (genre) params.append("genre", genre);
+        if (from) params.append("from", from);
+        if (to) params.append("to", to);
+  
+        const response = await fetch(`http://localhost:8080/api/books?${params.toString()}`, {
           method: "GET",
-          credentials: "include", 
+          credentials: "include",
         });
   
         const data = await response.json();
-        console.log("API response:", data);  
-        
+        console.log("API response:", data);
+  
         if (data.data && data.data.books) {
           setAuthorBooks(data.data.books);
         } else {
@@ -37,12 +44,12 @@ const SearchResult = () => {
         setLoading(false);
       } catch (error) {
         console.error("Error fetching books:", error);
-        setLoading(false); 
+        setLoading(false);
       }
     };
   
     fetchBooks();
-  }, [title, author, genre, from, to]); 
+  }, [title, author, genre, from, to]);
   
 return(<div>
     <Navbar />
