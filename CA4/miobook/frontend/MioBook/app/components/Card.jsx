@@ -21,7 +21,7 @@ const BookCard = ({ title, author, price, image, rating }) => {
             <p className="fw-bold price ms-4 my-0">${price ? price : 0}</p>
           </div>
               
-          <Link to={`/books/${encodeURIComponent(title)}`} className="btn btn-success mt-2">
+          <Link to={`/books/${encodeURIComponent(title)}`} className="btn btn-green mt-2">
           Add to Cart
         </Link>
             </div>

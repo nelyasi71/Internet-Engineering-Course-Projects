@@ -4,7 +4,7 @@ import './styles.css';
 
 const EmptyStar = () => {
   return (
-      <FaRegStar color= "#F1F5F7" className="star"/>
+      <FaRegStar color= "#C0C0C0" className="star"/>
   );
 };
 

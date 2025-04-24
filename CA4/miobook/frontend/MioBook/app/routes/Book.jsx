@@ -10,11 +10,14 @@ import AddToCartModal from "../components/AddCartModal.jsx";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
-
+import AddReviewModal from "../components/AddReviewModal.jsx";
 const Book = () => {
   const [book, setBook] = useState(null);
-  const [showModal, setShowModal] = useState(false);
+  const [showAddToCartModal, setShowAddToCartModal] = useState(false);
+  const [showAddReviewModal, setShowAddReviewModal] = useState(false);
+
   const { bookTitle } = useParams(); 
+  
 
   useEffect(() => {
     fetch(`http://localhost:9090/api/books/${bookTitle}`)
@@ -106,7 +109,7 @@ const reviewCount = book.ReviewCount ? book.ReviewCount() : 0;
                 <div className="mt-2">
                 <button
                   className="btn btn-green"
-                  onClick={() => setShowModal(true)}
+                  onClick={() => setShowAddToCartModal(true)}
                 >
                   Add to Cart
                   </button>
@@ -116,19 +119,25 @@ const reviewCount = book.ReviewCount ? book.ReviewCount() : 0;
           </div>
         </div>
         <AddToCartModal
-        show={showModal}
-        onHide={() => setShowModal(false)}
-        onConfirm={handleAddToCart}
-        price={book.price}
-      />
+  show={showAddToCartModal}
+  onHide={() => setShowAddToCartModal(false)}
+  onConfirm={handleAddToCart}
+  price={book.price}
+/>
+
         <div className="review-box container mt-4">
           <div className="custom-border mb-5 p-4 rounded-3">
             <div className="d-flex justify-content-between align-items-center mb-3">
               <h5>Reviews <span className="text-muted">{reviewCount}</span></h5>
-              <button className="btn bg-custom-gray border-0 ">
-                Add Review
-                <i className="bi bi-list-stars"></i>
-              </button>
+              <button className="btn bg-custom-gray border-0" onClick={() => setShowAddReviewModal(true)}>Add Review</button>
+
+              <AddReviewModal
+  show={showAddReviewModal}
+  onClose={() => setShowAddReviewModal(false)}
+  bookTitle={book.title}
+  bookImage={book.coverImage || BookCover}
+/>
+
             </div>
 
             <div className="list-group">

@@ -71,6 +71,7 @@ button.accordion-button {
 .star {
     border-radius: 6px;
     display: inline-block; 
+    background-color: #F1F5F7;
 }
 
 .rating {
@@ -191,4 +192,3 @@ input[type="checkbox"]:checked {
     color: white;
   }
     
-  
