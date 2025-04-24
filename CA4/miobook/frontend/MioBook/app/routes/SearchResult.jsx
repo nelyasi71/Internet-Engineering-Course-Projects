@@ -3,11 +3,13 @@ import Navbar from "../components/NavBar";
 import { useState, useEffect } from "react"; 
 import { useLocation } from "react-router-dom"; 
 import Card from "../components/Card";
+import { Modal, Button, Form } from "react-bootstrap";
+import FilterModal from "../components/FilterModal";
 
 const SearchResult = () => {
   const [authorBooks, setAuthorBooks] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  const [showFilter, setShowFilter] = useState(false);
   const location = useLocation();
   
   const searchParams = new URLSearchParams(location.search);
@@ -54,11 +56,24 @@ const SearchResult = () => {
 return(<div>
     <Navbar />
     <div className="container mt-4">
-    <div className="row mb-4">
-        <div className="col-5 ms-3">
-          <h3 className="p-3 text-end">Results for &lt;Search Parameters&gt; </h3>
-        </div>
-    </div>
+    <div className="row mb-4 start-0">
+    <div className="d-flex justify-content-between align-items-center mb-4 px-5">
+  <h3 className="m-0">Results for &lt;Search Parameters&gt;</h3>
+  <button className="btn btn-green fs-5 px-4 py-2" onClick={() => setShowFilter(true)}>
+    Filter
+  </button>
+
+  <FilterModal
+  show={showFilter}
+  onClose={() => setShowFilter(false)}
+  onApply={() => {
+    setShowFilter(false);
+  }}
+/>
+
+  </div>
+</div>
+
     <div className="container w-100">
           <div className="row row-cols-5 mx-0 w-100">
           {authorBooks.length > 0 ? (
