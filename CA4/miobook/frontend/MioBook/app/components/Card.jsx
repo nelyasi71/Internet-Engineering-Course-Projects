@@ -20,7 +20,7 @@ const BookCard = ({ title, author, price, image, rating }) => {
             <p className="fw-bold price ms-4 my-0">${price ? price : 0}</p>
           </div>
               
-            <button className="btn btn-success w-100 mt-2 ">Add to Cart</button>
+            <button className="btn btn-green w-100 mt-2 ">Add to Cart</button>
             
             </div>
       </div>
