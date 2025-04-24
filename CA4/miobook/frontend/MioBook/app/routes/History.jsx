@@ -2,6 +2,7 @@ import CartTable from "../components/CartTable";
 import { useEffect, useState } from "react";
 import Navbar from "../components/NavBar";
 import Footer from "../components/footer";
+import { RiChatHistoryFill, RiHistoryFill } from "react-icons/ri";
 
 export function meta({}) {
   return [
@@ -29,7 +30,13 @@ export default function History() {
     <div className="bg-light vh-100">
       <Navbar />
       <div className="container bg-white mt-5 p-5">
-        <h2 className="p-3"><i className="bi bi-clock-history"></i> History</h2>
+        <h2 className="p-3"><i><RiHistoryFill /></i> History</h2>
+        {purchasedHistory.length === 0 &&  (
+          <div className="d-flex flex-column align-items-center justify-content-center py-5 text-muted">
+            <RiHistoryFill size={100} />
+            <div className="mt-3 fs-4">You Have not Bought Anything Yet :( </div>
+          </div>
+        )}
         <div className="accordion shadow rounded-5">
           {purchasedHistory.map((group, index) => (
             <div className="accordion-item" key={index}>

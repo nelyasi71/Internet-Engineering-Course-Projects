@@ -51,11 +51,13 @@ export default function BuyCart() {
       <div className="container bg-white mt-5 p-4">
         <h2 className="p-2"><i className="bi bi-cart3"></i> Cart</h2>
         <CartTable items={cartItems} onlyShow={false}/>
-        <div className="p-3 text-center">
-          <button className="btn btn-post w-25" onClick={purchase}>
-            Purchase
-          </button>
-        </div>
+        {cartItems.length > 0 && (
+          <div className="p-3 text-center">
+            <button className="btn btn-post w-25" onClick={purchase}>
+              Purchase
+            </button>
+          </div>
+        )}
       </div>
       <Footer />
     </div>

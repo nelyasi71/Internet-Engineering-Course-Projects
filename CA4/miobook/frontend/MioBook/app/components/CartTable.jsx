@@ -1,3 +1,4 @@
+import { BsCartX } from "react-icons/bs";
 import { useState, useEffect } from "react";
 import CartItem from "./CartItem";
 
@@ -11,6 +12,16 @@ export default function CartTable({ items, onlyShow }) {
   const handleRemove = (title) => {
     setCartItems(prevItems => prevItems.filter(item => item.title !== title));
   };
+
+  if (cartItems.length === 0 && !onlyShow) {
+    return (
+      <div className="d-flex flex-column align-items-center justify-content-center py-5 text-muted">
+        <BsCartX size={100} />
+        <div className="mt-3 fs-4">Your cart is empty</div>
+      </div>
+    );
+    
+  }
 
   return (
     <div className="rounded-4 overflow-hidden shadow-sm">
