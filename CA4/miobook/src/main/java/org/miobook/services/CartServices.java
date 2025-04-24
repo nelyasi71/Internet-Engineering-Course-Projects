@@ -1,5 +1,6 @@
 package org.miobook.services;
 
+import org.miobook.Exception.MioBookException;
 import org.miobook.commands.*;
 import org.miobook.models.*;
 import org.miobook.repositories.AuthorRepository;
@@ -24,19 +25,19 @@ public class CartServices implements Services {
     @Autowired
     private BookRepository bookRepository;
 
-    public void addCart(AddCart dto) throws IllegalArgumentException {
+    public void addCart(AddCart dto) {
         if(userRepository.doesAdminExist(dto.getUsername())) {
-            throw new IllegalArgumentException("Admin with username '" + dto.getUsername() + "' cannot add items to the cart. Only customers can.");
+            throw new MioBookException("Admin with username '" + dto.getUsername() + "' cannot add items to the cart. Only customers can.");
         }
 
         Optional<Customer> customer = userRepository.getCustomerByUsername(dto.getUsername());
         if(customer.isEmpty()) {
-            throw new IllegalArgumentException("Customer with username '" + dto.getUsername() + "' does not exist.");
+            throw new MioBookException("username", "Customer with username '" + dto.getUsername() + "' does not exist.");
         }
 
         Optional<Book> book = bookRepository.getBookByTitle(dto.getTitle());
         if(book.isEmpty()) {
-            throw new IllegalArgumentException("Book with title '" + dto.getTitle() + "' not found.");
+            throw new MioBookException("title", "Book with title '" + dto.getTitle() + "' not found.");
         }
 
         customer.get().addCart(new BuyItem(book.get()));
@@ -45,17 +46,17 @@ public class CartServices implements Services {
 
     public void removeCart(RemoveCart dto) {
         if(userRepository.doesAdminExist(dto.getUsername())) {
-            throw new IllegalArgumentException("Admin with username '" + dto.getUsername() + "' cannot remove items from the cart. Only customers can.");
+            throw new MioBookException("Admin with username '" + dto.getUsername() + "' cannot remove items from the cart. Only customers can.");
         }
 
         Optional<Customer> customer = userRepository.getCustomerByUsername(dto.getUsername());
         if(customer.isEmpty()) {
-            throw new IllegalArgumentException("Customer with username '" + dto.getUsername() + "' does not exist.");
+            throw new MioBookException("username", "Customer with username '" + dto.getUsername() + "' does not exist.");
         }
 
         Optional<Book> book = bookRepository.getBookByTitle(dto.getTitle());
         if(book.isEmpty()) {
-            throw new IllegalArgumentException("Book with title '" + dto.getTitle() + "' not found in the catalog.");
+            throw new MioBookException("title", "Book with title '" + dto.getTitle() + "' not found in the catalog.");
         }
 
         customer.get().removeCard(dto.getTitle());
@@ -63,12 +64,12 @@ public class CartServices implements Services {
 
     public PurchaseCartRecord purchaseCart(PurchaseCart dto) {
         if(userRepository.doesAdminExist(dto.getUsername())) {
-            throw new IllegalArgumentException("Admin with username '\" + dto.getUsername() + \"' cannot make a purchase. Only customers can.");
+            throw new MioBookException("Admin with username '" + dto.getUsername() + "' cannot make a purchase. Only customers can.");
         }
 
         Optional<Customer> customer = userRepository.getCustomerByUsername(dto.getUsername());
         if(customer.isEmpty()) {
-            throw new IllegalArgumentException("Customer with username '\" + dto.getUsername() + \"' not found.");
+            throw new MioBookException("username", "Customer with username '" + dto.getUsername() + "' not found.");
         }
 
         Purchase purchase = customer.get().purchaseCart();
@@ -80,17 +81,17 @@ public class CartServices implements Services {
 
     public void borrowBook(BorrowBook dto) {
         if(userRepository.doesAdminExist(dto.getUsername())) {
-            throw new IllegalArgumentException("Admin with username '\" + dto.getUsername() + \"' cannot borrow books. Only customers can.");
+            throw new MioBookException("Admin with username '" + dto.getUsername() + "' cannot borrow books. Only customers can.");
         }
 
         Optional<Customer> customer = userRepository.getCustomerByUsername(dto.getUsername());
         if(customer.isEmpty()) {
-            throw new IllegalArgumentException("Customer with username '\" + dto.getUsername() + \"' not found.");
+            throw new MioBookException("username", "Customer with username '" + dto.getUsername() + "' not found.");
         }
 
         Optional<Book> book = bookRepository.getBookByTitle(dto.getTitle());
         if(book.isEmpty()) {
-            throw new IllegalArgumentException("Book with title '\" + dto.getTitle() + \"' not found.");
+            throw new MioBookException("title", "Book with title '" + dto.getTitle() + "' not found.");
         }
 
         customer.get().addCart(new BorrowItem(book.get(), dto.getDays()));
@@ -98,12 +99,12 @@ public class CartServices implements Services {
 
     public CartRecord showCart(ShowCart dto) {
         if(userRepository.doesAdminExist(dto.getUsername())) {
-            throw new IllegalArgumentException("Admin with username '" + dto.getUsername() + "' cannot view carts. Only customers can.");
+            throw new MioBookException("Admin with username '" + dto.getUsername() + "' cannot view carts. Only customers can.");
         }
 
         Optional<Customer> _customer = userRepository.getCustomerByUsername(dto.getUsername());
         if(_customer.isEmpty()) {
-            throw new IllegalArgumentException("Customer with username '" + dto.getUsername() + "' not found.");
+            throw new MioBookException("username", "Customer with username '" + dto.getUsername() + "' not found.");
         }
 
         Customer customer = _customer.get();

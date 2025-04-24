@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+import org.miobook.Exception.MioBookException;
 import org.miobook.responses.BaseResponse;
 import org.miobook.infrastructure.JsonValidator;
 import org.miobook.services.AuthServices;
@@ -32,8 +33,8 @@ public class Login implements BaseCommand<Void> {
             this.validate();
             ((AuthServices)authServices).login(this);
             return new BaseResponse<>(true, "User logged In successfully", null);
-        } catch (IllegalArgumentException exp) {
-            return new BaseResponse<>(false, exp.getMessage(), null);
+        } catch (MioBookException exp) {
+            return BaseResponse.fromMioBookException(exp);
         }
     }
 }

@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+import org.miobook.Exception.MioBookException;
 import org.miobook.infrastructure.JsonValidator;
 import org.miobook.responses.BaseResponse;
 import org.miobook.responses.PurchaseHistoryRecord;
@@ -28,8 +29,8 @@ public class ShowPurchaseHistory implements BaseCommand<PurchaseHistoryRecord> {
             this.validate();
             PurchaseHistoryRecord data = ((UserServices) services).showPurchaseHistory(this);
             return new BaseResponse<>(true, "Purchase history retrieved successfully.", data);
-        } catch (IllegalArgumentException exp) {
-            return new BaseResponse<>(false, exp.getMessage(), null);
+        } catch (MioBookException exp) {
+            return BaseResponse.fromMioBookException(exp);
         }
     }
 }

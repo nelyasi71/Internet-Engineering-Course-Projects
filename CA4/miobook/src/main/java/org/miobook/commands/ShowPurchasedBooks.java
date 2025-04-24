@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+import org.miobook.Exception.MioBookException;
 import org.miobook.infrastructure.JsonValidator;
 import org.miobook.responses.BaseResponse;
 import org.miobook.responses.PurchasedBooksRecord;
@@ -28,8 +29,8 @@ public class ShowPurchasedBooks implements BaseCommand<PurchasedBooksRecord> {
             this.validate();
             PurchasedBooksRecord data = ((UserServices) services).showPurchasedBooks(this);
             return new BaseResponse<>(true, "Purchased books retrieved successfully.", data);
-        } catch (IllegalArgumentException exp) {
-            return new BaseResponse<>(false, exp.getMessage(), null);
+        } catch (MioBookException exp) {
+            return BaseResponse.fromMioBookException(exp);
         }
     }
 }

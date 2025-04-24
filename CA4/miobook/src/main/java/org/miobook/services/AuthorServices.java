@@ -1,5 +1,6 @@
 package org.miobook.services;
 
+import org.miobook.Exception.MioBookException;
 import org.miobook.commands.AddAuthor;
 import org.miobook.commands.ShowAllAuthors;
 import org.miobook.commands.ShowAuthorDetails;
@@ -12,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class AuthorServices implements Services {
@@ -25,19 +25,19 @@ public class AuthorServices implements Services {
 
     public void addAuthor(AddAuthor dto) {
         if(!userRepository.doesAdminExist(dto.getUsername())) {
-            throw new IllegalArgumentException("Only admins can add authors.");
+            throw new MioBookException("Only admins can add authors.");
         }
         if(authorRepository.doesExist(dto.getName())) {
-            throw new IllegalArgumentException("Author with the name '" + dto.getName() + "' already exists.");
+            throw new MioBookException("name", "Author with the name '" + dto.getName() + "' already exists.");
         }
 
         authorRepository.add(dto);
     }
 
     public AuthorRecord showAuthorDetails(ShowAuthorDetails dto) {
-        Optional<Author> _author = authorRepository.getByName(dto.getUsername());
+        Optional<Author> _author = authorRepository.getByName(dto.getName());
         if(_author.isEmpty()) {
-            throw new IllegalArgumentException("Author with the name '" + dto.getUsername() + "' does not exist.");
+            throw new MioBookException("name", "Author with the name '" + dto.getName() + "' does not exist.");
         }
 
         Author author = _author.get();

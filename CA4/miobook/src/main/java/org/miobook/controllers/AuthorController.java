@@ -7,7 +7,6 @@ import org.miobook.auth.Authenticated;
 import org.miobook.commands.AddAuthor;
 import org.miobook.commands.ShowAllAuthors;
 import org.miobook.commands.ShowAuthorDetails;
-import org.miobook.commands.ShowPurchaseHistory;
 import org.miobook.responses.AllAuthorsRecord;
 import org.miobook.responses.AuthorRecord;
 import org.miobook.responses.BaseResponse;
@@ -45,7 +44,7 @@ public class AuthorController {
     @GetMapping("/authors/{username}")
     public BaseResponse<AuthorRecord> show_author(@PathVariable String username, HttpServletRequest request) {
         ShowAuthorDetails command = new ShowAuthorDetails();
-        command.setUsername(username);
+        command.setName(username);
         return command.execute(authorServices);
     }
 }

@@ -3,6 +3,7 @@ package org.miobook.commands;
 import jakarta.servlet.http.HttpSession;
 import lombok.Getter;
 import lombok.Setter;
+import org.miobook.Exception.MioBookException;
 import org.miobook.responses.BaseResponse;
 import org.miobook.services.AuthServices;
 import org.miobook.services.Services;
@@ -23,8 +24,8 @@ public class Logout implements BaseCommand<Void> {
             this.validate();
             ((AuthServices)authServices).logout(this);
             return new BaseResponse<>(true, "User logged out successfully", null);
-        } catch (IllegalArgumentException exp) {
-            return new BaseResponse<>(false, exp.getMessage(), null);
+        } catch (MioBookException exp) {
+            return BaseResponse.fromMioBookException(exp);
         }
     }
 }

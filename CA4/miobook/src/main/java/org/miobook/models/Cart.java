@@ -1,6 +1,7 @@
 package org.miobook.models;
 
 import lombok.Getter;
+import org.miobook.Exception.MioBookException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,10 +34,10 @@ public class Cart {
     public void add(PurchaseItem purchaseItem) {
         Optional<PurchaseItem> item = this.getItemByBookTitle(purchaseItem.getBook().getTitle());
         if(item.isPresent()) {
-            throw new IllegalArgumentException("This book is already in the purchase list.");
+            throw new MioBookException("This book is already in the purchase list.");
         }
         if(items.size() > 10) {
-            throw new IllegalArgumentException("Cannot add more than 10 items to the purchase list.");
+            throw new MioBookException("Cannot add more than 10 items to the purchase list.");
         }
         items.add(purchaseItem);
     }
@@ -44,7 +45,7 @@ public class Cart {
     public void remove(String title) {
         Optional<PurchaseItem> item = this.getItemByBookTitle(title);
         if(item.isEmpty()) {
-            throw new IllegalArgumentException("The item you are trying to remove does not exist in the purchase list.");
+            throw new MioBookException("The item you are trying to remove does not exist in the purchase list.");
         }
         items.remove(item.get());
     }

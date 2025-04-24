@@ -1,5 +1,6 @@
 package org.miobook.services;
 
+import org.miobook.Exception.MioBookException;
 import org.miobook.commands.*;
 import org.miobook.models.Author;
 import org.miobook.models.Book;
@@ -36,16 +37,16 @@ public class BookServices implements Services{
 
     public void addBook(AddBook dto) {
         if(!userRepository.doesAdminExist(dto.getUsername())) {
-            throw new IllegalArgumentException("Admin with username '" + dto.getUsername() + "' does not exist. Only admins can add books.");
+            throw new MioBookException("Admin with username '" + dto.getUsername() + "' does not exist. Only admins can add books.");
         }
         if(bookRepository.doesBookExist(dto.getTitle())) {
-            throw new IllegalArgumentException("A book with the title '" + dto.getTitle() + "' already exists.");
+            throw new MioBookException("title", "A book with the title '" + dto.getTitle() + "' already exists.");
         }
 
         Optional<Author> author = authorRepository.getByName(dto.getAuthor());
 
         if(author.isEmpty()) {
-            throw new IllegalArgumentException("Author with the name '" + dto.getAuthor() + "' does not exist.");
+            throw new MioBookException("author", "Author with the name '" + dto.getAuthor() + "' does not exist.");
         }
 
         bookRepository.add(
@@ -56,7 +57,7 @@ public class BookServices implements Services{
     public BookRecord showBookDetails(ShowBookDetails dto) {
         Optional<Book> _book = bookRepository.getBookByTitle(dto.getTitle());
         if(_book.isEmpty()) {
-            throw new IllegalArgumentException("Book with the title '" + dto.getTitle() + "' not found.");
+            throw new MioBookException("title", "Book with the title '" + dto.getTitle() + "' not found.");
         }
         Book book = _book.get();
         return new BookRecord(
@@ -93,16 +94,16 @@ public class BookServices implements Services{
     public BookContentRecord showBookContent(ShowBookContent dto) {
         Optional<Customer> customer = userRepository.getCustomerByUsername(dto.getUsername());
         if(customer.isEmpty()) {
-            throw new IllegalArgumentException("Customer with username '" + dto.getUsername() + "' not found.");
+            throw new MioBookException("Customer with username '" + dto.getUsername() + "' not found.");
         }
 
         Optional<Book> book = bookRepository.getBookByTitle(dto.getTitle());
         if(book.isEmpty()) {
-            throw new IllegalArgumentException("Book with title '" + dto.getTitle() + "' not found.");
+            throw new MioBookException("title", "Book with title '" + dto.getTitle() + "' not found.");
         }
 
         if(!customer.get().hasBook(book.get().getTitle())) {
-            throw new IllegalArgumentException("Customer with username '" + dto.getUsername() + "' does not own the book '" + dto.getTitle() + "'.");
+            throw new MioBookException("Customer with username '" + dto.getUsername() + "' does not own the book '" + dto.getTitle() + "'.");
         }
 
         return new BookContentRecord(dto.getTitle(), book.get().getAuthor().getName(), book.get().getContent());
@@ -111,18 +112,18 @@ public class BookServices implements Services{
     public void addReview(AddReview dto) {
         Optional<Book> bookOptional = bookRepository.getBookByTitle(dto.getTitle());
         if(bookOptional.isEmpty()) {
-            throw new IllegalArgumentException("Book with title '" + dto.getTitle() + "' not found.");
+            throw new MioBookException("title", "Book with title '" + dto.getTitle() + "' not found.");
         }
         Book book = bookOptional.get();
 
         Optional<Customer> customerOptional = userRepository.getCustomerByUsername(dto.getUsername());
         if(customerOptional.isEmpty()) {
-            throw new IllegalArgumentException("Customer with username '" + dto.getUsername() + "' not found.");
+            throw new MioBookException("username", "Customer with username '" + dto.getUsername() + "' not found.");
         }
         Customer customer = customerOptional.get();
 
         if (!customer.hasBook(book.getTitle())) {
-            throw new IllegalArgumentException("Customer has not purchased this book and cannot add a review.");
+            throw new MioBookException("Customer has not purchased this book and cannot add a review.");
         }
 
         Review review = new Review(customer, dto.getComment(), dto.getRate(), LocalDateTime.now());
@@ -250,7 +251,7 @@ public class BookServices implements Services{
     public BookReviewRecord showBookReviews(ShowBookReviews dto) {
         Optional<Book> bookOptional = bookRepository.getBookByTitle(dto.getTitle());
         if(bookOptional.isEmpty()) {
-            throw new IllegalArgumentException("Book with title '" + dto.getTitle() + "' not found. Please check the title and try again.");
+            throw new MioBookException("title", "Book with title '" + dto.getTitle() + "' not found. Please check the title and try again.");
         }
         Book book = bookOptional.get();
 

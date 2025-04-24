@@ -8,6 +8,7 @@ import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Range;
+import org.miobook.Exception.MioBookException;
 import org.miobook.responses.BaseResponse;
 import org.miobook.infrastructure.IntDeserializer;
 import org.miobook.infrastructure.JsonValidator;
@@ -38,8 +39,8 @@ public class AddCredit implements BaseCommand<Void> {
             this.validate();
             ((UserServices)services).addCredit(this);
             return new BaseResponse<Void>(true, "Credit added successfully.", null);
-        } catch (IllegalArgumentException exp) {
-            return new BaseResponse<Void>(false, exp.getMessage(), null);
+        } catch (MioBookException exp) {
+            return BaseResponse.fromMioBookException(exp);
         }
     }
 }

@@ -1,5 +1,6 @@
 package org.miobook.services;
 
+import org.miobook.Exception.MioBookException;
 import org.miobook.commands.*;
 import org.miobook.models.*;
 import org.miobook.repositories.AuthorRepository;
@@ -20,10 +21,10 @@ public class UserServices implements Services {
 
     public void addUser(AddUser dto) {
         if(userRepository.doesUserExist(dto.getUsername())) {
-            throw new IllegalArgumentException("User with the username '" + dto.getUsername() + "' already exists.");
+            throw new MioBookException("username", "User with the username '" + dto.getUsername() + "' already exists.");
         }
         if(userRepository.doesEmailExist(dto.getEmail())) {
-            throw new IllegalArgumentException("An account with the email '" + dto.getEmail() + "' already exists.");
+            throw new MioBookException("email", "An account with the email '" + dto.getEmail() + "' already exists.");
         }
 
         userRepository.add(dto);
@@ -32,7 +33,7 @@ public class UserServices implements Services {
     public void addCredit(AddCredit dto) {
         Optional<Customer> customerOptional = userRepository.getCustomerByUsername(dto.getUsername());
         if(customerOptional.isEmpty()) {
-            throw new IllegalArgumentException("Customer with username '" + dto.getUsername() + "' not found.");
+            throw new MioBookException("username", "Customer with username '" + dto.getUsername() + "' not found.");
         }
 
         customerOptional.get().addCredit(dto.getCredit());
@@ -43,7 +44,7 @@ public class UserServices implements Services {
     public UserRecord showUserDetails(ShowUserDetails dto) {
         Optional<User> user = userRepository.getUserByUsername(dto.getUsername());
         if(user.isEmpty()) {
-            throw new IllegalArgumentException("User with username '" + dto.getUsername() + "' not found.");
+            throw new MioBookException("username", "User with username '" + dto.getUsername() + "' not found.");
         }
         if(user.get() instanceof Customer customer) {
             return new UserRecord(customer.getUsername(), "customer", customer.getEmail(), customer.getAddress(), customer.getBalance());
@@ -56,12 +57,12 @@ public class UserServices implements Services {
 
     public PurchaseHistoryRecord showPurchaseHistory(ShowPurchaseHistory dto) {
         if(userRepository.doesAdminExist(dto.getUsername())) {
-            throw new IllegalArgumentException("Not available for 'Admin' role");
+            throw new MioBookException("Not available for 'Admin' role");
         }
 
         Optional<Customer> _customer = userRepository.getCustomerByUsername(dto.getUsername());
         if(_customer.isEmpty()) {
-            throw new IllegalArgumentException("User with username '" + dto.getUsername() + "' not found.");
+            throw new MioBookException("username", "User with username '" + dto.getUsername() + "' not found.");
         }
 
         Customer customer = _customer.get();
@@ -75,12 +76,12 @@ public class UserServices implements Services {
     }
     public PurchasedBooksRecord showPurchasedBooks(ShowPurchasedBooks dto) {
         if(userRepository.doesAdminExist(dto.getUsername())) {
-            throw new IllegalArgumentException("Not available for 'Admin' role");
+            throw new MioBookException("Not available for 'Admin' role");
         }
 
         Optional<Customer> customer = userRepository.getCustomerByUsername(dto.getUsername());
         if(customer.isEmpty()) {
-            throw new IllegalArgumentException("User with username '" + dto.getUsername() + "' not found.");
+            throw new MioBookException("username", "User with username '" + dto.getUsername() + "' not found.");
         }
 
         return customer.get().createPurchasedBooksRecord();

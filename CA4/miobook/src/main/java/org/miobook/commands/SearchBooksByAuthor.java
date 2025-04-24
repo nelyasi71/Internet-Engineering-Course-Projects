@@ -3,6 +3,7 @@ package org.miobook.commands;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+import org.miobook.Exception.MioBookException;
 import org.miobook.infrastructure.JsonValidator;
 import org.miobook.responses.*;
 import org.miobook.services.BookServices;
@@ -27,8 +28,8 @@ public class SearchBooksByAuthor implements BaseCommand<SearchedBooksRecord> {
             SearchedBooksRecord data = ((BookServices) services).searchBooksByAuthor(this);
             SearchedBooksRecord responseData = new SearchedBooksRecord(this.name, data.books());
             return new BaseResponse<>(true, "Books by '" + this.name + "' :", responseData);
-        } catch (IllegalArgumentException exp) {
-            return new BaseResponse<>(false, exp.getMessage(), null);
+        } catch (MioBookException exp) {
+            return BaseResponse.fromMioBookException(exp);
         }
     }
 }

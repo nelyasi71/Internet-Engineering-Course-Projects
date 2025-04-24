@@ -3,6 +3,7 @@ package org.miobook.services;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.Getter;
+import org.miobook.Exception.MioBookException;
 import org.miobook.commands.Login;
 import org.miobook.commands.Logout;
 import org.miobook.models.User;
@@ -23,15 +24,15 @@ public class AuthServices implements Services {
         HttpSession session = dto.getSession();
 
         if (session != null && session.getAttribute("username") != null) {
-            throw new IllegalArgumentException("Already logged in as: " + session.getAttribute("username"));
+            throw new MioBookException("Already logged in as: " + session.getAttribute("username"));
         }
 
         Optional<User> user = userRepository.getUserByUsername(dto.getUsername());
         if(user.isEmpty()) {
-            throw new IllegalArgumentException("User with username '" + dto.getUsername() + "' not found.");
+            throw new MioBookException("username", "User with username '" + dto.getUsername() + "' not found.");
         }
         if(!user.get().getPassword().equals(dto.getPassword())) {
-            throw new IllegalArgumentException("Wrong password.");
+            throw new MioBookException("password", "Wrong password.");
         }
         assert session != null;
 
@@ -43,7 +44,7 @@ public class AuthServices implements Services {
     public void logout(Logout dto) {
         HttpSession session = dto.getSession();
         if (session == null || session.getAttribute("username") == null) {
-            throw new IllegalArgumentException("No user is currently logged in.");
+            throw new MioBookException("No user is currently logged in.");
         }
 
         String loggedInUser = (String) session.getAttribute("username");

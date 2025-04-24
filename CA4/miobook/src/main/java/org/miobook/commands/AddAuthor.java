@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
+import org.miobook.Exception.MioBookException;
 import org.miobook.responses.BaseResponse;
 import org.miobook.infrastructure.JsonValidator;
 import org.miobook.services.AuthorServices;
@@ -50,8 +51,8 @@ public class AddAuthor implements BaseCommand<Void> {
             this.validate();
             ((AuthorServices) services).addAuthor(this);
             return new BaseResponse<>(true, "Author added successfully.", null);
-        } catch (IllegalArgumentException exp) {
-            return new BaseResponse<>(false, exp.getMessage(), null);
+        } catch (MioBookException exp) {
+            return BaseResponse.fromMioBookException(exp);
         }
     }
 }

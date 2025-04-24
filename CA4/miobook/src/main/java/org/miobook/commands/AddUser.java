@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import org.miobook.Exception.MioBookException;
 import org.miobook.models.Address;
 import org.miobook.responses.BaseResponse;
 import org.miobook.infrastructure.JsonValidator;
@@ -48,8 +49,8 @@ public class AddUser implements BaseCommand<Void> {
 
             ((UserServices)services).addUser(this);
             return new BaseResponse<>(true, "User added successfully.", null);
-        } catch (IllegalArgumentException exp) {
-            return new BaseResponse<>(false, exp.getMessage(), null);
+        } catch (MioBookException exp) {
+            return BaseResponse.fromMioBookException(exp);
         }
     }
 }

@@ -2,6 +2,7 @@ package org.miobook.commands;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Setter;
+import org.miobook.Exception.MioBookException;
 import org.miobook.infrastructure.JsonValidator;
 import org.miobook.responses.AllAuthorsRecord;
 import org.miobook.responses.AllBooksRecord;
@@ -25,8 +26,8 @@ public class ShowAllBooks implements BaseCommand<AllBooksRecord> {
             this.validate();
             AllBooksRecord data = ((BookServices) services).showAllBooks(this);
             return new BaseResponse<>(true, "Book details retrieved successfully.", data);
-        } catch (IllegalArgumentException exp) {
-            return new BaseResponse<>(false, exp.getMessage(), null);
+        } catch (MioBookException exp) {
+            return BaseResponse.fromMioBookException(exp);
         }
     }
 }

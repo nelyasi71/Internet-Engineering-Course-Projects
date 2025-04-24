@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Range;
+import org.miobook.Exception.MioBookException;
 import org.miobook.infrastructure.IntDeserializer;
 import org.miobook.infrastructure.JsonValidator;
 import org.miobook.responses.BaseResponse;
@@ -45,9 +46,8 @@ public class AddReview implements BaseCommand<Void> {
             this.validate();
             ((BookServices) services).addReview(this);
             return new BaseResponse<>(true, "Review added successfully.", null);
-        } catch (IllegalArgumentException exp) {
-            return new BaseResponse<>(false, exp.getMessage(), null);
+        } catch (MioBookException exp) {
+            return BaseResponse.fromMioBookException(exp);
         }
-
     }
 }

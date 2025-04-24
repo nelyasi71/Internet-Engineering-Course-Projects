@@ -1,6 +1,7 @@
 package org.miobook.models;
 
 import lombok.Getter;
+import org.miobook.Exception.MioBookException;
 import org.miobook.responses.PurchaseCartRecord;
 import org.miobook.responses.PurchasedBookItemRecord;
 import org.miobook.responses.PurchasedBooksRecord;
@@ -40,12 +41,12 @@ public class Customer extends User {
 
     public Purchase purchaseCart() {
         if(shoppingCart.isEmpty()) {
-            throw new IllegalArgumentException("Cannot proceed with purchase: Shopping cart is empty.");
+            throw new MioBookException("Cannot proceed with purchase: Shopping cart is empty.");
         }
 
         int cartPrice = shoppingCart.price();
         if(this.wallet.getCredit() < cartPrice) {
-            throw new IllegalArgumentException("Insufficient funds: Wallet credit is lower than the total cart price.");
+            throw new MioBookException("Insufficient funds: Wallet credit is lower than the total cart price.");
         }
 
 
@@ -57,7 +58,7 @@ public class Customer extends User {
         return newPurchase;
     }
 
-    public void addCredit(int credit) throws IllegalArgumentException {
+    public void addCredit(int credit) throws MioBookException {
         wallet.addCredit(credit);
     }
 

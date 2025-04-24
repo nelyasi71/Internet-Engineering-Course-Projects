@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpSession;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
+import org.miobook.Exception.MioBookException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -20,12 +21,12 @@ public class AuthenticationAspect {
     public void checkAuthentication(JoinPoint joinPoint, Authenticated authenticated) {
         HttpSession session = request.getSession(false);
         if (session == null || session.getAttribute("username") == null) {
-            throw new IllegalArgumentException("Not logged in");
+            throw new MioBookException("Not logged In");
         }
 
         String userRole = (String) session.getAttribute("userRole");
         if (authenticated.roles().length > 0 && !Arrays.asList(authenticated.roles()).contains(userRole)) {
-            throw new IllegalArgumentException("Access denied");
+            throw new MioBookException("Access Denied");
         }
     }
 }
