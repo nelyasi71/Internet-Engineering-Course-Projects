@@ -2,114 +2,162 @@ import React, { useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 
 const AddBookModal = () => {
-  const [page1, setPage1] = useState(false);
-  const [page2, setPage2] = useState(false);
+  const bookFields = [
+    "title",
+    "author",
+    "publisher",
+    "genres",
+    "year",
+    "price",
+    "image",
+    "synopsis",
+    "content",
+  ];
+  
 
-  const [form, setForm] = useState({
-    name: '',
-    author: '',
-    publisher: '',
-    genres: '',
-    year: '',
-    price: '',
-    image: '',
-    synopsis: '',
-    content: ''
-  });
+  const initialForm = bookFields.reduce((acc, field) => {
+    acc[field] = "";
+    return acc;
+  }, {});
+
+  const initialErrors = bookFields.reduce((acc, field) => {
+    acc[field] = { hasError: false, message: "" };
+    return acc;
+  }, {});
+
+  const [showStep1, setShowStep1] = useState(false);
+  const [showStep2, setShowStep2] = useState(false);
+  const [form, setForm] = useState(initialForm);
+  const [errors, setErrors] = useState(initialErrors);
+
+  const formattedForm = {
+    ...form,
+    genres: form.genres.split(",").map((g) => g.trim()),
+    year: parseInt(form.year, 10),
+    price: parseFloat(form.price)
+  };
 
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+
+    if (errors[name]?.hasError) {
+      setErrors((prev) => ({
+        ...prev,
+        [name]: { hasError: false, message: "" },
+      }));
+    }
+  };
+
+  const validateStep1 = () => {
+    const requiredFields = ["title", "author", "publisher", "genres", "year", "price", "image"];
+    let isValid = true;
+    const newErrors = { ...initialErrors };
+
+    requiredFields.forEach((field) => {
+      if (!form[field].trim()) {
+        newErrors[field] = { hasError: true, message: `${field} is required` };
+        isValid = false;
+      }
+    });
+
+    setErrors(newErrors);
+    return isValid;
+  };
+
+  const validateStep2 = () => {
+    let isValid = true;
+    const newErrors = { ...initialErrors };
+
+    if (!form.synopsis.trim()) {
+      newErrors.synopsis = { hasError: true, message: "Synopsis is required" };
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    return isValid;
   };
 
   const handleNext = (e) => {
     e.preventDefault();
-
-    setPage1(false);
-    setPage2(true); 
+    if (validateStep1()) {
+      setShowStep1(false);
+      setShowStep2(true);
+    }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!validateStep2()) return;
 
-    setPage1(false);
-    setPage2(false); 
+    try {
+      const res = await fetch("http://localhost:9090/api/book", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(formattedForm),
+      });
+      
+      const response = await res.json();
+      console.log(response.data);
+
+      if (response.success) {
+        setForm(initialForm);
+        setShowStep2(false);
+      } else {
+        setShowStep2(false);
+        setShowStep1(true); 
+        const fieldErrors = response.data?.fieldErrors || {};
+        const newErrors = { ...initialErrors };
+  
+        Object.entries(fieldErrors).forEach(([field, message]) => {
+          if (newErrors[field] !== undefined) {
+            newErrors[field] = { hasError: true, message };
+          }
+        });
+        
+        setErrors((prev) => ({ ...prev, ...newErrors }));
+      }
+    } catch (error) {
+      console.error("Submit failed:", error);
+    }
   };
 
   return (
     <>
-
-      <button className="btn btn-post ms-5" onClick={() => setPage1(true)}>
-          Add Book
+      <button className="btn btn-post ms-5" onClick={() => setShowStep1(true)}>
+        Add Book
       </button>
 
-      <Modal
-        show={page1}
-        onHide={() => setPage1(false)}
-        centered
-        dialogClassName="custom-modal"
-      >
+      <Modal show={showStep1} onHide={() => setShowStep1(false)} centered dialogClassName="custom-modal">
         <Form>
           <Modal.Header closeButton>
             <Modal.Title className="w-100 text-center">Add Book</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <Form.Group className="mb-3">
-              <Form.Control
-                name="name"
-                placeholder="Name"
-                value={form.name}
-                onChange={handleChange}
-                required
-              />
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Control
-                name="author"
-                placeholder="Author"
-                value={form.author}
-                onChange={handleChange}
-              />
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Control
-                name="publisher"
-                placeholder="Publisher"
-                value={form.publisher}
-                onChange={handleChange}
-              />
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Control
-                name="genres"
-                placeholder="Genres"
-                value={form.genres}
-                onChange={handleChange}
-              />
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Control
-                name="year"
-                placeholder="Publisher Year"
-                value={form.year}
-                onChange={handleChange}
-              />
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Control
-                name="price"
-                placeholder="Price"
-                value={form.price}
-                onChange={handleChange}
-              />
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Control
-                name="image"
-                placeholder="Image Link"
-                value={form.image}
-                onChange={handleChange}
-              />
-            </Form.Group>
+            {[
+              "title",
+              "author",
+              "publisher",
+              "genres",
+              "year",
+              "price",
+              "image",
+            ].map((field) => (
+              <Form.Group className="mb-3" key={field}>
+                <Form.Control
+                  name={field}
+                  placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
+                  value={form[field]}
+                  onChange={handleChange}
+                  isInvalid={errors[field].hasError}
+                  required
+                />
+                <Form.Control.Feedback type="invalid">
+                  {errors[field].message}
+                </Form.Control.Feedback>
+              </Form.Group>
+            ))}
           </Modal.Body>
           <div className="ps-3 pe-3">
             <button className="btn btn-post w-100" onClick={handleNext}>
@@ -117,19 +165,14 @@ const AddBookModal = () => {
             </button>
           </div>
           <div className="p-3">
-            <button className="btn btn-light w-100" onClick={() => setPage1(false)}>
+            <button className="btn btn-light w-100" onClick={() => setShowStep1(false)}>
               Cancel
             </button>
           </div>
         </Form>
       </Modal>
 
-      <Modal
-        show={page2}
-        onHide={() => setPage2(false)}
-        centered
-        dialogClassName="custom-modal"
-      >
+      <Modal show={showStep2} onHide={() => setShowStep2(false)} centered dialogClassName="custom-modal">
         <Modal.Header closeButton>
           <Modal.Title className="w-100 text-center">Add Book</Modal.Title>
         </Modal.Header>
@@ -143,31 +186,35 @@ const AddBookModal = () => {
                 placeholder="Synopsis"
                 value={form.synopsis}
                 onChange={handleChange}
-                required
+                isInvalid={errors.synopsis.hasError}
               />
+              <Form.Control.Feedback type="invalid">
+                {errors.synopsis.message}
+              </Form.Control.Feedback>
             </Form.Group>
             <Form.Group className="mb-3">
-              <Form.Control 
+              <Form.Control
                 as="textarea"
                 rows={10}
                 name="content"
                 placeholder="Content"
                 value={form.content}
                 onChange={handleChange}
+                required
               />
             </Form.Group>
+            <div className="ps-3 pe-3">
+              <button className="btn btn-post w-100" type="submit">
+                Submit
+              </button>
+            </div>
+            <div className="p-3">
+              <button className="btn btn-light w-100" onClick={() => { setShowStep2(false); setShowStep1(true); }}>
+                Back
+              </button>
+            </div>
           </Form>
         </Modal.Body>
-        <div className="ps-3 pe-3">
-          <button className="btn btn-post w-100" onClick={handleSubmit}>
-            Submit
-          </button>
-        </div>
-        <div className="p-3">
-          <button className="btn btn-light w-100" onClick={() => {setPage2(false); setPage1(true);}}>
-            Back
-          </button>
-        </div>
       </Modal>
     </>
   );

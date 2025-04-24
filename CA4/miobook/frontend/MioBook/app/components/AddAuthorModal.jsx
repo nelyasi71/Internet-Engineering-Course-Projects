@@ -2,35 +2,83 @@ import React, { useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 
 const AddAuthorModal = () => {
+  const authorFields = ["name", "penName", "nationality", "born", "died", "image"];
+
+  const initialForm = authorFields.reduce((acc, field) => {
+    acc[field] = "";
+    return acc;
+  }, {});
+  
+  const initialErrors = authorFields.reduce((acc, field) => {
+    acc[field] = { hasError: false, message: "" };
+    return acc;
+  }, {});
+  
   const [show, setShow] = useState(false);
-  const [form, setForm] = useState({
-    name: '',
-    penName: '',
-    nationality: '',
-    born: '',
-    died: '',
-    image: ''
-  });
-
+  const [form, setForm] = useState(initialForm);
+  const [errors, setErrors] = useState(initialErrors);
+  
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    const res = await fetch('/api/authors', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form),
-    });
-
-    if (res.ok) {
-      setShow(false);
-      setForm({ name: '', penName: '', nationality: '', born: '', died: '', image: '' });
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+  
+    if (errors[name]?.hasError) {
+      setErrors((prev) => ({
+        ...prev,
+        [name]: { hasError: false, message: "" },
+      }));
     }
   };
+  
+  const validateForm = () => {
+    let isValid = true;
+    const newErrors = { ...initialErrors };
+  
+    authorFields.forEach((field) => {
+      if (!form[field].trim()) {
+        newErrors[field] = { hasError: true, message: `${field} is required` };
+        isValid = false;
+      }
+    });
+  
+    setErrors(newErrors);
+    return isValid;
+  };
+  
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!validateForm()) return;
+  
+    try {
+      const res = await fetch("http://localhost:9090/api/author", {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
 
+      const response = await res.json();
+  
+      if (response.success) {
+        setShow(false);
+        setForm(initialForm);
+      } else {
+        const fieldErrors = response.data?.fieldErrors || {};
+        const newErrors = { ...initialErrors };
+  
+        Object.entries(fieldErrors).forEach(([field, message]) => {
+          if (newErrors[field] !== undefined) {
+            newErrors[field] = { hasError: true, message };
+          }
+        });
+        
+        setErrors((prev) => ({ ...prev, ...newErrors }));
+      }
+    } catch (error) {
+      console.error("Submit failed:", error);
+    }
+  };
+  
   return (
     <>
       <button className="btn btn-post ms-5" onClick={() => setShow(true)}>
@@ -43,14 +91,19 @@ const AddAuthorModal = () => {
         </Modal.Header>
         <Form onSubmit={handleSubmit}>
           <Modal.Body>
-            <Form.Group className="p-3">
+            <Form.Group className="p-3" controlId="formName">
               <Form.Control
+                type="text"
                 name="name"
                 placeholder="Name"
                 value={form.name}
                 onChange={handleChange}
                 required
+                isInvalid={errors.name.hasError}
               />
+              <Form.Control.Feedback type="invalid">
+                {errors.name.message}
+              </Form.Control.Feedback>
             </Form.Group>
 
             <Form.Group className="p-3">
@@ -59,7 +112,12 @@ const AddAuthorModal = () => {
                 placeholder="Pen Name"
                 value={form.penName}
                 onChange={handleChange}
+                required
+                isInvalid={errors.penName.hasError}
               />
+              <Form.Control.Feedback type="invalid">
+                {errors.penName.message}
+              </Form.Control.Feedback>
             </Form.Group>
 
             <Form.Group className="p-3">
@@ -68,7 +126,12 @@ const AddAuthorModal = () => {
                 placeholder="Nationality"
                 value={form.nationality}
                 onChange={handleChange}
+                required
+                isInvalid={errors.nationality.hasError}
               />
+              <Form.Control.Feedback type="invalid">
+                {errors.nationality.message}
+              </Form.Control.Feedback>
             </Form.Group>
 
             <Form.Group className="p-3">
@@ -78,7 +141,12 @@ const AddAuthorModal = () => {
                 name="born"
                 value={form.born}
                 onChange={handleChange}
+                required
+                isInvalid={errors.born.hasError}
               />
+              <Form.Control.Feedback type="invalid">
+                {errors.born.message}
+              </Form.Control.Feedback>
             </Form.Group>
 
             <Form.Group className="p-3">
@@ -88,7 +156,12 @@ const AddAuthorModal = () => {
                 name="died"
                 value={form.died}
                 onChange={handleChange}
+                required
+                isInvalid={errors.died.hasError}
               />
+              <Form.Control.Feedback type="invalid">
+                {errors.died.message}
+              </Form.Control.Feedback>
             </Form.Group>
 
             <Form.Group className="p-3">
@@ -105,7 +178,7 @@ const AddAuthorModal = () => {
               </button>
             </div>
             <div className="ps-3 pe-3">
-              <button className="btn btn-post w-100" type="submit" disabled={!form.name}>
+              <button className="btn btn-post w-100" type="submit" disabled={false}>
                 Submit
               </button>
             </div>

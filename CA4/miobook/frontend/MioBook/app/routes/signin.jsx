@@ -12,48 +12,51 @@ export function meta({}) {
   ];
 }
 
+const loginFields = ["username", "password"];
+
+const initialLoginData = loginFields.reduce((acc, field) => {
+  acc[field] = "";
+  return acc;
+}, {});
+
+const initialLoginErrors = loginFields.reduce((acc, field) => {
+  acc[field] = { hasError: false, message: "" };
+  return acc;
+}, {});
+
+
 
 const SignIn = () => {
-  const [formData, setFormData] = useState({
-    username: "",
-    password: "",
-  });
-
-  const [errors, setErrors] = useState({
-    username: { hasError: false, message: "" },
-    password: { hasError: false, message: "" },
-  });
-
-  const navigate = useNavigate();
+  const [formData, setFormData] = useState(initialLoginData);
+  const [errors, setErrors] = useState(initialLoginErrors);
   const usernameRef = useRef(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    if (usernameRef.current) {
-      usernameRef.current.focus();
-    }
+    usernameRef.current?.focus();
   }, []);
 
   const handleChange = (field) => (e) => {
-    setFormData({ ...formData, [field]: e.target.value });
-    if (errors[field].hasError) {
-      setErrors({
-        ...errors,
+    const value = e.target.value;
+    setFormData((prev) => ({ ...prev, [field]: value }));
+
+    if (errors[field]?.hasError) {
+      setErrors((prev) => ({
+        ...prev,
         [field]: { hasError: false, message: "" },
-      });
+      }));
     }
   };
 
   const validateForm = () => {
-    const newErrors = {
-      username: { hasError: false, message: "" },
-      password: { hasError: false, message: "" },
-    };
     let isValid = true;
+    const newErrors = { ...initialLoginErrors };
 
     if (!formData.username) {
       newErrors.username = { hasError: true, message: "Username is required" };
       isValid = false;
     }
+
     if (!formData.password) {
       newErrors.password = { hasError: true, message: "Password is required" };
       isValid = false;
@@ -68,37 +71,51 @@ const SignIn = () => {
     if (!validateForm()) return;
 
     try {
-      let postBody = {
+      const postBody = {
         username: formData.username,
         password: formData.password,
       };
 
-      const response = await axios.post("http://localhost:9090/api/auth/login", postBody, {withCredentials: true});
-      if(response.data.success) {
-        const userRoleResp = await axios.get("http://localhost:9090/api/users/" + formData.username, {withCredentials: true});
-        
-        if(userRoleResp.data.data.role === "admin") {
-          navigate("/panel");
+      const response = await axios.post("http://localhost:9090/api/auth/login", postBody, {
+        withCredentials: true,
+      });
+
+      if (response.data.success) {
+        const userRoleResp = await axios.get(
+          `http://localhost:9090/api/users/${formData.username}`,
+          { withCredentials: true }
+        );
+
+        const role = userRoleResp.data.data.role;
+        navigate(role === "admin" ? "/panel" : "/dashboard");
+      } else {
+        const fieldErrors = response.data.data?.fieldErrors;
+        const newErrors = { ...initialLoginErrors };
+
+        if (fieldErrors) {
+          Object.entries(fieldErrors).forEach(([field, message]) => {
+            if (newErrors[field] !== undefined) {
+              newErrors[field] = { hasError: true, message };
+            }
+          });
         } else {
-          navigate("/dashboard");
+          // fallback for generic error
+          loginFields.forEach((field) => {
+            newErrors[field] = {
+              hasError: true,
+              message: "Invalid username or password",
+            };
+          });
         }
-      }
 
-      else {
-        setErrors({
-          username: { hasError: true, message: "Invalid username or password" },
-          password: { hasError: true, message: "Invalid username or password" },
-        });
+        setErrors(newErrors);
       }
-
     } catch (error) {
-      
+      console.error("Login failed:", error);
     }
   };
 
-  const isFormValid = Object.values(formData).every(
-    (value) => value.trim() !== ""
-  );
+  const isFormValid = loginFields.every((field) => formData[field].trim() !== "");
 
   return (
     <div className="bg-light min-vh-100">
