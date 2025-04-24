@@ -17,7 +17,7 @@ const Book = () => {
   const { bookTitle } = useParams(); 
 
   useEffect(() => {
-    fetch(`http://localhost:8080/api/books/${bookTitle}`)
+    fetch(`http://localhost:9090/api/books/${bookTitle}`)
       .then((res) => res.json())
       .then((data) => setBook(data.data));
   }, [bookTitle]);
@@ -26,8 +26,8 @@ const Book = () => {
 const handleAddToCart = async ({ borrow, days }) => {
   const username = localStorage.getItem("username"); 
   const endpoint = borrow
-    ? "http://localhost:8080/api/cart/borrow"
-    : "http://localhost:8080/api/cart/add";
+    ? "http://localhost:9090/api/cart/borrow"
+    : "http://localhost:9090/api/cart/add";
 
   const body = borrow
     ? { username, title: book.title, days }

@@ -4,6 +4,7 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 import Rating from "./Rating"; 
 import "./styles.css";
 import BookImage from "../static/Image.png" 
+import { Link } from "react-router-dom";
 
 const BookCard = ({ title, author, price, image, rating }) => {
   return (
@@ -20,8 +21,9 @@ const BookCard = ({ title, author, price, image, rating }) => {
             <p className="fw-bold price ms-4 my-0">${price ? price : 0}</p>
           </div>
               
-            <button className="btn btn-green w-100 mt-2 ">Add to Cart</button>
-            
+          <Link to={`/books/${encodeURIComponent(title)}`} className="btn btn-success mt-2">
+          Add to Cart
+        </Link>
             </div>
       </div>
   );

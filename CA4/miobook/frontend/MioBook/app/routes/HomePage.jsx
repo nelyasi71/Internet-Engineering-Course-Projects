@@ -12,7 +12,7 @@ const HomePage = () => {
   const fetchNewReleases = async () => {
     try {
       const res = await fetch(
-        "http://localhost:8080/api/books?sortBy=year&order=asc",
+        "http://localhost:9090/api/books?sortBy=year&order=asc",
         {
           method: "GET",
         }
@@ -96,16 +96,17 @@ const HomePage = () => {
 
         <div className="row row-cols-5 g-4 justify-content-center">
           {newReleases.map((book) => (
-            <div className="col" key={newReleases.id}>
-              <Card
-                title={book.title}
-                author={book.author}
-                price={book.price}
-                image={book.image}
-                rating={book.rating}
-              />
-            </div>
-          ))}
+  <div className="col" key={book.title}>
+    <Card
+      title={book.title}
+      author={book.author}
+      price={book.price}
+      image={book.image}
+      rating={book.rating}
+    />
+  </div>
+))}
+
         </div>
 
         <div class="row mb-4">
@@ -115,17 +116,18 @@ const HomePage = () => {
         </div>
 
         <div className="row row-cols-5 g-4 justify-content-center">
-          {topRatedBooks.map((book) => (
-            <div className="col" key={topRatedBooks.id}>
-              <Card
-                title={book.title}
-                author={book.author}
-                price={book.price}
-                image={book.image}
-                rating={book.rating}
-              />
-            </div>
-          ))}
+        {topRatedBooks.map((book) => (
+  <div className="col" key={book.title}>
+    <Card
+      title={book.title}
+      author={book.author}
+      price={book.price}
+      image={book.image}
+      rating={book.rating}
+    />
+  </div>
+))}
+
         </div>
       </div>
 
