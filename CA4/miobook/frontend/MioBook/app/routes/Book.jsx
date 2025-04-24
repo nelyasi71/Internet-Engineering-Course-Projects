@@ -8,6 +8,8 @@ import { useParams } from "react-router-dom";
 import Comment from "../components/Comment"; 
 import AddToCartModal from "../components/AddCartModal.jsx"; 
 import "bootstrap/dist/css/bootstrap.min.css";
+import { toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 const Book = () => {
   const [book, setBook] = useState(null);
@@ -39,15 +41,16 @@ const handleAddToCart = async ({ borrow, days }) => {
       body: JSON.stringify(body),
     });
 
-    const result = await response.json();
+     const result = await response.json();
+
     if (result.success) {
-      alert(borrow ? "Book borrowed successfully!" : "Book added to cart!");
+      toast.success(borrow ? "Book borrowed successfully!" : "Book added to cart!");
     } else {
-      alert(`Error: ${result.message}`);
+      toast.error(`Error: ${result.message}`);
     }
   } catch (err) {
     console.error("Cart error:", err);
-    alert("Something went wrong.");
+    toast.error("Something went wrong. Please try again.");
   }
 };
 

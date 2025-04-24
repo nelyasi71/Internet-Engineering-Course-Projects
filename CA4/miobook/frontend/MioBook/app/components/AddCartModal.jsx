@@ -12,15 +12,17 @@ const AddCartModal = ({ show, onHide, onConfirm, price }) => {
     onHide();
   };
 
+  const borrowPrice = ((price * days) / 10).toFixed(2);
+
   return (
-    <Modal show={show} onHide={onHide} centered>
-      <Modal.Body className="p-4">
-        <div className="text-center mb-4">
-          <h5>Add to Cart</h5>
+    <Modal show={show} onHide={onHide} centered contentClassName="border-0 rounded-3">
+      <Modal.Body className="p-4 pb-3">
+        <div className="text-center mb-3">
+          <h5 className="fw-bold">Add to Cart</h5>
         </div>
 
         <Form>
-          <Form.Check 
+          <Form.Check
             type="checkbox"
             label="Borrow this book"
             checked={borrow}
@@ -29,24 +31,31 @@ const AddCartModal = ({ show, onHide, onConfirm, price }) => {
           />
 
           {borrow && (
-            <Form.Group className="mb-4">
-              <Form.Label>Number of days to borrow:</Form.Label>
-              <Form.Control
-                type="number"
-                min={1}
-                value={days}
-                onChange={(e) => setDays(parseInt(e.target.value))}
-              />
-            </Form.Group>
+            <div className="number-boxes">
+            {[...Array(9)].map((_, idx) => {
+              const day = idx + 1;
+              const isSelected = days === day;
+          
+              return (
+                <div
+                  key={day}
+                  className={`number-box ${isSelected ? "selected" : ""}`}
+                  onClick={() => setDays(day)}
+                >
+                  {day} Day{day > 1 ? "s" : ""}
+                </div>
+              );
+            })}
+          </div>
+          
           )}
         </Form>
 
-        <div className="d-flex justify-content-between align-items-center pt-3">
-          {!borrow && (
-            <p className="fw-bold mb-0">Price: ${price}</p>
-          )}
-          <div className="d-flex gap-2">
-
+        <div className="d-flex justify-content-between align-items-center mt-4">
+          <p className="fw-bold mb-0">
+            Final Price: ${borrow ? borrowPrice : price.toFixed(2)}
+          </p>
+          <div>
             <Button variant="btn btn-green" onClick={handleConfirm}>
               Add
             </Button>

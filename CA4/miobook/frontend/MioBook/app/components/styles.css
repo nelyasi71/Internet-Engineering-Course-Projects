@@ -162,3 +162,34 @@ button.accordion-button {
 .home-section{
     background-color: #F5EFE7;
 }
+
+input[type="checkbox"]:checked {
+    accent-color: black;
+  }
+  
+  .number-boxes {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    justify-items: center;
+  }
+  
+  .number-box {
+    width: 100%;
+    text-align: center;
+    padding: 10px 0;
+    border: 2px solid #16423C;
+    color: #16423C;
+    background-color: white;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s ease;
+  }
+  
+  .number-box.selected {
+    background-color: #16423C;
+    color: white;
+  }
+    
+  
