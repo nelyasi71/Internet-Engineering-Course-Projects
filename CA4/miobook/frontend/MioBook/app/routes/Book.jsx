@@ -6,24 +6,55 @@ import Pagination from "../components/Pagination";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import Comment from "../components/Comment"; 
+import AddToCartModal from "../components/AddCartModal.jsx"; 
+import "bootstrap/dist/css/bootstrap.min.css";
 
 const Book = () => {
   const [book, setBook] = useState(null);
+  const [showModal, setShowModal] = useState(false);
   const { bookTitle } = useParams(); 
 
   useEffect(() => {
-    fetch(`http://localhost:9090/api/books/${bookTitle}`)
-        .then(res => res.json())
-        .then(data => {
-            setBook(data.data);  
-        });
-}, []);
+    fetch(`http://localhost:8080/api/books/${bookTitle}`)
+      .then((res) => res.json())
+      .then((data) => setBook(data.data));
+  }, [bookTitle]);
 
-if (!book) {
-    return <div>Loading...</div>;
-}
+
+const handleAddToCart = async ({ borrow, days }) => {
+  const username = localStorage.getItem("username"); 
+  const endpoint = borrow
+    ? "http://localhost:8080/api/cart/borrow"
+    : "http://localhost:8080/api/cart/add";
+
+  const body = borrow
+    ? { username, title: book.title, days }
+    : { username, title: book.title };
+
+  try {
+    const response = await fetch(endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify(body),
+    });
+
+    const result = await response.json();
+    if (result.success) {
+      alert(borrow ? "Book borrowed successfully!" : "Book added to cart!");
+    } else {
+      alert(`Error: ${result.message}`);
+    }
+  } catch (err) {
+    console.error("Cart error:", err);
+    alert("Something went wrong.");
+  }
+};
+
+if (!book) return <div>Loading...</div>;
 
 const reviewCount = book.ReviewCount ? book.ReviewCount() : 0;
+
 
   return (
     <div>
@@ -71,13 +102,23 @@ const reviewCount = book.ReviewCount ? book.ReviewCount() : 0;
                 <p className="text-muted">{book.synopsis}</p>
                 <h5 className="fw-bold">${book.price}</h5>
                 <div className="mt-2">
-                  <button className="btn btn-success">Add to Cart</button>
+                <button
+                  className="btn btn-green"
+                  onClick={() => setShowModal(true)}
+                >
+                  Add to Cart
+                  </button>
                 </div>
               </div>
             </div>
           </div>
         </div>
-
+        <AddToCartModal
+        show={showModal}
+        onHide={() => setShowModal(false)}
+        onConfirm={handleAddToCart}
+        price={book.price}
+      />
         <div className="review-box container mt-4">
           <div className="custom-border mb-5 p-4 rounded-3">
             <div className="d-flex justify-content-between align-items-center mb-3">
@@ -104,10 +145,12 @@ const reviewCount = book.ReviewCount ? book.ReviewCount() : 0;
             </div>
 
             <Pagination />
+
           </div>
         </div>
       </body>
-
+            
+      
       <Footer />
     </div>
   );

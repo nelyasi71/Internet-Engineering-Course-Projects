@@ -11,6 +11,8 @@ import org.miobook.responses.PurchaseCartRecord;
 import org.miobook.responses.PurchaseItemRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,6 +27,8 @@ public class CartServices implements Services {
     @Autowired
     private BookRepository bookRepository;
 
+    @CrossOrigin(origins = "http://localhost:5173")
+    @PostMapping("/cart/add")
     public void addCart(AddCart dto) {
         if(userRepository.doesAdminExist(dto.getUsername())) {
             throw new MioBookException("Admin with username '" + dto.getUsername() + "' cannot add items to the cart. Only customers can.");
@@ -78,7 +82,9 @@ public class CartServices implements Services {
         );
 
     }
-
+    
+    @CrossOrigin(origins = "http://localhost:5173")
+    @PostMapping("/cart/borrow")
     public void borrowBook(BorrowBook dto) {
         if(userRepository.doesAdminExist(dto.getUsername())) {
             throw new MioBookException("Admin with username '" + dto.getUsername() + "' cannot borrow books. Only customers can.");
