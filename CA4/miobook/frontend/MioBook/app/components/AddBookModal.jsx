@@ -59,6 +59,16 @@ const AddBookModal = () => {
         newErrors[field] = { hasError: true, message: `${field} is required` };
         isValid = false;
       }
+
+      if (field === "price" && !/^\d+(\.\d{1,2})?$/.test(form[field])) {
+        newErrors[field] = { hasError: true, message: "Enter a valid price" };
+        isValid = false;
+      }
+
+      if (field === "year" && !/^\d+(\.\d{1,2})?$/.test(form[field])) {
+        newErrors[field] = { hasError: true, message: "Enter a valid year" };
+        isValid = false;
+      }
     });
 
     setErrors(newErrors);

@@ -11,5 +11,5 @@ export default [
     route("authors/:authorName", "routes/Author.jsx"),
     route("books/:bookTitle", "routes/Book.jsx"),
     route("books", "routes/SearchResult.jsx"),
-    route("homepage","routes/HomePage.jsx")
+    route("/","routes/HomePage.jsx")
 ] satisfies RouteConfig;

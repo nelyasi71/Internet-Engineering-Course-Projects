@@ -9,6 +9,7 @@
     "typecheck": "react-router typegen && tsc"
   },
   "dependencies": {
+    "@fontsource/inter": "^5.2.5",
     "@react-router/node": "^7.5.0",
     "@react-router/serve": "^7.5.0",
     "axios": "^1.8.4",
