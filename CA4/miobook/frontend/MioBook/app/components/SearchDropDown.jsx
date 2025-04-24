@@ -1,9 +1,28 @@
 import React, { useState } from 'react';
 import { Dropdown } from 'react-bootstrap';
+import { useNavigate } from 'react-router';
 
 const SearchDropdown = () => {
   const [searchType, setSearchType] = useState('Author');
   const [query, setQuery] = useState('');
+
+  const navigate = useNavigate();
+
+  const handleQuery = (e) => {
+    e.preventDefault();
+
+    const params = new URLSearchParams();
+
+    if (searchType === 'Author') {
+      params.append('author', query);
+    } else if (searchType === 'Book') {
+      params.append('title', query);
+    } else if (searchType === 'Genre') {
+      params.append('genre', query);
+    }
+
+    navigate(`/books?${params.toString()}`);
+  }
 
   const handleSelect = (type) => {
     setSearchType(type);
@@ -44,6 +63,10 @@ const SearchDropdown = () => {
             placeholder={`Search by ${searchType}`}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter")
+                  handleQuery(e);
+              }}
           />
         </div>
       </div>
