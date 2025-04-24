@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function UserBookItem({ item }) {
 
+  console.log(item);
   const navigate = useNavigate();
 
   async function handleCLick() {
@@ -17,7 +18,16 @@ export default function UserBookItem({ item }) {
         <td>{item.genres.join(', ')}</td>
         <td>{item.publisher}</td>
         <td>{item.year}</td>
-        <td>{item.isBorrowed ? "borowed" : "Owend"}</td>
+        <td>
+          {item.isBorrowed ? (
+            <>
+              Borrowed
+              <div className="text-muted small">until {item.until}</div>
+            </>
+          ) : (
+            "Owned"
+          )}
+        </td>
         <td>
             <button className="btn btn-light w-100" onClick={handleCLick}>
                 Read

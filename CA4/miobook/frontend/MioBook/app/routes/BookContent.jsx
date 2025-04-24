@@ -28,7 +28,7 @@ export default function BookContent() {
       <Navbar />
       <div className="container rounded-2 shadow book-content mt-5 p-4">
         <div className="d-flex justify-content-between align-items-center">
-          <h2>
+          <h2 className="fw-semibold">
             <i className="bi bi-journal-text me-2"></i>
             {book.title}
           </h2>

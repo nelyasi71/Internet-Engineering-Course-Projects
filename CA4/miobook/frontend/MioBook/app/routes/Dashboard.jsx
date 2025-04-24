@@ -5,6 +5,7 @@ import UserInfo from "../components/Userinfo";
 import Footer from "../components/footer";
 import MyBooks from "../components/MyBooks";
 import AccessDenied from "./AccessDenied";
+import { Navigate } from "react-router";
 
 export function meta({}) {
   return [
@@ -41,7 +42,7 @@ export default function Dashboard() {
   }
   
   if (!user) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/signin" replace />;
   }
   
   var requiredRole = "customer";

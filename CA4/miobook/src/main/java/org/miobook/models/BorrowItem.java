@@ -2,6 +2,7 @@ package org.miobook.models;
 
 import org.miobook.responses.PurchaseItemRecord;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class BorrowItem extends PurchaseItem {
@@ -24,6 +25,10 @@ public class BorrowItem extends PurchaseItem {
 
     public boolean isValid(LocalDateTime borrowDate) {
         return borrowDate.plusDays(borrowDays).isAfter(LocalDateTime.now());
+    }
+
+    public LocalDateTime until(LocalDateTime borrowDate) {
+        return borrowDate.plusDays(borrowDays);
     }
 
     public PurchaseItemRecord createRecord() {

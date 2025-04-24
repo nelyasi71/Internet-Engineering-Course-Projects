@@ -1,20 +1,20 @@
 import UserBookItem from "./UserBookItem";
-
+import { SiBookstack } from "react-icons/si";
 export default function MyBooks({ items }) {
 
   return (
     <div className="section bg-white mt-4 p-4">
-      <h2 className="p-2"><i className="bi bi-book"></i> My Books</h2>
+      <h2 className="p-2 fw-bold"><SiBookstack /> My Books</h2>
       <table className="table align-middle">
-        <thead className="table-light">
+        <thead className="table-light no-border">
           <tr>
-            <th>Image</th>
-            <th>Name</th>
-            <th>Author</th>
-            <th>Genre</th>
-            <th>Publisher</th>
-            <th>Published Year</th>
-            <th>Status</th>
+            <th className="fw-normal text-muted">Image</th>
+            <th className="fw-normal text-muted">Name</th>
+            <th className="fw-normal text-muted">Author</th>
+            <th className="fw-normal text-muted">Genre</th>
+            <th className="fw-normal text-muted">Publisher</th>
+            <th className="fw-normal text-muted">Published Year</th>
+            <th className="fw-normal text-muted">Status</th>
             <th></th>
           </tr>
         </thead>

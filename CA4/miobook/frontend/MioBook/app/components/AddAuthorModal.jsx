@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
+import Notifier from './Notifier';
 
 const AddAuthorModal = () => {
   const authorFields = ["name", "penName", "nationality", "born", "died", "image"];
@@ -17,6 +18,8 @@ const AddAuthorModal = () => {
   const [show, setShow] = useState(false);
   const [form, setForm] = useState(initialForm);
   const [errors, setErrors] = useState(initialErrors);
+  const [notif, setNotif] = useState({ message: "", status: "" });
+  
   
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -62,10 +65,11 @@ const AddAuthorModal = () => {
       if (response.success) {
         setShow(false);
         setForm(initialForm);
+        setNotif({message: "Author added successfully!", status: "success"})
       } else {
         const fieldErrors = response.data?.fieldErrors || {};
         const newErrors = { ...initialErrors };
-  
+        
         Object.entries(fieldErrors).forEach(([field, message]) => {
           if (newErrors[field] !== undefined) {
             newErrors[field] = { hasError: true, message };
@@ -84,6 +88,8 @@ const AddAuthorModal = () => {
       <button className="btn btn-post ms-5" onClick={() => setShow(true)}>
           Add Author
       </button>
+
+      <Notifier message={notif.message} type={notif.status}></Notifier>
 
       <Modal show={show} onHide={() => setShow(false)} centered dialogClassName="custom-modal">
         <Modal.Header closeButton>
