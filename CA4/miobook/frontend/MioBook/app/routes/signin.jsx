@@ -135,7 +135,7 @@ const SignIn = () => {
   }
   
   if (user) {
-    return <Navigate to={user.role === "admin" ? "/panel" : "/dashboard"} replace />;
+    return <Navigate to={user.role === "admin" ? "/panel" : "/"} replace />;
   }
   
   return (
