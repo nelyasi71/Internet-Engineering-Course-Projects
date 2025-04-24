@@ -43,7 +43,7 @@ export default function History() {
               </h2>
               <div className={`accordion-collapse collapse ${openIndex[index] ? "show" : ""}`}>
                 <div className="accordion-body">
-                  <CartTable items={group.items} />
+                  <CartTable items={group.items} onlyShow={true}/>
                 </div>
               </div>
             </div>

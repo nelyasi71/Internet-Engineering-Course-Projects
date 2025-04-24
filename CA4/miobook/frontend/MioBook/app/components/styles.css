@@ -36,6 +36,9 @@ footer {
     background-color: #16423C;
 }
 
+.custom-modal {
+    max-width: 450px; 
+}
 
 .bg-custom-gray {
     background: #f2f2f2 !important;

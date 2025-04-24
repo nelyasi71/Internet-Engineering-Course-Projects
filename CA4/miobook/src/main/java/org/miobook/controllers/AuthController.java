@@ -2,12 +2,13 @@ package org.miobook.controllers;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-import org.miobook.commands.FetchUser;
 import org.miobook.commands.Login;
 import org.miobook.commands.Logout;
+import org.miobook.commands.ShowUserDetails;
 import org.miobook.responses.BaseResponse;
-import org.miobook.responses.LoggedInUserRecord;
+import org.miobook.responses.UserRecord;
 import org.miobook.services.AuthServices;
+import org.miobook.services.UserServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,14 +17,15 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
     @Autowired
     AuthServices authServices;
+    @Autowired
+    UserServices userServices;
 
     @CrossOrigin(origins = "http://localhost:5173")
     @GetMapping("/user")
-    public BaseResponse<LoggedInUserRecord> fetch_user(HttpServletRequest request) {
-        FetchUser command = new FetchUser();
+    public BaseResponse<UserRecord> fetch_user(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
-        command.setSession(session);
-        return command.execute(authServices);
+        ShowUserDetails command = new ShowUserDetails((String) session.getAttribute("username"));
+        return command.execute(userServices);
     }
 
     @PostMapping("/login")

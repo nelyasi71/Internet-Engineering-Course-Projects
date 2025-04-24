@@ -6,6 +6,8 @@ import Footer from "../components/footer";
 import MyBooks from "../components/MyBooks";
 import AllBooks from "../components/AllBooks";
 import AllAuthors from "../components/AllAuthors";
+import AddAuthorModal from "../components/AddAuthorModal";
+import AddBookModal from "../components/AddBookModal";
 
 export function meta({}) {
   return [
@@ -45,13 +47,8 @@ export default function Panel() {
       </div>
 
       <div className="d-flex justify-content-center gap-5 p-3">
-        <button className="btn btn-post me-5">
-          Add Author
-        </button>
-
-        <button className="btn btn-post ms-5">
-          Add Book
-        </button>
+        <AddAuthorModal />
+        <AddBookModal />
       </div>
 
 

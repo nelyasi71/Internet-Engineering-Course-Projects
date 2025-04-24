@@ -25,6 +25,7 @@ public class UserController {
         return command.execute(userServices);
     }
 
+    @CrossOrigin(origins = "http://localhost:5173")
     @Authenticated(roles = {"customer"})
     @PostMapping("/credit")
     public BaseResponse<Void> add_credit(@RequestBody AddCredit command, HttpServletRequest request) {

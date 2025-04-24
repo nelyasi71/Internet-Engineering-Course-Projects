@@ -101,14 +101,25 @@ const SignUp = () => {
         role: formData.role,
       };
 
-      await axios.post("http://localhost:9090/api/user", postBody);
-    } catch (error) {
-      setErrors({
-        ...errors,
-        username: { hasError: true, message: "Invalid username or password" },
-        password: { hasError: true, message: "Invalid username or password" },
-      });
-    }
+      const response = await axios.post("http://localhost:9090/api/user", postBody, {withCredentials: true});
+      if(response.data.success) {
+        await axios.post("http://localhost:9090/api/auth/login", {username: postBody.username, password: postBody.password}, {withCredentials: true});
+        const userRoleResp = await axios.get("http://localhost:9090/api/users/" + formData.username, {withCredentials: true});
+        
+        if(userRoleResp.data.data.role === "admin") {
+          navigate("/panel");
+        } else {
+          navigate("/dashboard");
+        }
+      } 
+      else {
+        setErrors({
+          ...errors,
+          username: { hasError: true, message: "Invalid username or password" },
+          password: { hasError: true, message: "Invalid username or password" },
+        });
+      }
+    } catch (error) { }
   };
 
   const isFormValid = Object.values(formData).every(

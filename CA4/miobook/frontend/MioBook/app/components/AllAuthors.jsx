@@ -4,7 +4,7 @@ import BookItem from "./UserBookItem";
 export default function AllAuthors({ items }) {
   return (
     <div className="section rounded-3 bg-white mt-4 p-4">
-      <h2 className="p-2"><i class="bi bi-pen"></i> Authors</h2>
+      <h2 className="p-2"><i className="bi bi-pen"></i> Authors</h2>
       <table className="table align-middle">
         <thead className="table-light">
           <tr>
