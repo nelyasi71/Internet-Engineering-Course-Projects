@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.miobook.auth.Authenticated;
 import org.miobook.commands.*;
+import org.miobook.models.Book;
 import org.miobook.responses.*;
 import org.miobook.services.BookServices;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,6 +75,14 @@ public class BookController {
     }
 
     @CrossOrigin(origins = "http://localhost:5173")
+    @GetMapping("/books/by-author")
+    public BaseResponse<SearchedBooksRecord> getBooksByAuthor(@PathVariable String author) {
+        SearchBooksByAuthor command = new SearchBooksByAuthor();
+        command.setName(author);
+        return command.execute(bookServices);
+    }
+
+    @CrossOrigin(origins = "http://localhost:5173")
     @GetMapping("/books")
     public BaseResponse<SearchedBooksRecord> search_book(
             @RequestParam(required = false) String title,
@@ -84,21 +93,21 @@ public class BookController {
             @RequestParam(defaultValue = "none") String sortBy,
             @RequestParam(defaultValue = "asc") String order,
             @RequestParam(defaultValue = "1") Integer page,
-            @RequestParam(defaultValue = "20") Integer size
+            @RequestParam(defaultValue = "10") Integer size
             ) {
 
         SearchBooks command = new SearchBooks();
         command.setTitle(title);
         command.setAuthor(author);
         command.setGenre(genre);
-        command.setFrom(from);
-        command.setTo(to);
-        command.setSortBy(sortBy);
+        command.setFrom(from );
+        command.setTo(to );
+        command.setSortBy(sortBy );
         command.setOrder(order);
         command.setPage(page);
         command.setSize(size);
 
-
         return command.execute(bookServices);
     }
+    
 }
