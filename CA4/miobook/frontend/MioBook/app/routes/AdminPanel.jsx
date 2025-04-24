@@ -8,6 +8,7 @@ import AllBooks from "../components/AllBooks";
 import AllAuthors from "../components/AllAuthors";
 import AddAuthorModal from "../components/AddAuthorModal";
 import AddBookModal from "../components/AddBookModal";
+import AccessDenied from "./AccessDenied";
 
 export function meta({}) {
   return [
@@ -20,11 +21,19 @@ export default function Panel() {
   const [user, setUser] = useState(null);
   const [books, setbooks] = useState([]);
   const [authors, setAuthors] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://localhost:9090/api/auth/user", {credentials: "include"})
-      .then(res => res.json())
-      .then(res => setUser(res.data));
+    fetch("http://localhost:9090/api/auth/user", { credentials: "include" })
+    .then(res => res.json())
+    .then(res => {
+      setUser(res.data);
+      setLoading(false);
+    })
+    .catch(() => {
+      setUser(null);
+      setLoading(false);
+    });
 
     fetch("http://localhost:9090/api/get-books", {credentials: "include"})
       .then(res => res.json())
@@ -35,7 +44,19 @@ export default function Panel() {
       .then(res => setAuthors(res.data.authors));
   }, []);
 
-  if (!user) return <div>Loading...</div>;
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+  
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+  
+  var requiredRole = "admin";
+  if (requiredRole && user.role !== requiredRole) {
+    return <AccessDenied user={user} requiredRole={requiredRole} />;
+  }
+
 
   return (
     <div className="bg-light min-vh-100">

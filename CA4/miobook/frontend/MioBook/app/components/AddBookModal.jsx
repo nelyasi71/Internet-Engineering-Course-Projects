@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
+import Notifier from './Notifier';
 
 const AddBookModal = () => {
   const bookFields = [
@@ -29,6 +30,8 @@ const AddBookModal = () => {
   const [showStep2, setShowStep2] = useState(false);
   const [form, setForm] = useState(initialForm);
   const [errors, setErrors] = useState(initialErrors);
+  const [notif, setNotif] = useState({ message: "", status: "" });
+  
 
   const formattedForm = {
     ...form,
@@ -57,6 +60,16 @@ const AddBookModal = () => {
     requiredFields.forEach((field) => {
       if (!form[field].trim()) {
         newErrors[field] = { hasError: true, message: `${field} is required` };
+        isValid = false;
+      }
+
+      if (field === "price" && !/^\d+(\.\d{1,2})?$/.test(form[field])) {
+        newErrors[field] = { hasError: true, message: "Enter a valid price" };
+        isValid = false;
+      }
+
+      if (field === "year" && !/^\d+(\.\d{1,2})?$/.test(form[field])) {
+        newErrors[field] = { hasError: true, message: "Enter a valid year" };
         isValid = false;
       }
     });
@@ -104,6 +117,8 @@ const AddBookModal = () => {
       if (response.success) {
         setForm(initialForm);
         setShowStep2(false);
+        setNotif({message: "Book added successfully!", status: "success"})
+
       } else {
         setShowStep2(false);
         setShowStep1(true); 
@@ -128,6 +143,8 @@ const AddBookModal = () => {
       <button className="btn btn-post ms-5" onClick={() => setShowStep1(true)}>
         Add Book
       </button>
+
+      <Notifier message={notif.message} type={notif.status}></Notifier>
 
       <Modal show={showStep1} onHide={() => setShowStep1(false)} centered dialogClassName="custom-modal">
         <Form>

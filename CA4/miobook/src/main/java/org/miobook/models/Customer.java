@@ -32,6 +32,9 @@ public class Customer extends User {
     }
 
     public void addCart(PurchaseItem purchaseItem) {
+        if(hasBook(purchaseItem.getBook().getTitle())) {
+            throw new MioBookException("You already has bought this item.");
+        }
         this.shoppingCart.add(purchaseItem);
     }
 
@@ -83,7 +86,8 @@ public class Customer extends User {
                             purchaseItem.getBook().getGenres(),
                             purchaseItem.getBook().getPublishedYear(),
                             purchaseItem.getBook().getPrice(),
-                            (purchaseItem instanceof BorrowItem)
+                            (purchaseItem instanceof BorrowItem),
+                            (purchaseItem instanceof BorrowItem) ? ((BorrowItem) purchaseItem).until(purchase.getDate()) : null
                     );
                 }))
                 .toList();

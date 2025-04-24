@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import axios from "axios";
 import InputField from "../components/InputField";
 import PasswordField from "../components/PasswordField";
@@ -29,10 +29,23 @@ const initialLoginErrors = loginFields.reduce((acc, field) => {
 const SignIn = () => {
   const [formData, setFormData] = useState(initialLoginData);
   const [errors, setErrors] = useState(initialLoginErrors);
+  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState(null);
   const usernameRef = useRef(null);
   const navigate = useNavigate();
 
   useEffect(() => {
+    fetch("http://localhost:9090/api/auth/user", { credentials: "include" })
+    .then(res => res.json())
+    .then(res => {
+      setUser(res.data);
+      setLoading(false);
+    })
+    .catch(() => {
+      setUser(null);
+      setLoading(false);
+    });
+
     usernameRef.current?.focus();
   }, []);
 
@@ -117,6 +130,14 @@ const SignIn = () => {
 
   const isFormValid = loginFields.every((field) => formData[field].trim() !== "");
 
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+  
+  if (user) {
+    return <Navigate to={user.role === "admin" ? "/panel" : "/dashboard"} replace />;
+  }
+  
   return (
     <div className="bg-light min-vh-100">
       

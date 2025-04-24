@@ -1,9 +1,12 @@
 import { BsCartX } from "react-icons/bs";
 import { useState, useEffect } from "react";
 import CartItem from "./CartItem";
+import Notifier from "./Notifier";
 
 export default function CartTable({ items, onlyShow }) {
   const [cartItems, setCartItems] = useState([]);
+  const [notif, setNotif] = useState({ message: "", status: "" });
+  
 
   useEffect(() => {
     setCartItems(items); // Keep state in sync with props
@@ -11,6 +14,7 @@ export default function CartTable({ items, onlyShow }) {
 
   const handleRemove = (title) => {
     setCartItems(prevItems => prevItems.filter(item => item.title !== title));
+    setNotif({message: title + " removed successfully!", status: "success"})
   };
 
   if (cartItems.length === 0 && !onlyShow) {
@@ -25,6 +29,8 @@ export default function CartTable({ items, onlyShow }) {
 
   return (
     <div className="rounded-4 overflow-hidden shadow-sm">
+      {/* <Notifier message={notif.message} type={notif.status}></Notifier> */}
+
       <table className="table align-middle mb-0">
         <thead className="table-light">
           <tr>

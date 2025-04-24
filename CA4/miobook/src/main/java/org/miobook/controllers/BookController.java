@@ -100,9 +100,9 @@ public class BookController {
         command.setTitle(title);
         command.setAuthor(author);
         command.setGenre(genre);
-        command.setFrom(from );
-        command.setTo(to );
-        command.setSortBy(sortBy );
+        command.setFrom(from);
+        command.setTo(to);
+        command.setSortBy(sortBy);
         command.setOrder(order);
         command.setPage(page);
         command.setSize(size);

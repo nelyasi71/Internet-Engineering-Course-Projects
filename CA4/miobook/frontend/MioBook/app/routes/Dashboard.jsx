@@ -4,6 +4,8 @@ import CreditForm from "../components/CreditForm";
 import UserInfo from "../components/Userinfo";
 import Footer from "../components/footer";
 import MyBooks from "../components/MyBooks";
+import AccessDenied from "./AccessDenied";
+import { Navigate } from "react-router";
 
 export function meta({}) {
   return [
@@ -15,20 +17,39 @@ export function meta({}) {
 export default function Dashboard() {
   const [user, setUser] = useState(null);
   const [bookItems, setBookItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+
 
   useEffect(() => {
-    fetch("http://localhost:9090/api/auth/user", {credentials: "include"})
-      .then(res => res.json())
-      .then(res => setUser(res.data));
-
-      console.log(user)
+    fetch("http://localhost:9090/api/auth/user", { credentials: "include" })
+    .then(res => res.json())
+    .then(res => {
+      setUser(res.data);
+      setLoading(false);
+    })
+    .catch(() => {
+      setUser(null);
+      setLoading(false);
+    });
 
     fetch("http://localhost:9090/api/purchased-books", {credentials: "include"})
       .then(res => res.json())
       .then(res => setBookItems(res.data.items));
   }, []);
 
-  if (!user) return <div>Loading...</div>;
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+  
+  if (!user) {
+    return <Navigate to="/signin" replace />;
+  }
+  
+  var requiredRole = "customer";
+  if (requiredRole && user.role !== requiredRole) {
+    return <AccessDenied user={user} requiredRole={requiredRole} />;
+  }
+
 
   return (
     <div className="bg-light min-vh-100">

@@ -1,11 +1,11 @@
 import Navbar from "../components/NavBar";
-import Footer from "../components/Footer.jsx";
 import BookCover from "../static/BookCover.png";
 import Rating from "../components/Rating";
 import Pagination from "../components/Pagination";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import Comment from "../components/Comment"; 
+import Footer from "../components/footer";
 import AddToCartModal from "../components/AddCartModal.jsx"; 
 import "bootstrap/dist/css/bootstrap.min.css";
 import { toast } from "react-toastify";
@@ -60,10 +60,9 @@ const reviewCount = book.ReviewCount ? book.ReviewCount() : 0;
 
 
   return (
-    <div>
+    <div className="bg-light min-vh-100">
       <Navbar />
-
-      <body className="page-background">
+      <body>
         <div className="container mt-5 pb-3">
           <div className="custom-border custom-border p-5 mb-5 rounded">
             <div className="row g-3 align-items-start">

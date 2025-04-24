@@ -126,7 +126,6 @@ button.accordion-button {
     height: 320px;
     border-radius: 16px;
 }
-  
 .book-cover {
     width: 200px;
     height: 160px;
@@ -148,7 +147,7 @@ button.accordion-button {
   }
   
 .page-background{
-    background-color: #e9ecef;
+    background-color: #f2f2f2;
 }
 
 .custom-border {

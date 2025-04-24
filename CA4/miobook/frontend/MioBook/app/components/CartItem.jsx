@@ -1,4 +1,6 @@
 import image from "../static/book-icon.jpg";
+import { useEffect, useState } from "react";
+import Notifier from "../components/Notifier";
 
 export default function CartItem({ item, onRemove, isHistory }) {
   async function removeItem(e) {
@@ -8,10 +10,10 @@ export default function CartItem({ item, onRemove, isHistory }) {
       const response = await fetch("http://localhost:9090/api/cart/remove", {
         method: "DELETE",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
         credentials: "include",
-        body: JSON.stringify({ title: item.title })
+        body: JSON.stringify({ title: item.title }),
       });
 
       const data = await response.json();
@@ -19,7 +21,6 @@ export default function CartItem({ item, onRemove, isHistory }) {
       if (data.success) {
         onRemove(item.title);
       } else {
-        console.log("Failed to remove item.");
       }
     } catch (error) {
       console.error("Error removing item:", error);
@@ -27,19 +28,36 @@ export default function CartItem({ item, onRemove, isHistory }) {
   }
 
   return (
-    <tr>
-      <td><img src={item.image || image} className="book-icon" alt="book" /></td>
-      <td>{item.title}</td>
-      <td>{item.author}</td>
-      <td>${item.price}</td>
-      <td>{item.isBorrowd ? item.borrowDays : "Owned"}</td>
-      {!isHistory && 
+    <>
+      <tr>
         <td>
-          <button className="btn btn-danger w-100" onClick={removeItem}>
-            Remove
-          </button>
+          <img src={item.image || image} className="book-icon" alt="book" />
         </td>
-      }
-    </tr>
+        <td>{item.title}</td>
+        <td>{item.author}</td>
+        <td>
+          {!item.isBorrowed ? (
+            `$${item.price}`
+          ) : (
+            <>
+              <span
+                style={{ textDecoration: "line-through", marginRight: "8px" }}
+                >
+                ${item.price}
+              </span>
+              <span>${(item.borrowDays * item.price) / 10}</span>
+            </>
+          )}
+        </td>
+        <td>{item.isBorrowed ? item.borrowDays : "Not Borrowed"}</td>
+        {!isHistory && (
+          <td>
+            <button className="btn btn-light w-75" onClick={removeItem}>
+              Remove
+            </button>
+          </td>
+        )}
+      </tr>
+    </>
   );
 }
