@@ -1,17 +1,23 @@
 package org.miobook.models;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter
-@Setter
+@Entity
+@Getter @Setter
+@NoArgsConstructor
 public class Wallet {
 
-    private int credit;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    public Wallet() {
-        this.credit = 0;
-    }
+    private int credit = 0;
 
     public void addCredit(int amount) {
         this.credit += amount;

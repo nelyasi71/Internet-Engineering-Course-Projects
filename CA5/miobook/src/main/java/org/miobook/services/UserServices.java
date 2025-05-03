@@ -1,10 +1,9 @@
 package org.miobook.services;
 
+import jakarta.transaction.Transactional;
 import org.miobook.Exception.MioBookException;
 import org.miobook.commands.*;
 import org.miobook.models.*;
-import org.miobook.repositories.AuthorRepository;
-import org.miobook.repositories.BookRepository;
 import org.miobook.repositories.UserRepository;
 import org.miobook.responses.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,30 +18,40 @@ public class UserServices implements Services {
     @Autowired
     private UserRepository userRepository;
 
+
+    @Transactional
     public void addUser(AddUser dto) {
-        if(userRepository.doesUserExist(dto.getUsername())) {
+        if(userRepository.existsByUsername(dto.getUsername())) {
             throw new MioBookException("username", "User with the username '" + dto.getUsername() + "' already exists.");
         }
-        if(userRepository.doesEmailExist(dto.getEmail())) {
+        if(userRepository.existsByEmail(dto.getEmail())) {
             throw new MioBookException("email", "An account with the email '" + dto.getEmail() + "' already exists.");
         }
 
-        userRepository.add(dto);
+        User user;
+        if (dto.getRole().equals("customer")) {
+            user = new Customer(dto.getUsername(), dto.getPassword(), dto.getEmail(), dto.getAddress());
+        } else {
+            user = new Admin(dto.getUsername(), dto.getPassword(), dto.getEmail(), dto.getAddress());
+        }
+        userRepository.save(user);
     }
 
+
+    @Transactional
     public void addCredit(AddCredit dto) {
-        Optional<Customer> customerOptional = userRepository.getCustomerByUsername(dto.getUsername());
+        Optional<User> customerOptional = userRepository.findByUsernameAndType(dto.getUsername(), Customer.class);
         if(customerOptional.isEmpty()) {
             throw new MioBookException("username", "Customer with username '" + dto.getUsername() + "' not found.");
         }
+        Customer customer = (Customer) customerOptional.get();
+        customer.addCredit(dto.getCredit());
 
-        customerOptional.get().addCredit(dto.getCredit());
+        userRepository.save(customer);
     }
 
-
-
     public UserRecord showUserDetails(ShowUserDetails dto) {
-        Optional<User> user = userRepository.getUserByUsername(dto.getUsername());
+        Optional<User> user = userRepository.findByUsername(dto.getUsername());
         if(user.isEmpty()) {
             throw new MioBookException("username", "User with username '" + dto.getUsername() + "' not found.");
         }
@@ -52,21 +61,19 @@ public class UserServices implements Services {
             Admin admin = (Admin) user.get();
             return new UserRecord(admin.getUsername(), "admin", admin.getEmail(), admin.getAddress(), null);
         }
-
     }
 
     public PurchaseHistoryRecord showPurchaseHistory(ShowPurchaseHistory dto) {
-        if(userRepository.doesAdminExist(dto.getUsername())) {
-            throw new MioBookException("Not available for 'Admin' role");
-        }
-
-        Optional<Customer> _customer = userRepository.getCustomerByUsername(dto.getUsername());
-        if(_customer.isEmpty()) {
+        Optional<User> userOpt = userRepository.findByUsername(dto.getUsername());
+        if(userOpt.isEmpty()) {
             throw new MioBookException("username", "User with username '" + dto.getUsername() + "' not found.");
         }
+        if(userOpt.get().getRole().equals("admin")) {
+            throw new MioBookException("Not available for 'Admin' role");
+        }
+        Customer customer = (Customer) userOpt.get();
 
-        Customer customer = _customer.get();
-        List<Purchase> purchases = _customer.get().getPurchasesHistory();
+        List<Purchase> purchases = customer.getPurchasesHistory();
         List<PurchaseRecord> purchaseRecords = purchases.stream()
                 .map(Purchase::createRecord)
                 .toList();
@@ -75,15 +82,15 @@ public class UserServices implements Services {
         return new PurchaseHistoryRecord(customer.getUsername(), purchaseRecords);
     }
     public PurchasedBooksRecord showPurchasedBooks(ShowPurchasedBooks dto) {
-        if(userRepository.doesAdminExist(dto.getUsername())) {
-            throw new MioBookException("Not available for 'Admin' role");
-        }
-
-        Optional<Customer> customer = userRepository.getCustomerByUsername(dto.getUsername());
-        if(customer.isEmpty()) {
+        Optional<User> userOpt = userRepository.findByUsername(dto.getUsername());
+        if(userOpt.isEmpty()) {
             throw new MioBookException("username", "User with username '" + dto.getUsername() + "' not found.");
         }
+        if(userOpt.get().getRole().equals("admin")) {
+            throw new MioBookException("Not available for 'Admin' role");
+        }
+        Customer customer = (Customer) userOpt.get();
 
-        return customer.get().createPurchasedBooksRecord();
+        return customer.createPurchasedBooksRecord();
     }
 }

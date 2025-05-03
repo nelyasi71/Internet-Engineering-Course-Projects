@@ -1,26 +1,25 @@
 package org.miobook.models;
 
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.miobook.responses.PurchasedBooksRecord;
 
-@Getter
-@Setter
-public class User {
+@Entity
+@Inheritance(strategy = InheritanceType.JOINED)
+@DiscriminatorColumn(name = "role")
+@Getter @Setter
+public abstract class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     protected String username;
     protected String password;
     protected String email;
+
+    @Embedded
     protected Address address;
 
-    public User(String username, String password, String email, Address address) {
-        this.username = username;
-        this.password = password;
-        this.email = email;
-        this.address = address;
-    }
-
-    public String getRole() {
-        return "";
-    }
-
+    public abstract String getRole();
 }
