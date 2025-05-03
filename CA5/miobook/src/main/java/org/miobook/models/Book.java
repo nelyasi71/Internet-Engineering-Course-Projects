@@ -1,23 +1,39 @@
 package org.miobook.models;
 
+import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.time.LocalDateTime;
 
 
+@Entity
 @Getter
+@NoArgsConstructor
 public class Book {
-    private String title;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ElementCollection
+    private List<String> genres = new ArrayList<>();
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "author_id")
     private Author author;
+
+    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL)
+    private List<Review> reviews = new ArrayList<>();
+
+    private String title;
     private String publisher;
     private int publishedYear;
-    private List<String> genres;
     private int price;
     private String synopsis;
     private String content;
-    private List<Review> reviews;
     private int totalBuys;
 
     public Book(String title, Author author, String publisher, int publishedYear, List<String> genres, int price, String content, String synopsis) {

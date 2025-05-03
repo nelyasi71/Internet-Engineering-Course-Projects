@@ -1,14 +1,27 @@
 package org.miobook.models;
 
 import java.time.LocalDateTime;
+
+import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter
-@Setter
+@Entity
+@Getter @Setter
+@NoArgsConstructor
 public class Review {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne
     private Customer customer;
+
+    @ManyToOne
+    private Book book;
+
     private String comment;
     private Integer rate;
     LocalDateTime date;
