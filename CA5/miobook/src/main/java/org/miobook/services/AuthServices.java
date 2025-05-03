@@ -27,7 +27,7 @@ public class AuthServices implements Services {
             throw new MioBookException("Already logged in as: " + session.getAttribute("username"));
         }
 
-        Optional<User> user = userRepository.getUserByUsername(dto.getUsername());
+        Optional<User> user = userRepository.findByUsername(dto.getUsername());
         if(user.isEmpty()) {
             throw new MioBookException("username", "User with username '" + dto.getUsername() + "' not found.");
         }
