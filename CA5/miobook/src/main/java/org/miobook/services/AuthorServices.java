@@ -4,6 +4,7 @@ import org.miobook.Exception.MioBookException;
 import org.miobook.commands.AddAuthor;
 import org.miobook.commands.ShowAllAuthors;
 import org.miobook.commands.ShowAuthorDetails;
+import org.miobook.models.Admin;
 import org.miobook.models.Author;
 import org.miobook.repositories.AuthorRepository;
 import org.miobook.repositories.UserRepository;
@@ -24,18 +25,26 @@ public class AuthorServices implements Services {
     private AuthorRepository authorRepository;
 
     public void addAuthor(AddAuthor dto) {
-        if(!userRepository.doesAdminExist(dto.getUsername())) {
+        if(!userRepository.existsByUsernameAndType(dto.getUsername(), Admin.class)) {
             throw new MioBookException("Only admins can add authors.");
         }
-        if(authorRepository.doesExist(dto.getName())) {
+        if(authorRepository.existsByName(dto.getName())) {
             throw new MioBookException("name", "Author with the name '" + dto.getName() + "' already exists.");
         }
 
-        authorRepository.add(dto);
+        Author author = new Author(
+                dto.getName(),
+                dto.getPenName(),
+                dto.getNationality(),
+                dto.getBorn(),
+                dto.getDeath()
+        );
+        authorRepository.save(author);
     }
 
+
     public AuthorRecord showAuthorDetails(ShowAuthorDetails dto) {
-        Optional<Author> _author = authorRepository.getByName(dto.getName());
+        Optional<Author> _author = authorRepository.findByName(dto.getName());
         if(_author.isEmpty()) {
             throw new MioBookException("name", "Author with the name '" + dto.getName() + "' does not exist.");
         }
@@ -47,7 +56,7 @@ public class AuthorServices implements Services {
 
     public AllAuthorsRecord showAllAuthors(ShowAllAuthors dto) {
         return new AllAuthorsRecord(
-            authorRepository.getAuthors().stream()
+            authorRepository.findAll().stream()
                 .map(author -> new AuthorRecord(
                     author.getName(),
                     author.getPenName(),
