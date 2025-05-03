@@ -1,10 +1,16 @@
 package org.miobook.models;
 
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+import lombok.NoArgsConstructor;
 import org.miobook.responses.PurchaseItemRecord;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+
+@Entity
+@DiscriminatorValue("BORROW")
+@NoArgsConstructor
 public class BorrowItem extends PurchaseItem {
 
     private int borrowDays;

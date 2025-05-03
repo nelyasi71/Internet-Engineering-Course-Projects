@@ -1,29 +1,36 @@
 package org.miobook.models;
 
+import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.miobook.Exception.MioBookException;
-import org.miobook.responses.PurchaseCartRecord;
 import org.miobook.responses.PurchasedBookItemRecord;
 import org.miobook.responses.PurchasedBooksRecord;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Customer extends User {
-    @Getter
-    private final Cart shoppingCart;
-    @Getter
-    private final List<Purchase> purchasesHistory = new ArrayList<>();
-    private Wallet wallet;
 
-    //TODO
-    private final List<PurchaseItem> purchasedBooks = new ArrayList<>();
+@Entity
+@DiscriminatorValue("customer")
+@Getter
+@NoArgsConstructor
+public class Customer extends User {
+
+    @OneToOne(cascade = CascadeType.ALL)
+    private final Cart cart = new Cart();
+
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    private final List<Purchase> purchasesHistory = new ArrayList<>();
+
+    @OneToOne(cascade = CascadeType.ALL)
+    private final Wallet wallet = new Wallet();
 
     public Customer(String userName, String password, String email, Address address) {
-        super(userName, password, email, address);
-
-        this.shoppingCart = new Cart();
-        this.wallet = new Wallet();
+        this.username = userName;
+        this.password = password;
+        this.email = email;
+        this.address = address;
     }
 
     @Override
@@ -35,27 +42,27 @@ public class Customer extends User {
         if(hasBook(purchaseItem.getBook().getTitle())) {
             throw new MioBookException("You already has bought this item.");
         }
-        this.shoppingCart.add(purchaseItem);
+        this.cart.add(purchaseItem);
     }
 
-    public void removeCard(String title) {
-        this.shoppingCart.remove(title);
+    public void removeCart(String title) {
+        this.cart.remove(title);
     }
 
     public Purchase purchaseCart() {
-        if(shoppingCart.isEmpty()) {
+        if(cart.isEmpty()) {
             throw new MioBookException("Cannot proceed with purchase: Shopping cart is empty.");
         }
 
-        int cartPrice = shoppingCart.price();
+        int cartPrice = cart.price();
         if(this.wallet.getCredit() < cartPrice) {
             throw new MioBookException("Insufficient funds: Wallet credit is lower than the total cart price.");
         }
 
 
-        Purchase newPurchase = new Purchase(shoppingCart.getItems(), shoppingCart.price());
+        Purchase newPurchase = new Purchase(cart.getItems(), cart.price());
         wallet.decreaseCredit(cartPrice);
-        shoppingCart.clear();
+        cart.clear();
         purchasesHistory.add(newPurchase);
 
         return newPurchase;

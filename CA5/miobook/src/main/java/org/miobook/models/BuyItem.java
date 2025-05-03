@@ -1,7 +1,14 @@
 package org.miobook.models;
 
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+import lombok.NoArgsConstructor;
 import org.miobook.responses.PurchaseItemRecord;
 
+
+@Entity
+@DiscriminatorValue("BUY")
+@NoArgsConstructor
 public class BuyItem extends PurchaseItem {
     public BuyItem(Book book) {
         super(book);

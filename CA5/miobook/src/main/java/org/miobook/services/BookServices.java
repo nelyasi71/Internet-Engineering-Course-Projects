@@ -1,13 +1,12 @@
 package org.miobook.services;
 
+import jakarta.transaction.Transactional;
 import org.miobook.Exception.MioBookException;
 import org.miobook.commands.*;
-import org.miobook.models.Author;
-import org.miobook.models.Book;
-import org.miobook.models.Customer;
-import org.miobook.models.Review;
+import org.miobook.models.*;
 import org.miobook.repositories.AuthorRepository;
 import org.miobook.repositories.BookRepository;
+import org.miobook.repositories.ReviewRepository;
 import org.miobook.repositories.UserRepository;
 import org.miobook.responses.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,27 +34,39 @@ public class BookServices implements Services{
     @Autowired
     private BookRepository bookRepository;
 
+    @Autowired
+    private ReviewRepository reviewRepository;
+
+    @Transactional
     public void addBook(AddBook dto) {
-        if(!userRepository.doesAdminExist(dto.getUsername())) {
+        if(!userRepository.existsByUsername(dto.getUsername())) {
             throw new MioBookException("Admin with username '" + dto.getUsername() + "' does not exist. Only admins can add books.");
         }
-        if(bookRepository.doesBookExist(dto.getTitle())) {
+        if(bookRepository.existsByTitle(dto.getTitle())) {
             throw new MioBookException("title", "A book with the title '" + dto.getTitle() + "' already exists.");
         }
 
-        Optional<Author> author = authorRepository.getByName(dto.getAuthor());
-
+        Optional<Author> author = authorRepository.findByName(dto.getAuthor());
         if(author.isEmpty()) {
             throw new MioBookException("author", "Author with the name '" + dto.getAuthor() + "' does not exist.");
         }
 
-        bookRepository.add(
-                new Book(dto.getTitle(), author.get(), dto.getPublisher(), dto.getYear(), dto.getGenres(), dto.getPrice(), dto.getContent(), dto.getSynopsis())
+        Book book = new Book(
+                dto.getTitle(),
+                author.get(),
+                dto.getPublisher(),
+                dto.getYear(),
+                dto.getGenres(),
+                dto.getPrice(),
+                dto.getContent(),
+                dto.getSynopsis()
         );
+
+        bookRepository.save(book);
     }
 
     public BookRecord showBookDetails(ShowBookDetails dto) {
-        Optional<Book> _book = bookRepository.getBookByTitle(dto.getTitle());
+        Optional<Book> _book = bookRepository.findByTitle(dto.getTitle());
         if(_book.isEmpty()) {
             throw new MioBookException("title", "Book with the title '" + dto.getTitle() + "' not found.");
         }
@@ -75,7 +86,7 @@ public class BookServices implements Services{
 
     public AllBooksRecord showAllBooks(ShowAllBooks dto) {
         return new AllBooksRecord(
-                bookRepository.getBooks().stream()
+                bookRepository.findAll().stream()
                         .map(book -> new BookRecord(
                                 book.getTitle(),
                                 book.getAuthor().getName(),
@@ -92,35 +103,43 @@ public class BookServices implements Services{
     }
 
     public BookContentRecord showBookContent(ShowBookContent dto) {
-        Optional<Customer> customer = userRepository.getCustomerByUsername(dto.getUsername());
-        if(customer.isEmpty()) {
-            throw new MioBookException("Customer with username '" + dto.getUsername() + "' not found.");
+        Optional<User> userOpt = userRepository.findByUsername(dto.getUsername());
+        if(userOpt.isEmpty()) {
+            throw new MioBookException("username", "User with username '" + dto.getUsername() + "' not found.");
         }
+        if(userOpt.get().getRole().equals("admin")) {
+            throw new MioBookException("Not available for 'Admin' role");
+        }
+        Customer customer = (Customer) userOpt.get();
 
-        Optional<Book> book = bookRepository.getBookByTitle(dto.getTitle());
+        Optional<Book> book = bookRepository.findByTitle(dto.getTitle());
         if(book.isEmpty()) {
             throw new MioBookException("title", "Book with title '" + dto.getTitle() + "' not found.");
         }
 
-        if(!customer.get().hasBook(book.get().getTitle())) {
+        if(!customer.hasBook(book.get().getTitle())) {
             throw new MioBookException("Customer with username '" + dto.getUsername() + "' does not own the book '" + dto.getTitle() + "'.");
         }
 
         return new BookContentRecord(dto.getTitle(), book.get().getAuthor().getName(), book.get().getContent());
     }
 
+    @Transactional
     public void addReview(AddReview dto) {
-        Optional<Book> bookOptional = bookRepository.getBookByTitle(dto.getTitle());
+        Optional<Book> bookOptional = bookRepository.findByTitle(dto.getTitle());
         if(bookOptional.isEmpty()) {
             throw new MioBookException("title", "Book with title '" + dto.getTitle() + "' not found.");
         }
         Book book = bookOptional.get();
 
-        Optional<Customer> customerOptional = userRepository.getCustomerByUsername(dto.getUsername());
-        if(customerOptional.isEmpty()) {
-            throw new MioBookException("username", "Customer with username '" + dto.getUsername() + "' not found.");
+        Optional<User> userOpt = userRepository.findByUsername(dto.getUsername());
+        if(userOpt.isEmpty()) {
+            throw new MioBookException("username", "User with username '" + dto.getUsername() + "' not found.");
         }
-        Customer customer = customerOptional.get();
+        if(userOpt.get().getRole().equals("admin")) {
+            throw new MioBookException("Not available for 'Admin' role");
+        }
+        Customer customer = (Customer) userOpt.get();
 
         if (!customer.hasBook(book.getTitle())) {
             throw new MioBookException("Customer has not purchased this book and cannot add a review.");
@@ -128,13 +147,17 @@ public class BookServices implements Services{
 
         Review review = new Review(customer, dto.getComment(), dto.getRate(), LocalDateTime.now());
         book.addReview(review);
+
+        review.setBook(book);
+        review.setCustomer(customer);
+        reviewRepository.save(review);
     }
 
     public SearchedBooksRecord searchBooks(SearchBooks dto) {
         List<SearchedBooksRecord> searchResults = new ArrayList<>();
 
         if (dto.getTitle() == null && dto.getAuthor() == null && dto.getGenre() == null && dto.getFrom() == null) {
-            return new SearchedBooksRecord("All Books", bookRepository.getBooks().stream()
+            return new SearchedBooksRecord("All Books", bookRepository.findAll().stream()
                     .map(book -> new SearchedBookItemRecord(
                             book.getTitle(),
                             book.getAuthor().getName(),
@@ -227,7 +250,7 @@ public class BookServices implements Services{
 
     public SearchedBooksRecord searchBooksByTitle(SearchBooksByTitle dto) {
 
-        List<SearchedBookItemRecord> matchedBooks = bookRepository.getBooks().stream()
+        List<SearchedBookItemRecord> matchedBooks = bookRepository.findAll().stream()
                 .filter(book -> book.getTitle().toLowerCase().contains(dto.getTitle().toLowerCase()))
                 .map(book -> new SearchedBookItemRecord(
                         book.getTitle(),
@@ -242,14 +265,11 @@ public class BookServices implements Services{
                 ))
                 .toList();
 
-//        if (matchedBooks.isEmpty()) {
-//            throw new IllegalArgumentException("No books found matching the title '" + dto.getTitle() + "'. Please try with a different search term.");
-//        }
         return new SearchedBooksRecord(dto.getTitle(),matchedBooks);
     }
 
     public BookReviewRecord showBookReviews(ShowBookReviews dto) {
-        Optional<Book> bookOptional = bookRepository.getBookByTitle(dto.getTitle());
+        Optional<Book> bookOptional = bookRepository.findByTitle(dto.getTitle());
         if(bookOptional.isEmpty()) {
             throw new MioBookException("title", "Book with title '" + dto.getTitle() + "' not found. Please check the title and try again.");
         }
@@ -269,7 +289,7 @@ public class BookServices implements Services{
 
     public SearchedBooksRecord searchBooksByAuthor(SearchBooksByAuthor dto) {
 
-        List<SearchedBookItemRecord> matchedBooks = bookRepository.getBooks().stream()
+        List<SearchedBookItemRecord> matchedBooks = bookRepository.findAll().stream()
                 .filter(book -> book.getAuthor().getName().toLowerCase().contains(dto.getName().toLowerCase()))
                 .map(book -> new SearchedBookItemRecord(
                         book.getTitle(),
@@ -284,15 +304,12 @@ public class BookServices implements Services{
                 ))
                 .toList();
 
-//        if (matchedBooks.isEmpty()) {
-//            throw new IllegalArgumentException("No books found for the author '" + dto.getName() + "'. Please try a different author name.");
-//        }
         return new SearchedBooksRecord(dto.getName(),matchedBooks);
     }
 
     public SearchedBooksRecord searchBooksByGenre(SearchBooksByGenre dto) {
 
-        List<SearchedBookItemRecord> matchedBooks = bookRepository.getBooks().stream()
+        List<SearchedBookItemRecord> matchedBooks = bookRepository.findAll().stream()
                 .filter(book -> book.getGenres().stream()
                         .anyMatch(genre -> genre.equalsIgnoreCase(dto.getGenre()))
                 )
@@ -309,14 +326,11 @@ public class BookServices implements Services{
                 ))
                 .toList();
 
-//        if (matchedBooks.isEmpty()) {
-//            throw new IllegalArgumentException("No books found for the genre '" + dto.getGenre() + "'. Please try a different genre.");
-//        }
         return new SearchedBooksRecord(dto.getGenre(),matchedBooks);
     }
 
     public SearchedBooksRecord searchBooksByYear(SearchBooksByYear dto) {
-        List<SearchedBookItemRecord> matchedBooks = bookRepository.getBooks().stream()
+        List<SearchedBookItemRecord> matchedBooks = bookRepository.findAll().stream()
                 .filter(book -> book.getPublishedYear() >= dto.getFrom() && book.getPublishedYear() <= dto.getTo())
                 .map(book -> new SearchedBookItemRecord(
                         book.getTitle(),
@@ -331,9 +345,6 @@ public class BookServices implements Services{
                 ))
                 .toList();
 
-//        if (matchedBooks.isEmpty()) {
-//            throw new IllegalArgumentException("No books found in the given year range.");
-//        }
         return new SearchedBooksRecord(dto.getFrom() + " - " + dto.getTo(), matchedBooks);
     }
 }

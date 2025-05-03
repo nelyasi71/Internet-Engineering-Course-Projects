@@ -1,6 +1,9 @@
 package org.miobook.models;
 
+import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 import org.miobook.responses.PurchaseItemRecord;
 import org.miobook.responses.PurchaseRecord;
@@ -9,15 +12,24 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Getter
-@ToString
+@Entity
+@Getter @Setter
+@NoArgsConstructor
 public class Purchase {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @OneToMany(mappedBy = "purchase", cascade = CascadeType.ALL)
     private List<PurchaseItem> purchaseItems;
 
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "customer_id")
+    private Customer customer;
+
     private int price;
-
     private LocalDateTime date;
-
 
     public Purchase(List<PurchaseItem> purchaseItems, int price) {
         this.purchaseItems = purchaseItems.stream()

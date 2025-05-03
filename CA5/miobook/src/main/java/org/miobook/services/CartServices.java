@@ -1,18 +1,18 @@
 package org.miobook.services;
 
+import jakarta.transaction.Transactional;
 import org.miobook.Exception.MioBookException;
 import org.miobook.commands.*;
 import org.miobook.models.*;
-import org.miobook.repositories.AuthorRepository;
 import org.miobook.repositories.BookRepository;
+import org.miobook.repositories.CartRepository;
+import org.miobook.repositories.PurchaseRepository;
 import org.miobook.repositories.UserRepository;
 import org.miobook.responses.CartRecord;
 import org.miobook.responses.PurchaseCartRecord;
 import org.miobook.responses.PurchaseItemRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,101 +20,118 @@ import java.util.Optional;
 
 @Service
 public class CartServices implements Services {
-
     @Autowired
     private UserRepository userRepository;
 
     @Autowired
     private BookRepository bookRepository;
 
-    @CrossOrigin(origins = "http://localhost:5173")
-    @PostMapping("/cart/add")
+    @Autowired
+    private PurchaseRepository purchaseRepository;
+
+    @Transactional
     public void addCart(AddCart dto) {
-        if(userRepository.doesAdminExist(dto.getUsername())) {
-            throw new MioBookException("Admin with username '" + dto.getUsername() + "' cannot add items to the cart. Only customers can.");
+        Optional<User> userOpt = userRepository.findByUsername(dto.getUsername());
+        if(userOpt.isEmpty()) {
+            throw new MioBookException("username", "User with username '" + dto.getUsername() + "' not found.");
         }
-
-        Optional<Customer> customer = userRepository.getCustomerByUsername(dto.getUsername());
-        if(customer.isEmpty()) {
-            throw new MioBookException("username", "Customer with username '" + dto.getUsername() + "' does not exist.");
+        if(userOpt.get().getRole().equals("admin")) {
+            throw new MioBookException("Not available for 'Admin' role");
         }
+        Customer customer = (Customer) userOpt.get();
 
-        Optional<Book> book = bookRepository.getBookByTitle(dto.getTitle());
+        Optional<Book> book = bookRepository.findByTitle(dto.getTitle());
         if(book.isEmpty()) {
             throw new MioBookException("title", "Book with title '" + dto.getTitle() + "' not found.");
         }
 
-        customer.get().addCart(new BuyItem(book.get()));
+        BuyItem buyItem = new BuyItem(book.get());
+
+        customer.addCart(buyItem);
+        buyItem.setCart(customer.getCart());
+        userRepository.save(customer);
     }
 
-
+    @Transactional
     public void removeCart(RemoveCart dto) {
-        if(userRepository.doesAdminExist(dto.getUsername())) {
-            throw new MioBookException("Admin with username '" + dto.getUsername() + "' cannot remove items from the cart. Only customers can.");
+        Optional<User> userOpt = userRepository.findByUsername(dto.getUsername());
+        if(userOpt.isEmpty()) {
+            throw new MioBookException("username", "User with username '" + dto.getUsername() + "' not found.");
         }
-
-        Optional<Customer> customer = userRepository.getCustomerByUsername(dto.getUsername());
-        if(customer.isEmpty()) {
-            throw new MioBookException("username", "Customer with username '" + dto.getUsername() + "' does not exist.");
+        if(userOpt.get().getRole().equals("admin")) {
+            throw new MioBookException("Not available for 'Admin' role");
         }
+        Customer customer = (Customer) userOpt.get();
 
-        Optional<Book> book = bookRepository.getBookByTitle(dto.getTitle());
+        Optional<Book> book = bookRepository.findByTitle(dto.getTitle());
         if(book.isEmpty()) {
             throw new MioBookException("title", "Book with title '" + dto.getTitle() + "' not found in the catalog.");
         }
 
-        customer.get().removeCard(dto.getTitle());
+        customer.removeCart(dto.getTitle());
+        userRepository.save(customer);
     }
 
+    @Transactional
     public PurchaseCartRecord purchaseCart(PurchaseCart dto) {
-        if(userRepository.doesAdminExist(dto.getUsername())) {
-            throw new MioBookException("Admin with username '" + dto.getUsername() + "' cannot make a purchase. Only customers can.");
+        Optional<User> userOpt = userRepository.findByUsername(dto.getUsername());
+        if(userOpt.isEmpty()) {
+            throw new MioBookException("username", "User with username '" + dto.getUsername() + "' not found.");
         }
-
-        Optional<Customer> customer = userRepository.getCustomerByUsername(dto.getUsername());
-        if(customer.isEmpty()) {
-            throw new MioBookException("username", "Customer with username '" + dto.getUsername() + "' not found.");
+        if(userOpt.get().getRole().equals("admin")) {
+            throw new MioBookException("Not available for 'Admin' role");
         }
+        Customer customer = (Customer) userOpt.get();
 
-        Purchase purchase = customer.get().purchaseCart();
+        Purchase purchase = customer.purchaseCart();
+        purchase.setCustomer(customer);
+
+        purchase.getPurchaseItems()
+            .forEach(purchaseItem -> {
+                purchaseItem.setCart(null);
+                purchaseItem.setPurchase(purchase);
+            });
+
+        purchaseRepository.save(purchase);
+
         return new PurchaseCartRecord(
                 purchase.size(), purchase.getPrice(), purchase.getDate()
         );
-
     }
-    
-    @CrossOrigin(origins = "http://localhost:5173")
-    @PostMapping("/cart/borrow")
+
+    @Transactional
     public void borrowBook(BorrowBook dto) {
-        if(userRepository.doesAdminExist(dto.getUsername())) {
-            throw new MioBookException("Admin with username '" + dto.getUsername() + "' cannot borrow books. Only customers can.");
+        Optional<User> userOpt = userRepository.findByUsername(dto.getUsername());
+        if(userOpt.isEmpty()) {
+            throw new MioBookException("username", "User with username '" + dto.getUsername() + "' not found.");
         }
-
-        Optional<Customer> customer = userRepository.getCustomerByUsername(dto.getUsername());
-        if(customer.isEmpty()) {
-            throw new MioBookException("username", "Customer with username '" + dto.getUsername() + "' not found.");
+        if(userOpt.get().getRole().equals("admin")) {
+            throw new MioBookException("Not available for 'Admin' role");
         }
+        Customer customer = (Customer) userOpt.get();
 
-        Optional<Book> book = bookRepository.getBookByTitle(dto.getTitle());
+        Optional<Book> book = bookRepository.findByTitle(dto.getTitle());
         if(book.isEmpty()) {
             throw new MioBookException("title", "Book with title '" + dto.getTitle() + "' not found.");
         }
 
-        customer.get().addCart(new BorrowItem(book.get(), dto.getDays()));
+        BorrowItem borrowItem = new BorrowItem(book.get(), dto.getDays());
+        customer.addCart(borrowItem);
+        borrowItem.setCart(customer.getCart());
+        userRepository.save(customer);
     }
 
     public CartRecord showCart(ShowCart dto) {
-        if(userRepository.doesAdminExist(dto.getUsername())) {
-            throw new MioBookException("Admin with username '" + dto.getUsername() + "' cannot view carts. Only customers can.");
+        Optional<User> userOpt = userRepository.findByUsername(dto.getUsername());
+        if(userOpt.isEmpty()) {
+            throw new MioBookException("username", "User with username '" + dto.getUsername() + "' not found.");
         }
-
-        Optional<Customer> _customer = userRepository.getCustomerByUsername(dto.getUsername());
-        if(_customer.isEmpty()) {
-            throw new MioBookException("username", "Customer with username '" + dto.getUsername() + "' not found.");
+        if(userOpt.get().getRole().equals("admin")) {
+            throw new MioBookException("Not available for 'Admin' role");
         }
+        Customer customer = (Customer) userOpt.get();
 
-        Customer customer = _customer.get();
-        Cart cart = _customer.get().getShoppingCart();
+        Cart cart = customer.getCart();
         List<PurchaseItemRecord> purchaseItemRecords = cart.getItems().stream()
                 .map(PurchaseItem::createRecord)
                 .toList();
