@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Comparator;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -41,7 +40,7 @@ public class BookServices implements Services{
     public void addBook(AddBook dto) {
         Optional<User> user = userRepository.findByUsernameAndType(dto.getUsername(), Admin.class);
         if(user.isEmpty()) {
-            new MioBookException("Admin with username '" + dto.getUsername() + "' does not exist. Only admins can add books.");
+            throw new MioBookException("Admin with username '" + dto.getUsername() + "' does not exist. Only admins can add books.");
         }
         Admin admin = (Admin) user.get();
         
@@ -232,7 +231,7 @@ public class BookServices implements Services{
 
     private List<SearchedBookItemRecord> findCommonBooks(List<List<SearchedBookItemRecord>> lists) {
         if (lists.isEmpty()) return List.of();
-        Set<SearchedBookItemRecord> common = new HashSet<>(lists.get(0));
+        Set<SearchedBookItemRecord> common = new HashSet<>(lists.getFirst());
         lists.stream().skip(1).forEach(l -> common.retainAll(new HashSet<>(l)));
         return new ArrayList<>(common);
     }
