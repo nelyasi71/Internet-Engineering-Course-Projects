@@ -75,14 +75,6 @@ public class BookController {
     }
 
     @CrossOrigin(origins = "http://localhost:5173")
-    @GetMapping("/books/by-author")
-    public BaseResponse<SearchedBooksRecord> getBooksByAuthor(@PathVariable String author) {
-        SearchBooksByAuthor command = new SearchBooksByAuthor();
-        command.setName(author);
-        return command.execute(bookServices);
-    }
-
-    @CrossOrigin(origins = "http://localhost:5173")
     @GetMapping("/books")
     public BaseResponse<SearchedBooksRecord> search_book(
             @RequestParam(required = false) String title,

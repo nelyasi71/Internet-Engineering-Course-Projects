@@ -158,198 +158,82 @@ public class BookServices implements Services{
         reviewRepository.save(review);
     }
 
+
     public SearchedBooksRecord searchBooks(SearchBooks dto) {
-        List<SearchedBooksRecord> searchResults = new ArrayList<>();
-
         if (dto.getTitle() == null && dto.getAuthor() == null && dto.getGenre() == null && dto.getFrom() == null) {
-            return new SearchedBooksRecord("All Books", bookRepository.findAll().stream()
-                    .map(book -> new SearchedBookItemRecord(
-                            book.getTitle(),
-                            book.getAuthor().getName(),
-                            book.getPublisher(),
-                            book.getGenres(),
-                            book.getPublishedYear(),
-                            book.getPrice(),
-                            book.getSynopsis(),
-                            book.averageRating(),
-                            book.ReviewCount()
-                    ))
-                    .toList());
+            return new SearchedBooksRecord("All Books", mapToRecord(bookRepository.findAll()));
         }
 
-        if (dto.getTitle() != null) {
-            SearchBooksByTitle titleDto = new SearchBooksByTitle();
-            titleDto.setTitle(dto.getTitle());
-            searchResults.add(searchBooksByTitle(titleDto));
-        }
-        if (dto.getAuthor() != null) {
-            SearchBooksByAuthor authorDto = new SearchBooksByAuthor();
-            authorDto.setName(dto.getAuthor());
-            searchResults.add(searchBooksByAuthor(authorDto));
-        }
-        if (dto.getGenre() != null) {
-            SearchBooksByGenre genreDto = new SearchBooksByGenre();
-            genreDto.setGenre(dto.getGenre());
-            searchResults.add(searchBooksByGenre(genreDto));
-        }
+        List<List<SearchedBookItemRecord>> filters = new ArrayList<>();
 
-        if (dto.getFrom() != null){
-            SearchBooksByYear yearDto = new SearchBooksByYear();
-            yearDto.setTo(dto.getTo());
-            yearDto.setFrom(dto.getFrom());
-            searchResults.add(searchBooksByYear(yearDto));
-        }
+        if (dto.getTitle() != null)
+            filters.add(mapToRecord(bookRepository.findByTitleContainingIgnoreCase(dto.getTitle())));
 
-        List<SearchedBookItemRecord> commonBooks = findCommonBooks(searchResults);
-        List<SearchedBookItemRecord> sortedBooks = applySorting(commonBooks, dto.getSortBy(),dto.getOrder());
-        List<SearchedBookItemRecord> paginatedBooks = applyPagination(sortedBooks, dto.getPage(), dto.getSize());
-        return new SearchedBooksRecord(
-                "Books By " + dto.getSortBy() + " in " + dto.getOrder() + " order in Page: " + dto.getPage(),
-                paginatedBooks
-        );
-    }
+        if (dto.getAuthor() != null)
+            filters.add(mapToRecord(bookRepository.findByAuthorNameContainingIgnoreCase(dto.getAuthor())));
 
-    public static List<SearchedBookItemRecord> applySorting(List<SearchedBookItemRecord> books, String sortBy, String order) {
-        Comparator<SearchedBookItemRecord> comparator;
-        switch (sortBy != null ? sortBy.toLowerCase() : "") {
-            case "average_rating":
-                comparator = Comparator.comparing(SearchedBookItemRecord::averageRate);
-                break;
-            case "review_count":
-                comparator = Comparator.comparingInt(SearchedBookItemRecord::reviewCount);
-                break;
-            default:
-                return books;
-        }
-        if ("desc".equalsIgnoreCase(order)) {
-            comparator = comparator.reversed();
-        }
+        if (dto.getGenre() != null)
+            filters.add(mapToRecord(bookRepository.findByGenreIgnoreCase(dto.getGenre())));
 
-        books = books.stream()
-                .sorted(comparator)
-                .collect(Collectors.toList());
-        return books;
-    }
+        if (dto.getFrom() != null)
+            filters.add(mapToRecord(bookRepository.findByPublishedYearBetween(dto.getFrom(), dto.getTo() != null ? dto.getTo() : LocalDateTime.now().getYear())));
 
-    public static List<SearchedBookItemRecord> applyPagination(List<SearchedBookItemRecord> books, int page, int size) {
-        int fromIndex = (page - 1) * size;
-        int toIndex = Math.min(fromIndex + size, books.size());
+        List<SearchedBookItemRecord> commonBooks = findCommonBooks(filters);
+        List<SearchedBookItemRecord> sorted = applySorting(commonBooks, dto.getSortBy(), dto.getOrder());
+        List<SearchedBookItemRecord> paged = applyPagination(sorted, dto.getPage(), dto.getSize());
 
-        if (fromIndex >= books.size()) {
-            return List.of();
-        }
-
-        return books.subList(fromIndex, toIndex);
-    }
-
-    public static List<SearchedBookItemRecord> findCommonBooks(List<SearchedBooksRecord> searchResults) {
-        if (searchResults.isEmpty()) {
-            return new ArrayList<>();
-        }
-        Set<SearchedBookItemRecord> commonBooks = new HashSet<>(searchResults.get(0).books());
-        for (int i = 1; i < searchResults.size(); i++) {
-            commonBooks.retainAll(new HashSet<>(searchResults.get(i).books()));
-        }
-        return new ArrayList<>(commonBooks);
-    }
-
-    public SearchedBooksRecord searchBooksByTitle(SearchBooksByTitle dto) {
-
-        List<SearchedBookItemRecord> matchedBooks = bookRepository.findAll().stream()
-                .filter(book -> book.getTitle().toLowerCase().contains(dto.getTitle().toLowerCase()))
-                .map(book -> new SearchedBookItemRecord(
-                        book.getTitle(),
-                        book.getAuthor().getName(),
-                        book.getPublisher(),
-                        book.getGenres(),
-                        book.getPublishedYear(),
-                        book.getPrice(),
-                        book.getSynopsis(),
-                        book.averageRating(),
-                        book.ReviewCount()
-                ))
-                .toList();
-
-        return new SearchedBooksRecord(dto.getTitle(),matchedBooks);
+        return new SearchedBooksRecord("Filtered Search", paged);
     }
 
     public BookReviewRecord showBookReviews(ShowBookReviews dto) {
-        Optional<Book> bookOptional = bookRepository.findByTitle(dto.getTitle());
-        if(bookOptional.isEmpty()) {
-            throw new MioBookException("title", "Book with title '" + dto.getTitle() + "' not found. Please check the title and try again.");
+        Book book = bookRepository.findByTitle(dto.getTitle())
+                .orElseThrow(() -> new MioBookException("title", "Book with title '" + dto.getTitle() + "' not found."));
+
+        List<ReviewRecord> reviewRecords = book.getReviews().stream()
+                .map(r -> new ReviewRecord(r.getCustomer().getUsername(), r.getRate(), r.getComment()))
+                .toList();
+
+        return new BookReviewRecord(book.getTitle(), reviewRecords, book.averageRating());
+    }
+
+    private List<SearchedBookItemRecord> mapToRecord(List<Book> books) {
+        return books.stream().map(book -> new SearchedBookItemRecord(
+                book.getTitle(),
+                book.getAuthor().getName(),
+                book.getPublisher(),
+                book.getGenres(),
+                book.getPublishedYear(),
+                book.getPrice(),
+                book.getSynopsis(),
+                book.averageRating(),
+                book.ReviewCount()
+        )).toList();
+    }
+
+    private List<SearchedBookItemRecord> applySorting(List<SearchedBookItemRecord> books, String sortBy, String order) {
+        Comparator<SearchedBookItemRecord> comparator = switch (sortBy != null ? sortBy.toLowerCase() : "") {
+            case "average_rating" -> Comparator.comparing(SearchedBookItemRecord::averageRate);
+            case "review_count" -> Comparator.comparingInt(SearchedBookItemRecord::reviewCount);
+            default -> null;
+        };
+
+        if (comparator != null) {
+            if ("desc".equalsIgnoreCase(order)) comparator = comparator.reversed();
+            books = books.stream().sorted(comparator).toList();
         }
-        Book book = bookOptional.get();
-
-        List<ReviewRecord> reviewResponses = book.getReviews().stream()
-                .map(review -> new ReviewRecord(
-                        review.getCustomer().getUsername(),
-                        review.getRate(),
-                        review.getComment()
-                ))
-                .toList();
-
-        return new BookReviewRecord(dto.getTitle(), reviewResponses, book.averageRating());
-
+        return books;
     }
 
-    public SearchedBooksRecord searchBooksByAuthor(SearchBooksByAuthor dto) {
-
-        List<SearchedBookItemRecord> matchedBooks = bookRepository.findAll().stream()
-                .filter(book -> book.getAuthor().getName().toLowerCase().contains(dto.getName().toLowerCase()))
-                .map(book -> new SearchedBookItemRecord(
-                        book.getTitle(),
-                        book.getAuthor().getName(),
-                        book.getPublisher(),
-                        book.getGenres(),
-                        book.getPublishedYear(),
-                        book.getPrice(),
-                        book.getSynopsis(),
-                        book.averageRating(),
-                        book.ReviewCount()
-                ))
-                .toList();
-
-        return new SearchedBooksRecord(dto.getName(),matchedBooks);
+    private List<SearchedBookItemRecord> applyPagination(List<SearchedBookItemRecord> books, int page, int size) {
+        int from = (page - 1) * size;
+        int to = Math.min(from + size, books.size());
+        return (from >= books.size()) ? List.of() : books.subList(from, to);
     }
 
-    public SearchedBooksRecord searchBooksByGenre(SearchBooksByGenre dto) {
-
-        List<SearchedBookItemRecord> matchedBooks = bookRepository.findAll().stream()
-                .filter(book -> book.getGenres().stream()
-                        .anyMatch(genre -> genre.equalsIgnoreCase(dto.getGenre()))
-                )
-                .map(book -> new SearchedBookItemRecord(
-                        book.getTitle(),
-                        book.getAuthor().getName(),
-                        book.getPublisher(),
-                        book.getGenres(),
-                        book.getPublishedYear(),
-                        book.getPrice(),
-                        book.getSynopsis(),
-                        book.averageRating(),
-                        book.ReviewCount()
-                ))
-                .toList();
-
-        return new SearchedBooksRecord(dto.getGenre(),matchedBooks);
-    }
-
-    public SearchedBooksRecord searchBooksByYear(SearchBooksByYear dto) {
-        List<SearchedBookItemRecord> matchedBooks = bookRepository.findAll().stream()
-                .filter(book -> book.getPublishedYear() >= dto.getFrom() && book.getPublishedYear() <= dto.getTo())
-                .map(book -> new SearchedBookItemRecord(
-                        book.getTitle(),
-                        book.getAuthor().getName(),
-                        book.getPublisher(),
-                        book.getGenres(),
-                        book.getPublishedYear(),
-                        book.getPrice(),
-                        book.getSynopsis(),
-                        book.averageRating(),
-                        book.ReviewCount()
-                ))
-                .toList();
-
-        return new SearchedBooksRecord(dto.getFrom() + " - " + dto.getTo(), matchedBooks);
+    private List<SearchedBookItemRecord> findCommonBooks(List<List<SearchedBookItemRecord>> lists) {
+        if (lists.isEmpty()) return List.of();
+        Set<SearchedBookItemRecord> common = new HashSet<>(lists.get(0));
+        lists.stream().skip(1).forEach(l -> common.retainAll(new HashSet<>(l)));
+        return new ArrayList<>(common);
     }
 }
