@@ -18,6 +18,9 @@ public class Admin extends User {
     @OneToMany(mappedBy = "addedBy", cascade = CascadeType.ALL)
     private List<Book> books = new ArrayList<>();
 
+    @OneToMany(mappedBy = "createdBy", cascade = CascadeType.ALL)
+    private List<Author> authors = new ArrayList<>();
+
     public Admin(String userName, String password, String email, Address address) {
         this.username = userName;
         this.password = password;
@@ -32,5 +35,9 @@ public class Admin extends User {
 
     public void addBook(Book book) {
         this.books.add(book);
+    }
+
+    public void addAuthor(Author author){
+        this.authors.add(author);
     }
 }

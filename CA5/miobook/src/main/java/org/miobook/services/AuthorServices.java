@@ -4,14 +4,14 @@ import org.miobook.Exception.MioBookException;
 import org.miobook.commands.AddAuthor;
 import org.miobook.commands.ShowAllAuthors;
 import org.miobook.commands.ShowAuthorDetails;
-import org.miobook.models.Admin;
-import org.miobook.models.Author;
 import org.miobook.repositories.AuthorRepository;
 import org.miobook.repositories.UserRepository;
 import org.miobook.responses.AllAuthorsRecord;
 import org.miobook.responses.AuthorRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.miobook.models.*;
+
 
 import java.util.Optional;
 
@@ -25,20 +25,25 @@ public class AuthorServices implements Services {
     private AuthorRepository authorRepository;
 
     public void addAuthor(AddAuthor dto) {
-        if(!userRepository.existsByUsernameAndType(dto.getUsername(), Admin.class)) {
+        Optional<User> user = userRepository.findByUsernameAndType(dto.getUsername(), Admin.class);
+        if(user.isEmpty()) {
             throw new MioBookException("Only admins can add authors.");
         }
+        Admin admin = (Admin) user.get();
+
         if(authorRepository.existsByName(dto.getName())) {
             throw new MioBookException("name", "Author with the name '" + dto.getName() + "' already exists.");
         }
-
+        
         Author author = new Author(
                 dto.getName(),
                 dto.getPenName(),
                 dto.getNationality(),
                 dto.getBorn(),
-                dto.getDeath()
+                dto.getDeath(),
+                admin
         );
+        admin.addAuthor(author);
         authorRepository.save(author);
     }
 

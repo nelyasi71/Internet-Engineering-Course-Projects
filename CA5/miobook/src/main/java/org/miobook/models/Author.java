@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +21,10 @@ public class Author {
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
     private List<Book> books = new ArrayList<>();
 
+    @ManyToOne
+    @JoinColumn(name = "admin_id")
+    private Admin createdBy;
+
     private String name;
     private String penName;
     private String nationality;
@@ -29,11 +32,12 @@ public class Author {
     private LocalDate death;
 
 
-    public Author(String name, String penName, String nationality, LocalDate born, LocalDate death) {
+    public Author(String name, String penName, String nationality, LocalDate born, LocalDate death, Admin createdBy) {
         this.name = name;
         this.penName = penName;
         this.nationality = nationality;
         this.born = born;
         this.death = death;
+        this.createdBy = createdBy;
     }
 }
