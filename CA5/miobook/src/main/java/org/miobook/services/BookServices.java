@@ -39,9 +39,12 @@ public class BookServices implements Services{
 
     @Transactional
     public void addBook(AddBook dto) {
-        if(!userRepository.existsByUsername(dto.getUsername())) {
-            throw new MioBookException("Admin with username '" + dto.getUsername() + "' does not exist. Only admins can add books.");
+        Optional<User> user = userRepository.findByUsernameAndType(dto.getUsername(), Admin.class);
+        if(user.isEmpty()) {
+            new MioBookException("Admin with username '" + dto.getUsername() + "' does not exist. Only admins can add books.");
         }
+        Admin admin = (Admin) user.get();
+        
         if(bookRepository.existsByTitle(dto.getTitle())) {
             throw new MioBookException("title", "A book with the title '" + dto.getTitle() + "' already exists.");
         }
@@ -59,9 +62,11 @@ public class BookServices implements Services{
                 dto.getGenres(),
                 dto.getPrice(),
                 dto.getContent(),
-                dto.getSynopsis()
+                dto.getSynopsis(),
+                admin
         );
 
+        admin.addBook(book);
         bookRepository.save(book);
     }
 

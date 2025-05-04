@@ -28,6 +28,10 @@ public class Book {
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL)
     private List<Review> reviews = new ArrayList<>();
 
+    @ManyToOne
+    @JoinColumn(name = "admin_id")  
+    private Admin addedBy;
+
     private String title;
     private String publisher;
     private int publishedYear;
@@ -36,7 +40,7 @@ public class Book {
     private String content;
     private int totalBuys;
 
-    public Book(String title, Author author, String publisher, int publishedYear, List<String> genres, int price, String content, String synopsis) {
+    public Book(String title, Author author, String publisher, int publishedYear, List<String> genres, int price, String content, String synopsis, Admin addedBy) {
         this.title = title;
         this.author = author;
         this.publisher = publisher;
@@ -47,6 +51,7 @@ public class Book {
         this.content = content;
         this.reviews = new ArrayList<>();
         this.totalBuys = 0;
+        this.addedBy = addedBy;
     }
 
     public void addReview(Review review) {
