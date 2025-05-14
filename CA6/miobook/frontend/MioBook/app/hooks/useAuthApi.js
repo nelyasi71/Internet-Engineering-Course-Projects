@@ -1,7 +1,7 @@
-import axiosInstance from "../api/axiosInstance";
+import axiosInstance from "../api/axiosInstance.js";
 
 const useAuthApi = () => {
-    const login = async (username: string, password: string) => {
+    const login = async (username, password) => {
         const response = await axiosInstance.post("/auth/login", {
             username,
             password,
@@ -24,7 +24,7 @@ const useAuthApi = () => {
         return response.data.data;
     };
 
-    const getUserRole = async (username: string) => {
+    const getUserRole = async (username) => {
         const response = await axiosInstance.get(`/users/${username}`);
         return response.data.data.role;
     };
