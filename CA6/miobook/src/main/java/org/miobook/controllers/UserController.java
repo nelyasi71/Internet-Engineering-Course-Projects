@@ -34,6 +34,7 @@ public class UserController {
     }
 
     @GetMapping("/users/{username}")
+    @CrossOrigin(origins = "http://localhost:5173")
     public BaseResponse<UserRecord> show_user(@PathVariable String username) {
         ShowUserDetails command = new ShowUserDetails(username);
         return command.execute(userServices);

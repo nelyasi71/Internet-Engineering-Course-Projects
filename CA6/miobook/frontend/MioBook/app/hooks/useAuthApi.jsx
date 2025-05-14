@@ -21,7 +21,7 @@ const useAuthApi = () => {
 
     const getUser = async () => {
         const response = await axiosInstance.get("/auth/user");
-        return response.data.data;
+        return response.data.success ? response.data.data : null;
     };
 
     const getUserRole = async (username) => {

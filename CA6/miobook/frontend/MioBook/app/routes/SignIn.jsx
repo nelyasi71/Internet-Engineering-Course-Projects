@@ -85,9 +85,22 @@ const SignIn = () => {
 
       const result = await login(formData.username, formData.password);
 
+      
       if (result.success) {
-        const role = await getUserRole(formData.username);
+
+        const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
+        const userRoleResp = await axios.get(
+          `http://localhost:9090/api/users/${formData.username}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          }
+        );
+
+        const role = userRoleResp.data.data.role;
         navigate(role === "admin" ? "/panel" : "/dashboard");
+        
       } else {
         const fieldErrors = result.data?.fieldErrors;
         const newErrors = { ...initialLoginErrors };

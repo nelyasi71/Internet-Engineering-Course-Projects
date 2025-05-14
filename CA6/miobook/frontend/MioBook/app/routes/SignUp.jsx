@@ -7,6 +7,8 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import Footer from "../components/footer";
 import axiosInstance from '../api/axiosInstance';
+import useAuthApi from "../hooks/useAuthApi";
+import axios from "axios";
 
 export function meta({}) {
   return [
@@ -34,6 +36,7 @@ const SignUp = () => {
   const [errors, setErrors] = useState(initialErrors);
   const navigate = useNavigate();
   const usernameRef = useRef(null);
+  const { login, getUser, getUserRole } = useAuthApi();
   
   useEffect(() => {
     usernameRef.current?.focus();
@@ -98,17 +101,21 @@ const SignUp = () => {
     try {
       const response = await axiosInstance.post("/user", postBody);
 
-      if (response.success) {
-        const loginResp = await axiosInstance.post("/auth/login", {
-          username: postBody.username,
-          password: postBody.password,
-        });
+      if (response.data.success) {
+        const result = await login(postBody.username, postBody.password);
 
-        const token = loginResp.data.data.token;
-        localStorage.setItem("accessToken", token);
+        const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
+        const userRoleResp = await axios.get(
+          `http://localhost:9090/api/users/${postBody.username}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          }
+        );
 
-        const userRoleResp = await axiosInstance.get(`/users/${postBody.username}`);
-        navigate(userRoleResp.data.role === "admin" ? "/panel" : "/dashboard");
+        const role = userRoleResp.data.data.role;
+        navigate(role === "admin" ? "/panel" : "/dashboard");
       } else {
         const fieldErrors = response.data.data?.fieldErrors || {};
         const newErrors = { ...initialErrors };
