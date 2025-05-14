@@ -18,7 +18,7 @@ const ProfileMenu = () => {
       }
     })
     .then(res => res.json())
-    .then(res => setUser(res.data));
+    .then(res => setUser(res.success ? res.data : null));
   }, []);
 
   const handleLogout = async () => {
