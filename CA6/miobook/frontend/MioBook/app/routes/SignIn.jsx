@@ -4,13 +4,7 @@ import axios from "axios";
 import InputField from "../components/InputField";
 import PasswordField from "../components/PasswordField";
 import Footer from "../components/footer";
-
-export function meta({}) {
-  return [
-    { title: "Sign In" },
-    { name: "MioBook", content: "MioBook" },
-  ];
-}
+import useAuthApi from "../hooks/useAuthApi";
 
 const loginFields = ["username", "password"];
 
@@ -33,18 +27,18 @@ const SignIn = () => {
   const [user, setUser] = useState(null);
   const usernameRef = useRef(null);
   const navigate = useNavigate();
+  const { login, getUser, getUserRole } = useAuthApi();
 
   useEffect(() => {
-    fetch("http://localhost:9090/api/auth/user", { credentials: "include" })
-    .then(res => res.json())
-    .then(res => {
-      setUser(res.data);
-      setLoading(false);
-    })
-    .catch(() => {
-      setUser(null);
-      setLoading(false);
-    });
+    getUser()
+        .then((userData) => {
+          setUser(userData);
+          setLoading(false);
+        })
+        .catch(() => {
+          setUser(null);
+          setLoading(false);
+        });
 
     usernameRef.current?.focus();
   }, []);
@@ -89,20 +83,13 @@ const SignIn = () => {
         password: formData.password,
       };
 
-      const response = await axios.post("http://localhost:9090/api/auth/login", postBody, {
-        withCredentials: true,
-      });
+      const result = await login(formData.username, formData.password);
 
-      if (response.data.success) {
-        const userRoleResp = await axios.get(
-          `http://localhost:9090/api/users/${formData.username}`,
-          { withCredentials: true }
-        );
-
-        const role = userRoleResp.data.data.role;
+      if (result.success) {
+        const role = await getUserRole(formData.username);
         navigate(role === "admin" ? "/panel" : "/dashboard");
       } else {
-        const fieldErrors = response.data.data?.fieldErrors;
+        const fieldErrors = result.data?.fieldErrors;
         const newErrors = { ...initialLoginErrors };
 
         if (fieldErrors) {
