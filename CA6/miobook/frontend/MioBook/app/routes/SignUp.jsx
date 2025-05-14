@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
 import InputField from "../components/InputField";
 import PasswordField from "../components/PasswordField";
 import RoleSelector from "../components/RoleSelector";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import Footer from "../components/footer";
+import axiosInstance from '../api/axiosInstance';
 
 export function meta({}) {
   return [
@@ -96,16 +96,19 @@ const SignUp = () => {
     };
   
     try {
-      const response = await axios.post("http://localhost:9090/api/user", postBody, { withCredentials: true });
-  
-      if (response.data.success) {
-        await axios.post("http://localhost:9090/api/auth/login", {
+      const response = await axiosInstance.post("/user", postBody);
+
+      if (response.success) {
+        const loginResp = await axiosInstance.post("/auth/login", {
           username: postBody.username,
           password: postBody.password,
-        }, { withCredentials: true });
-  
-        const userRoleResp = await axios.get(`http://localhost:9090/api/users/${formData.username}`, { withCredentials: true });
-        navigate(userRoleResp.data.data.role === "admin" ? "/panel" : "/dashboard");
+        });
+
+        const token = loginResp.data.data.token;
+        localStorage.setItem("accessToken", token);
+
+        const userRoleResp = await axiosInstance.get(`/users/${postBody.username}`);
+        navigate(userRoleResp.data.role === "admin" ? "/panel" : "/dashboard");
       } else {
         const fieldErrors = response.data.data?.fieldErrors || {};
         const newErrors = { ...initialErrors };
