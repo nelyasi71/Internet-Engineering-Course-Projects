@@ -1,4 +1,4 @@
-import axiosInstance from "../api/axiosInstance.js";
+import axiosInstance from "../api/axiosInstance.jsx";
 
 const useAuthApi = () => {
     const login = async (username, password) => {
