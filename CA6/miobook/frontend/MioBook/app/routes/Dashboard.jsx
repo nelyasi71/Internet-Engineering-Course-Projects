@@ -7,6 +7,7 @@ import MyBooks from "../components/MyBooks";
 import AccessDenied from "./AccessDenied";
 import { Navigate } from "react-router";
 
+
 export function meta({}) {
   return [
     { title: "Dashboard" },
@@ -14,14 +15,22 @@ export function meta({}) {
   ];
 }
 
+const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
+
 export default function Dashboard() {
   const [user, setUser] = useState(null);
   const [bookItems, setBookItems] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  
 
   useEffect(() => {
-    fetch("http://localhost:9090/api/auth/user", { credentials: "include" })
+    fetch("http://localhost:9090/api/auth/user", {
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json"
+      }
+    })
     .then(res => res.json())
     .then(res => {
       setUser(res.data);
@@ -31,10 +40,17 @@ export default function Dashboard() {
       setUser(null);
       setLoading(false);
     });
-
-    fetch("http://localhost:9090/api/purchased-books", {credentials: "include"})
-      .then(res => res.json())
-      .then(res => setBookItems(res.data.items));
+    
+    
+    fetch("http://localhost:9090/api/purchased-books", {
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${token}`, // or just `token` if your API expects it differently
+        "Content-Type": "application/json"
+      }
+    })
+    .then(res => res.json())
+    .then(res => {console.log(res); setBookItems(res.data.items)});
   }, []);
 
   if (loading) {

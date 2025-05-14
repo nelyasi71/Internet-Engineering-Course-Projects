@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 import Notifier from './Notifier';
 
+const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
+
 const AddAuthorModal = () => {
   const authorFields = ["name", "penName", "nationality", "born", "died", "image"];
 
@@ -55,8 +57,10 @@ const AddAuthorModal = () => {
     try {
       const res = await fetch("http://localhost:9090/api/author", {
         method: "POST",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Authorization": `Bearer ${token}`, 
+          "Content-Type": "application/json" 
+        },
         body: JSON.stringify(form),
       });
 

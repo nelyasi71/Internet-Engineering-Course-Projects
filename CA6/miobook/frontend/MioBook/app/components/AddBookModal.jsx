@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 import Notifier from './Notifier';
 
+const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
+
 const AddBookModal = () => {
   const bookFields = [
     "title",
@@ -106,8 +108,10 @@ const AddBookModal = () => {
     try {
       const res = await fetch("http://localhost:9090/api/book", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
+        headers: { 
+          "Authorization": `Bearer ${token}`, 
+          "Content-Type": "application/json" 
+        },
         body: JSON.stringify(formattedForm),
       });
       

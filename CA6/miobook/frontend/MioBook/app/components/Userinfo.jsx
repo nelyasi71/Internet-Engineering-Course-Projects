@@ -2,6 +2,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 
+const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
 
 export default function UserInfo({ name, email, wide }) {
   const navigate = useNavigate();
@@ -10,9 +11,9 @@ export default function UserInfo({ name, email, wide }) {
       await fetch("http://localhost:9090/api/auth/logout", {
         method: "POST",
         headers: {
+          "Authorization": `Bearer ${token}`, 
           "Content-Type": "application/json"
         },
-        credentials: "include",
         body: JSON.stringify({})
       });
       navigate("/signin"); 

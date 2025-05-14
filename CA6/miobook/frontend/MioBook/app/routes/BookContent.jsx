@@ -3,6 +3,9 @@ import Navbar from "../components/NavBar";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
+
+const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
+
 export function meta({}) {
   return [
     { title: "Book Content" },
@@ -18,9 +21,15 @@ export default function BookContent() {
 
 
   useEffect(() => {
-    fetch("http://localhost:9090/api/books/" + title + "/content", {credentials: "include"})
-      .then(res => res.json())
-      .then(res => setBook(res.data));
+    fetch("http://localhost:9090/api/books/" + title + "/content", {
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${token}`, // or just `token` if your API expects it differently
+        "Content-Type": "application/json"
+      }
+    })
+    .then(res => res.json())
+    .then(res => setBook(res.data));
   }, []);
 
   return (

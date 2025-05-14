@@ -11,6 +11,9 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import AddReviewModal from "../components/AddReviewModal.jsx";
+
+const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
+
 const Book = () => {
   const [book, setBook] = useState(null);
   const [showAddToCartModal, setShowAddToCartModal] = useState(false);
@@ -39,8 +42,10 @@ const handleAddToCart = async ({ borrow, days }) => {
   try {
     const response = await fetch(endpoint, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
+      headers: { 
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json"
+      },
       body: JSON.stringify(body),
     });
 

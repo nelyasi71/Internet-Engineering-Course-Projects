@@ -3,14 +3,22 @@ import { Dropdown, Spinner } from 'react-bootstrap';
 import { FaUser, FaBook, FaShoppingCart, FaHistory, FaSignOutAlt } from 'react-icons/fa';
 import { useNavigate } from "react-router-dom";
 
+const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
+
 const ProfileMenu = () => {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch("http://localhost:9090/api/auth/user", { credentials: "include" })
-      .then(res => res.json())
-      .then(res => setUser(res.data));
+    fetch("http://localhost:9090/api/auth/user", {
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${token}`, // or just `token` if your API expects it differently
+        "Content-Type": "application/json"
+      }
+    })
+    .then(res => res.json())
+    .then(res => setUser(res.data));
   }, []);
 
   const handleLogout = async () => {
@@ -18,9 +26,9 @@ const ProfileMenu = () => {
       await fetch("http://localhost:9090/api/auth/logout", {
         method: "POST",
         headers: {
+          "Authorization": `Bearer ${token}`, 
           "Content-Type": "application/json"
         },
-        credentials: "include",
         body: JSON.stringify({})
       });
       navigate("/signin"); 

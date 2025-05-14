@@ -5,6 +5,9 @@ import { useEffect, useState } from "react";
 import Notifier from "../components/Notifier";
 import { FaShoppingCart } from "react-icons/fa";
 
+
+const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
+
 export function meta({}) {
   return [
     { title: "Cart" },
@@ -17,8 +20,6 @@ export default function BuyCart() {
   const [cartItems, setCartItems] = useState([]);
   const [notif, setNotif] = useState({ message: "", status: "" });
 
-
-
   async function purchase(e) {
     e.preventDefault();
 
@@ -27,9 +28,9 @@ export default function BuyCart() {
       const response = await fetch("http://localhost:9090/api/cart/purchase", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
         },
-        credentials: "include",
         body: JSON.stringify({})
       });
     
@@ -46,9 +47,15 @@ export default function BuyCart() {
   }
 
   useEffect(() => {
-    fetch("http://localhost:9090/api/cart/list", {credentials: "include"})
-      .then(res => res.json())
-      .then(res => setCartItems(res.data.items));
+    fetch("http://localhost:9090/api/cart/list", {
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${token}`, // or just `token` if your API expects it differently
+        "Content-Type": "application/json"
+      }
+    })
+    .then(res => res.json())
+    .then(res => setCartItems(res.data.items));
   }, []);
 
   return (

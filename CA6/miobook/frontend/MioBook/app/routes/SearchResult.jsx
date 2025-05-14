@@ -6,6 +6,8 @@ import Footer from "../components/footer";
 import { Modal, Button, Form } from "react-bootstrap";
 import FilterModal from "../components/FilterModal";
 
+const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
+
 const SearchResult = () => {
   const [authorBooks, setAuthorBooks] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -33,7 +35,10 @@ const SearchResult = () => {
           `http://localhost:9090/api/books?${params.toString()}`,
           {
             method: "GET",
-            credentials: "include",
+            headers: {
+              "Authorization": `Bearer ${token}`, // or just `token` if your API expects it differently
+              "Content-Type": "application/json",
+            },
           }
         );
 

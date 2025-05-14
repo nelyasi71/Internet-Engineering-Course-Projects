@@ -2,6 +2,8 @@ import image from "../static/book-icon.jpg";
 import { useEffect, useState } from "react";
 import Notifier from "../components/Notifier";
 
+const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
+
 export default function CartItem({ item, onRemove, isHistory }) {
   async function removeItem(e) {
     e.preventDefault();
@@ -10,9 +12,9 @@ export default function CartItem({ item, onRemove, isHistory }) {
       const response = await fetch("http://localhost:9090/api/cart/remove", {
         method: "DELETE",
         headers: {
+          "Authorization": `Bearer ${token}`, 
           "Content-Type": "application/json",
         },
-        credentials: "include",
         body: JSON.stringify({ title: item.title }),
       });
 

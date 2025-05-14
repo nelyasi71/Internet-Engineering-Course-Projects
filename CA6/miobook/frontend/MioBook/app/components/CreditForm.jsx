@@ -3,6 +3,8 @@ import { FaDollarSign } from "react-icons/fa";
 import Notifier from './Notifier';
 import InputField from './InputField';
 
+const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
+
 export default function CreditForm({ user_credit }) {
   const [amount, setAmount] = useState(0);
   const [userCredit, setUserCredit] = useState(user_credit); 
@@ -22,9 +24,9 @@ export default function CreditForm({ user_credit }) {
       const response = await fetch("http://localhost:9090/api/credit", {
         method: "POST",
         headers: {
+          "Authorization": `Bearer ${token}`, 
           "Content-Type": "application/json"
         },
-        credentials: "include",
         body: JSON.stringify(postBody)
       });
     

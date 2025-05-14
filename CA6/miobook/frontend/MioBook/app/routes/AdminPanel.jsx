@@ -8,6 +8,8 @@ import AddAuthorModal from "../components/AddAuthorModal";
 import AddBookModal from "../components/AddBookModal";
 import AccessDenied from "./AccessDenied";
 
+const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
+
 export function meta({}) {
   return [
     { title: "Panel" },
@@ -22,7 +24,13 @@ export default function Panel() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://localhost:9090/api/auth/user", { credentials: "include" })
+    fetch("http://localhost:9090/api/auth/user", {
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${token}`, // or just `token` if your API expects it differently
+        "Content-Type": "application/json"
+      }
+    })
     .then(res => res.json())
     .then(res => {
       setUser(res.data);
@@ -33,13 +41,25 @@ export default function Panel() {
       setLoading(false);
     });
 
-    fetch("http://localhost:9090/api/get-books", {credentials: "include"})
-      .then(res => res.json())
-      .then(res => setbooks(res.data.books));
+    fetch("http://localhost:9090/api/get-books", {
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${token}`, // or just `token` if your API expects it differently
+        "Content-Type": "application/json"
+      }
+    })
+    .then(res => res.json())
+    .then(res => setbooks(res.data.books));
 
-    fetch("http://localhost:9090/api/authors", {credentials: "include"})
-      .then(res => res.json())
-      .then(res => setAuthors(res.data.authors));
+    fetch("http://localhost:9090/api/authors", {
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${token}`, // or just `token` if your API expects it differently
+        "Content-Type": "application/json"
+      }
+    })
+    .then(res => res.json())
+    .then(res => setAuthors(res.data.authors));
   }, []);
 
   if (loading) {

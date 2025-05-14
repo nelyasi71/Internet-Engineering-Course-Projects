@@ -4,6 +4,9 @@ import Navbar from "../components/NavBar";
 import Footer from "../components/footer";
 import { RiChatHistoryFill, RiHistoryFill } from "react-icons/ri";
 
+
+const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
+
 export function meta({}) {
   return [
     { title: "History" },
@@ -16,9 +19,15 @@ export default function History() {
   const [purchasedHistory, setPurchasedHistory] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:9090/api/purchase-history", {credentials: "include"})
-      .then(res => res.json())
-      .then(res => setPurchasedHistory(res.data.items));
+    fetch("http://localhost:9090/api/purchase-history", {
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${token}`, // or just `token` if your API expects it differently
+        "Content-Type": "application/json"
+      }
+    })
+    .then(res => res.json())
+    .then(res => setPurchasedHistory(res.data.items));
     }, []);
 
 

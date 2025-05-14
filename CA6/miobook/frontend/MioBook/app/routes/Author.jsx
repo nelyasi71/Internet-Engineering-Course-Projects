@@ -2,10 +2,11 @@ import Navbar from "../components/NavBar";
 import Background from "../static/Background.png" 
 import Image from "../static/Vertical-Image.png"
 import Card from "../components/Card";
-import Footer from "../components/Footer.jsx";
 import React, {useState, useEffect} from 'react';
 import { useNavigate,useLocation} from 'react-router-dom';
 import { useParams } from 'react-router-dom';  
+
+const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
 
 const Author = () => {
     const [authorBooks, setAuthorBooks] = useState([]);
@@ -13,17 +14,29 @@ const Author = () => {
     const { authorName } = useParams(); 
 
     useEffect(() => {
-        fetch(`http://localhost:9090/api/authors/${authorName}`, { credentials: "include" })
-          .then(res => res.json())
-          .then(res => {
-            setAuthorDetails(res.data);  
-          })
+        fetch(`http://localhost:9090/api/authors/${authorName}`, {
+          method: "GET",
+          headers: {
+            "Authorization": `Bearer ${token}`, // or just `token` if your API expects it differently
+            "Content-Type": "application/json"
+          }
+        })
+        .then(res => res.json())
+        .then(res => {
+          setAuthorDetails(res.data);  
+        })
          
-        fetch(`http://localhost:9090/api/books?author=${authorName}`, { credentials: "include" })
-          .then(res => res.json())
-          .then(res => {
-            setAuthorBooks(res.data.books);  
-          })
+        fetch(`http://localhost:9090/api/books?author=${authorName}`, {
+          method: "GET",
+          headers: {
+            "Authorization": `Bearer ${token}`, // or just `token` if your API expects it differently
+            "Content-Type": "application/json"
+          }
+        })
+        .then(res => res.json())
+        .then(res => {
+          setAuthorBooks(res.data.books);  
+        })
           
     }, [authorName]);  
 
