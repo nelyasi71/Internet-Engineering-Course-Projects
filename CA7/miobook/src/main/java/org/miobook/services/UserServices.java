@@ -8,6 +8,7 @@ import org.miobook.repositories.UserRepository;
 import org.miobook.responses.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,6 +18,9 @@ public class UserServices implements Services {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
 
     @Transactional
@@ -28,11 +32,13 @@ public class UserServices implements Services {
             throw new MioBookException("email", "An account with the email '" + dto.getEmail() + "' already exists.");
         }
 
+        String hashedPassword = passwordEncoder.encode(dto.getPassword());
+
         User user;
         if (dto.getRole().equals("customer")) {
-            user = new Customer(dto.getUsername(), dto.getPassword(), dto.getEmail(), dto.getAddress());
+            user = new Customer(dto.getUsername(), hashedPassword, dto.getEmail(), dto.getAddress());
         } else {
-            user = new Admin(dto.getUsername(), dto.getPassword(), dto.getEmail(), dto.getAddress());
+            user = new Admin(dto.getUsername(), hashedPassword, dto.getEmail(), dto.getAddress());
         }
         userRepository.save(user);
     }
