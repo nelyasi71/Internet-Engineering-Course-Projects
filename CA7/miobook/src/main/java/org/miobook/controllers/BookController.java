@@ -1,10 +1,13 @@
 package org.miobook.controllers;
 
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.miobook.auth.Authenticated;
 import org.miobook.commands.*;
+import org.miobook.models.Book;
 import org.miobook.responses.*;
 import org.miobook.services.BookServices;
-import org.miobook.services.RedisServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,15 +16,13 @@ public class BookController {
 
     @Autowired
     BookServices bookServices;
-    @Autowired
-    RedisServices redisServices;
 
     @CrossOrigin(origins = "http://localhost:5173")
     @Authenticated(roles = {"admin"})
     @PostMapping("/book")
-    public BaseResponse<Void> add_book(@RequestBody AddBook command, @RequestHeader("Authorization") String authHeader) {
-        String token = authHeader.substring(7);
-        command.setUsername(redisServices.getUsername(token));
+    public BaseResponse<Void> add_book(@RequestBody AddBook command, HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        command.setUsername((String) session.getAttribute("username"));
         return command.execute(bookServices);
     }
 
@@ -36,20 +37,20 @@ public class BookController {
     @CrossOrigin(origins = "http://localhost:5173")
     @Authenticated(roles = {"admin"})
     @GetMapping("/get-books")
-    public BaseResponse<AllBooksRecord> show_all_books(@RequestHeader("Authorization") String authHeader) {
-        String token = authHeader.substring(7);
+    public BaseResponse<AllBooksRecord> show_details(HttpServletRequest request) {
         ShowAllBooks command = new ShowAllBooks();
-        command.setUsername(redisServices.getUsername(token));
+        HttpSession session = request.getSession(false);
+        command.setUsername((String) session.getAttribute("username"));
         return command.execute(bookServices);
     }
 
     @CrossOrigin(origins = "http://localhost:5173")
     @Authenticated(roles = {"customer"})
     @GetMapping("/books/{title}/content")
-    public BaseResponse<BookContentRecord> show_content(@PathVariable String title, @RequestHeader("Authorization") String authHeader) {
-        String token = authHeader.substring(7);
+    public BaseResponse<BookContentRecord> show_content(@PathVariable String title, HttpServletRequest request) {
         ShowBookContent command = new ShowBookContent();
-        command.setUsername(redisServices.getUsername(token));
+        HttpSession session = request.getSession(false);
+        command.setUsername((String) session.getAttribute("username"));
         command.setTitle(title);
 
         return command.execute(bookServices);
@@ -66,9 +67,10 @@ public class BookController {
     @CrossOrigin(origins = "http://localhost:5173")
     @Authenticated(roles = {"customer"})
     @PostMapping("/books/{title}/review")
-    public BaseResponse<Void> add_review(@RequestBody AddReview command, @RequestHeader("Authorization") String authHeader) {
-        String token = authHeader.substring(7);
-        command.setUsername(redisServices.getUsername(token));
+    public BaseResponse<Void> add_review(@RequestBody AddReview command, HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        command.setUsername((String) session.getAttribute("username"));
+
         return command.execute(bookServices);
     }
 
@@ -84,7 +86,7 @@ public class BookController {
             @RequestParam(defaultValue = "asc") String order,
             @RequestParam(defaultValue = "1") Integer page,
             @RequestParam(defaultValue = "10") Integer size
-            ) {
+    ) {
 
         SearchBooks command = new SearchBooks();
         command.setTitle(title);
@@ -99,5 +101,5 @@ public class BookController {
 
         return command.execute(bookServices);
     }
-    
+
 }

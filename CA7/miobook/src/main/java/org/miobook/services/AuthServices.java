@@ -8,13 +8,10 @@ import org.miobook.commands.Login;
 import org.miobook.commands.Logout;
 import org.miobook.models.User;
 import org.miobook.repositories.UserRepository;
-import org.miobook.responses.UserLoggedIn;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 @Getter
@@ -23,36 +20,34 @@ public class AuthServices implements Services {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private RedisServices redisServices;
+    public void login(Login dto) {
+        HttpSession session = dto.getSession();
 
-    public UserLoggedIn login(Login dto) {
-        Optional<User> userOpt = userRepository.findByUsername(dto.getUsername());
-
-        if (userOpt.isEmpty()) {
-            throw new MioBookException("username", "User not found.");
+        if (session != null && session.getAttribute("username") != null) {
+            throw new MioBookException("Already logged in as: " + session.getAttribute("username"));
         }
 
-        User user = userOpt.get();
-
-        if (!user.getPassword().equals(dto.getPassword())) {
+        Optional<User> user = userRepository.findByUsername(dto.getUsername());
+        if(user.isEmpty()) {
+            throw new MioBookException("username", "User with username '" + dto.getUsername() + "' not found.");
+        }
+        if(!user.get().getPassword().equals(dto.getPassword())) {
             throw new MioBookException("password", "Wrong password.");
         }
+        assert session != null;
 
-        String token = UUID.randomUUID().toString();
-
-        redisServices.saveToken(
-            token,
-            user.getUsername(),
-            user.getRole(),
-            Duration.ofMinutes(20)
-        );
-
-        return new UserLoggedIn(token);
+        session.setAttribute("userRole", user.get().getRole());
+        session.setAttribute("username", user.get().getUsername());
+        session.setAttribute("email", user.get().getEmail());
     }
 
     public void logout(Logout dto) {
-        String token = dto.getToken();
-        redisServices.deleteToken(token);
+        HttpSession session = dto.getSession();
+        if (session == null || session.getAttribute("username") == null) {
+            throw new MioBookException("No user is currently logged in.");
+        }
+
+        String loggedInUser = (String) session.getAttribute("username");
+        session.invalidate();
     }
 }

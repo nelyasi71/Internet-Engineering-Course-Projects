@@ -13,7 +13,7 @@ import org.miobook.services.Services;
 @Setter
 public class Logout implements BaseCommand<Void> {
 
-    private String token;
+    private HttpSession session;
     @Override
     public void validate() {
         return;
