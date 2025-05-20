@@ -1,6 +1,7 @@
 package org.miobook.controllers;
 
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.miobook.auth.Authenticated;
 import org.miobook.commands.AddAuthor;
 import org.miobook.commands.ShowAllAuthors;
@@ -25,26 +26,26 @@ public class AuthorController {
     @CrossOrigin(origins = "http://localhost:5173")
     @Authenticated(roles = {"admin"})
     @PostMapping("/author")
-    public BaseResponse<Void> add_author(@RequestBody AddAuthor command, @RequestHeader("Authorization") String authHeader) {
-        String token = authHeader.substring(7);
-        command.setUsername(redisServices.getUsername(token));
+    public BaseResponse<Void> add_author(@RequestBody AddAuthor command, HttpServletRequest request) {
+        String username = (String) request.getAttribute("username");
+        command.setUsername(username);
         return command.execute(authorServices);
     }
 
     @CrossOrigin(origins = "http://localhost:5173")
     @Authenticated(roles = {"admin"})
     @GetMapping("/authors")
-    public BaseResponse<AllAuthorsRecord> show_all_authors(@RequestHeader("Authorization") String authHeader) {
-        String token = authHeader.substring(7);
+    public BaseResponse<AllAuthorsRecord> show_all_authors(HttpServletRequest request) {
+        String username = (String) request.getAttribute("username");
         ShowAllAuthors command = new ShowAllAuthors();
-        command.setUsername(redisServices.getUsername(token));
+        command.setUsername(username);
         return command.execute(authorServices);
     }
 
 
     @CrossOrigin(origins = "http://localhost:5173")
     @GetMapping("/authors/{username}")
-    public BaseResponse<AuthorRecord> show_author(@PathVariable String username, @RequestHeader("Authorization") String authHeader) {
+    public BaseResponse<AuthorRecord> show_author(@PathVariable String username, HttpServletRequest request) {
         ShowAuthorDetails command = new ShowAuthorDetails();
         command.setName(username);
         return command.execute(authorServices);

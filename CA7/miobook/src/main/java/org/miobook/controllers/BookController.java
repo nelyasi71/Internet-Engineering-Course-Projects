@@ -1,5 +1,6 @@
 package org.miobook.controllers;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.miobook.auth.Authenticated;
 import org.miobook.commands.*;
 import org.miobook.responses.*;
@@ -19,9 +20,9 @@ public class BookController {
     @CrossOrigin(origins = "http://localhost:5173")
     @Authenticated(roles = {"admin"})
     @PostMapping("/book")
-    public BaseResponse<Void> add_book(@RequestBody AddBook command, @RequestHeader("Authorization") String authHeader) {
-        String token = authHeader.substring(7);
-        command.setUsername(redisServices.getUsername(token));
+    public BaseResponse<Void> add_book(@RequestBody AddBook command, HttpServletRequest request) {
+        String username = (String) request.getAttribute("username");
+        command.setUsername(username);
         return command.execute(bookServices);
     }
 
@@ -36,20 +37,20 @@ public class BookController {
     @CrossOrigin(origins = "http://localhost:5173")
     @Authenticated(roles = {"admin"})
     @GetMapping("/get-books")
-    public BaseResponse<AllBooksRecord> show_all_books(@RequestHeader("Authorization") String authHeader) {
-        String token = authHeader.substring(7);
+    public BaseResponse<AllBooksRecord> show_all_books(HttpServletRequest request) {
+        String username = (String) request.getAttribute("username");
         ShowAllBooks command = new ShowAllBooks();
-        command.setUsername(redisServices.getUsername(token));
+        command.setUsername(username);
         return command.execute(bookServices);
     }
 
     @CrossOrigin(origins = "http://localhost:5173")
     @Authenticated(roles = {"customer"})
     @GetMapping("/books/{title}/content")
-    public BaseResponse<BookContentRecord> show_content(@PathVariable String title, @RequestHeader("Authorization") String authHeader) {
-        String token = authHeader.substring(7);
+    public BaseResponse<BookContentRecord> show_content(@PathVariable String title, HttpServletRequest request) {
+        String username = (String) request.getAttribute("username");
         ShowBookContent command = new ShowBookContent();
-        command.setUsername(redisServices.getUsername(token));
+        command.setUsername(username);
         command.setTitle(title);
 
         return command.execute(bookServices);
@@ -66,9 +67,9 @@ public class BookController {
     @CrossOrigin(origins = "http://localhost:5173")
     @Authenticated(roles = {"customer"})
     @PostMapping("/books/{title}/review")
-    public BaseResponse<Void> add_review(@RequestBody AddReview command, @RequestHeader("Authorization") String authHeader) {
-        String token = authHeader.substring(7);
-        command.setUsername(redisServices.getUsername(token));
+    public BaseResponse<Void> add_review(@RequestBody AddReview command, HttpServletRequest request) {
+        String username = (String) request.getAttribute("username");
+        command.setUsername(username);
         return command.execute(bookServices);
     }
 

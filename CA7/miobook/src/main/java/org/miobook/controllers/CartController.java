@@ -1,5 +1,6 @@
 package org.miobook.controllers;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.miobook.auth.Authenticated;
 import org.miobook.commands.*;
 import org.miobook.responses.BaseResponse;
@@ -21,46 +22,46 @@ public class CartController {
     @CrossOrigin(origins = "http://localhost:5173")
     @Authenticated(roles = {"customer"})
     @PostMapping("/add")
-    public BaseResponse<Void> add_cart(@RequestBody AddCart command, @RequestHeader("Authorization") String authHeader) {
-        String token = authHeader.substring(7);
-        command.setUsername(redisServices.getUsername(token));
+    public BaseResponse<Void> add_cart(@RequestBody AddCart command, HttpServletRequest request) {
+        String username = (String) request.getAttribute("username");
+        command.setUsername(username);
         return command.execute(cartServices);
     }
 
     @CrossOrigin(origins = "http://localhost:5173")
     @Authenticated(roles = {"customer"})
     @DeleteMapping("/remove")
-    public BaseResponse<Void> remove_cart(@RequestBody RemoveCart command, @RequestHeader("Authorization") String authHeader) {
-        String token = authHeader.substring(7);
-        command.setUsername(redisServices.getUsername(token));
+    public BaseResponse<Void> remove_cart(@RequestBody RemoveCart command, HttpServletRequest request) {
+        String username = (String) request.getAttribute("username");
+        command.setUsername(username);
         return command.execute(cartServices);
     }
 
     @CrossOrigin(origins = "http://localhost:5173")
     @Authenticated(roles = {"customer"})
     @PostMapping("/borrow")
-    public BaseResponse<Void> borrow_nook(@RequestBody BorrowBook command, @RequestHeader("Authorization") String authHeader) {
-        String token = authHeader.substring(7);
-        command.setUsername(redisServices.getUsername(token));
+    public BaseResponse<Void> borrow_nook(@RequestBody BorrowBook command, HttpServletRequest request) {
+        String username = (String) request.getAttribute("username");
+        command.setUsername(username);
         return command.execute(cartServices);
     }
 
     @CrossOrigin(origins = "http://localhost:5173")
     @Authenticated(roles = {"customer"})
     @PostMapping("/purchase")
-    public BaseResponse<PurchaseCartRecord> purchase_cart(@RequestBody PurchaseCart command, @RequestHeader("Authorization") String authHeader) {
-        String token = authHeader.substring(7);
-        command.setUsername(redisServices.getUsername(token));
+    public BaseResponse<PurchaseCartRecord> purchase_cart(@RequestBody PurchaseCart command, HttpServletRequest request) {
+        String username = (String) request.getAttribute("username");
+        command.setUsername(username);
         return command.execute(cartServices);
     }
 
     @CrossOrigin(origins = "http://localhost:5173")
     @Authenticated(roles = {"customer"})
     @GetMapping("/list")
-    public BaseResponse<CartRecord> show_cart(@RequestHeader("Authorization") String authHeader) {
-        String token = authHeader.substring(7);
+    public BaseResponse<CartRecord> show_cart(HttpServletRequest request) {
+        String username = (String) request.getAttribute("username");
         ShowCart command = new ShowCart();
-        command.setUsername(redisServices.getUsername(token));
+        command.setUsername(username);
         return command.execute(cartServices);
     }
 }

@@ -1,5 +1,6 @@
 package org.miobook.controllers;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.miobook.commands.Login;
 import org.miobook.commands.Logout;
 import org.miobook.commands.ShowUserDetails;
@@ -23,23 +24,22 @@ public class AuthController {
 
     @CrossOrigin(origins = "http://localhost:5173")
     @GetMapping("/user")
-    public BaseResponse<UserRecord> fetch_user(@RequestHeader("Authorization") String authHeader) {
-        String token = authHeader.substring(7);
-        ShowUserDetails command = new ShowUserDetails(redisServices.getUsername(token));
+    public BaseResponse<UserRecord> fetch_user(HttpServletRequest request) {
+        String username = (String) request.getAttribute("username");
+        ShowUserDetails command = new ShowUserDetails(username);
         return command.execute(userServices);
     }
 
     @PostMapping("/login")
     @CrossOrigin(origins = "http://localhost:5173")
-    public BaseResponse<Jwt> login(@RequestBody Login command) {
+    public BaseResponse<JwtRecord> login(@RequestBody Login command) {
         return command.execute(authServices);
     }
 
     @CrossOrigin(origins = "http://localhost:5173")
     @PostMapping("/logout")
-    public BaseResponse<Void> logout(@RequestBody Logout command, @RequestHeader("Authorization") String authHeader) {
-        String token = authHeader.substring(7);
-        command.setToken(token);
+    public BaseResponse<Void> logout(@RequestBody Logout command, HttpServletRequest request) {
+        String username = (String) request.getAttribute("username");
         return command.execute(authServices);
     }
 }

@@ -1,5 +1,6 @@
 package org.miobook.controllers;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.miobook.auth.Authenticated;
 import org.miobook.commands.*;
 import org.miobook.responses.BaseResponse;
@@ -27,9 +28,9 @@ public class UserController {
     @CrossOrigin(origins = "http://localhost:5173")
     @Authenticated(roles = {"customer"})
     @PostMapping("/credit")
-    public BaseResponse<Void> add_credit(@RequestBody AddCredit command, @RequestHeader("Authorization") String authHeader) {
-        String token = authHeader.substring(7);
-        command.setUsername(redisServices.getUsername(token));
+    public BaseResponse<Void> add_credit(@RequestBody AddCredit command, HttpServletRequest request) {
+        String username = (String) request.getAttribute("username");
+        command.setUsername(username);
         return command.execute(userServices);
     }
 
@@ -43,20 +44,20 @@ public class UserController {
     @CrossOrigin(origins = "http://localhost:5173")
     @Authenticated(roles = {"customer"})
     @GetMapping("/purchase-history")
-    public BaseResponse<PurchaseHistoryRecord> show_purchase_history(@RequestHeader("Authorization") String authHeader) {
-        String token = authHeader.substring(7);
+    public BaseResponse<PurchaseHistoryRecord> show_purchase_history(HttpServletRequest request) {
+        String username = (String) request.getAttribute("username");
         ShowPurchaseHistory command = new ShowPurchaseHistory();
-        command.setUsername(redisServices.getUsername(token));
+        command.setUsername(username);
         return command.execute(userServices);
     }
 
     @CrossOrigin(origins = "http://localhost:5173")
     @Authenticated(roles = {"customer"})
     @GetMapping("/purchased-books")
-    public BaseResponse<PurchasedBooksRecord> show_purchased_books(@RequestHeader("Authorization") String authHeader) {
-        String token = authHeader.substring(7);
+    public BaseResponse<PurchasedBooksRecord> show_purchased_books(HttpServletRequest request) {
+        String username = (String) request.getAttribute("username");
         ShowPurchasedBooks command = new ShowPurchasedBooks();
-        command.setUsername(redisServices.getUsername(token));
+        command.setUsername(username);
         return command.execute(userServices);
     }
 }
