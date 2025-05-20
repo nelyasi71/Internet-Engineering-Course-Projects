@@ -4,7 +4,7 @@ import jakarta.annotation.PostConstruct;
 import org.apache.shiro.crypto.SecureRandomNumberGenerator;
 import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.miobook.models.User;
-import org.miobook.responses.Jwt;
+import org.miobook.responses.JwtRecord;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Value;
 import io.jsonwebtoken.security.Keys;
@@ -23,7 +23,6 @@ public class SecurityService {
 
     @Value("${jwt.secret}")
     private String jwtSecret;
-
     private Key secretKey;
 
     @PostConstruct
@@ -37,9 +36,9 @@ public class SecurityService {
         return salt + ":" + hash;
     }
 
-    public Jwt generateJwt(User user) {
+    public JwtRecord generateJwt(User user) {
         Instant now = Instant.now();
-        Instant expirationTime = now.plusSeconds(86400); // 1 day
+        Instant expirationTime = now.plusSeconds(86400);
 
         String token = Jwts.builder()
                 .setIssuer("MioBook")
@@ -48,10 +47,11 @@ public class SecurityService {
                 .setExpiration(Date.from(expirationTime))
                 .claim("username", user.getUsername())
                 .claim("email", user.getEmail())
+                .claim("role", user.getRole())
                 .signWith(secretKey, SignatureAlgorithm.HS256)
                 .compact();
 
-        return new Jwt(token);
+        return new JwtRecord(token);
     }
 
 }

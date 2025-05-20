@@ -1,5 +1,5 @@
 package org.miobook.responses;
 
-public record Jwt(
+public record JwtRecord(
         String token
 ) {}

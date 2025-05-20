@@ -5,13 +5,13 @@ import lombok.Setter;
 import org.miobook.Exception.MioBookException;
 import org.miobook.responses.BaseResponse;
 import org.miobook.infrastructure.JsonValidator;
-import org.miobook.responses.Jwt;
+import org.miobook.responses.JwtRecord;
 import org.miobook.services.AuthServices;
 import org.miobook.services.Services;
 
 @Getter
 @Setter
-public class Login implements BaseCommand<Jwt> {
+public class Login implements BaseCommand<JwtRecord> {
 
     @NotNull
     private String username;
@@ -24,10 +24,10 @@ public class Login implements BaseCommand<Jwt> {
         JsonValidator.validate(this);
     }
 
-    public BaseResponse<Jwt> execute(Services authServices) {
+    public BaseResponse<JwtRecord> execute(Services authServices) {
         try {
             this.validate();
-            Jwt data = ((AuthServices)authServices).login(this);
+            JwtRecord data = ((AuthServices)authServices).login(this);
             return new BaseResponse<>(true, "User logged In successfully", data);
         } catch (MioBookException exp) {
             return BaseResponse.fromMioBookException(exp);
