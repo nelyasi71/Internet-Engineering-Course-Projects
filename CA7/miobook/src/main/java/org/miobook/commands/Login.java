@@ -6,8 +6,6 @@ import org.miobook.Exception.MioBookException;
 import org.miobook.responses.BaseResponse;
 import org.miobook.infrastructure.JsonValidator;
 import org.miobook.responses.Jwt;
-import org.miobook.responses.JwtPayload;
-import org.miobook.responses.UserLoggedIn;
 import org.miobook.services.AuthServices;
 import org.miobook.services.Services;
 

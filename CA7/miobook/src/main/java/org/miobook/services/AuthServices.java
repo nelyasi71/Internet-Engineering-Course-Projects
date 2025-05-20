@@ -7,7 +7,6 @@ import org.miobook.commands.Logout;
 import org.miobook.models.User;
 import org.miobook.repositories.UserRepository;
 import org.miobook.responses.Jwt;
-import org.miobook.responses.JwtPayload;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.Optional;
