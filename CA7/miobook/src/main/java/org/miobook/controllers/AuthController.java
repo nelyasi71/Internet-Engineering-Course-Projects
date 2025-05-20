@@ -3,9 +3,7 @@ package org.miobook.controllers;
 import org.miobook.commands.Login;
 import org.miobook.commands.Logout;
 import org.miobook.commands.ShowUserDetails;
-import org.miobook.responses.BaseResponse;
-import org.miobook.responses.UserLoggedIn;
-import org.miobook.responses.UserRecord;
+import org.miobook.responses.*;
 import org.miobook.services.AuthServices;
 import org.miobook.services.RedisServices;
 import org.miobook.services.UserServices;
@@ -33,7 +31,7 @@ public class AuthController {
 
     @PostMapping("/login")
     @CrossOrigin(origins = "http://localhost:5173")
-    public BaseResponse<UserLoggedIn> login(@RequestBody Login command) {
+    public BaseResponse<Jwt> login(@RequestBody Login command) {
         return command.execute(authServices);
     }
 
