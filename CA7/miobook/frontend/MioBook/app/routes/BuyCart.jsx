@@ -6,7 +6,7 @@ import Notifier from "../components/Notifier";
 import { FaShoppingCart } from "react-icons/fa";
 
 
-const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
+const token = typeof window !== "undefined" ? localStorage.getItem("jwt") : null;
 
 export function meta({}) {
   return [

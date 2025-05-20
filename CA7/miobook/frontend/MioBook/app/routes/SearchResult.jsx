@@ -6,7 +6,7 @@ import Footer from "../components/footer";
 import { Modal, Button, Form } from "react-bootstrap";
 import FilterModal from "../components/FilterModal";
 
-const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
+const token = typeof window !== "undefined" ? localStorage.getItem("jwt") : null;
 
 const SearchResult = () => {
   const [authorBooks, setAuthorBooks] = useState([]);

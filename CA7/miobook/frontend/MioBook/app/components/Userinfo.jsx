@@ -2,7 +2,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 
-const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
+const token = typeof window !== "undefined" ? localStorage.getItem("jwt") : null;
 
 export default function UserInfo({ name, email, wide }) {
   const navigate = useNavigate();

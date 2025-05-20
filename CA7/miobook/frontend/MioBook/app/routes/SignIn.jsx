@@ -88,7 +88,7 @@ const SignIn = () => {
       
       if (result.success) {
 
-        const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
+        const token = typeof window !== "undefined" ? localStorage.getItem("jwt") : null;
         const userRoleResp = await axios.get(
           `http://localhost:9090/api/users/${formData.username}`,
           {

@@ -2,7 +2,7 @@ import image from "../static/book-icon.jpg";
 import { useEffect, useState } from "react";
 import Notifier from "../components/Notifier";
 
-const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
+const token = typeof window !== "undefined" ? localStorage.getItem("jwt") : null;
 
 export default function CartItem({ item, onRemove, isHistory }) {
   async function removeItem(e) {

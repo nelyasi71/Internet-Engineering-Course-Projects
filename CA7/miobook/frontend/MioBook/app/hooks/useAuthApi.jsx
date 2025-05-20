@@ -8,7 +8,7 @@ const useAuthApi = () => {
         });
 
         if (response.data.success) {
-            localStorage.setItem("accessToken", response.data.data.token);
+            localStorage.setItem("jwt", response.data.data.token);
         }
 
         return response.data;

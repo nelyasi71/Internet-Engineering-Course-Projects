@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 import Notifier from './Notifier';
 
-const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
+const token = typeof window !== "undefined" ? localStorage.getItem("jwt") : null;
 
 const AddAuthorModal = () => {
   const authorFields = ["name", "penName", "nationality", "born", "died", "image"];

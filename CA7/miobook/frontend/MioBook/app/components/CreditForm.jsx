@@ -3,7 +3,7 @@ import { FaDollarSign } from "react-icons/fa";
 import Notifier from './Notifier';
 import InputField from './InputField';
 
-const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
+const token = typeof window !== "undefined" ? localStorage.getItem("jwt") : null;
 
 export default function CreditForm({ user_credit }) {
   const [amount, setAmount] = useState(0);

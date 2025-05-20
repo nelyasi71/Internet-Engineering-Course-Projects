@@ -107,11 +107,11 @@ const SignUp = () => {
           password: postBody.password,
         });
 
-        const token = loginResp.data.data.token;
-        localStorage.setItem("accessToken", token);
+        const token = loginResp.data.data.token ;
+        localStorage.setItem("jwt", token);
 
         const userRoleResp = await axiosInstance.get(`/users/${postBody.username}`);
-        navigate(userRoleResp.data.role === "admin" ? "/panel" : "/dashboard");
+        navigate(userRoleResp.data.data.role === "admin" ? "/panel" : "/dashboard");
       } else {
         const fieldErrors = response.data.data?.fieldErrors || {};
         const newErrors = { ...initialErrors };
@@ -201,7 +201,7 @@ const SignUp = () => {
             <button
               type="submit"
               className="btn btn-post rounded-3 w-100 border-0"
-              disabled={!isFormValid}
+              disabled={!isFormValid}f
             >
               Sign up
             </button>

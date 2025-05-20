@@ -12,7 +12,7 @@ import { toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import AddReviewModal from "../components/AddReviewModal.jsx";
 
-const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
+const token = typeof window !== "undefined" ? localStorage.getItem("jwt") : null;
 
 const Book = () => {
   const [book, setBook] = useState(null);

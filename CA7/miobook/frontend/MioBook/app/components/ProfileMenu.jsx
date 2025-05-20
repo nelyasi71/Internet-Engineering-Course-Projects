@@ -3,7 +3,7 @@ import { Dropdown, Spinner } from 'react-bootstrap';
 import { FaUser, FaBook, FaShoppingCart, FaHistory, FaSignOutAlt } from 'react-icons/fa';
 import { useNavigate } from "react-router-dom";
 
-const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
+const token = typeof window !== "undefined" ? localStorage.getItem("jwt") : null;
 
 const ProfileMenu = () => {
   const [user, setUser] = useState(null);

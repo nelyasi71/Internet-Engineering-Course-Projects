@@ -15,7 +15,7 @@ export function meta({}) {
   ];
 }
 
-const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
+const token = typeof window !== "undefined" ? localStorage.getItem("jwt") : null;
 
 export default function Dashboard() {
   const [user, setUser] = useState(null);

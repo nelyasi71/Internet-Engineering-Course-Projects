@@ -8,7 +8,7 @@ import AddAuthorModal from "../components/AddAuthorModal";
 import AddBookModal from "../components/AddBookModal";
 import AccessDenied from "./AccessDenied";
 
-const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
+const token = typeof window !== "undefined" ? localStorage.getItem("jwt") : null;
 
 export function meta({}) {
   return [

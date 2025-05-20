@@ -5,7 +5,7 @@ import Footer from "../components/footer";
 import { RiChatHistoryFill, RiHistoryFill } from "react-icons/ri";
 
 
-const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
+const token = typeof window !== "undefined" ? localStorage.getItem("jwt") : null;
 
 export function meta({}) {
   return [

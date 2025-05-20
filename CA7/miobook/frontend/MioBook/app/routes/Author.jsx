@@ -6,7 +6,7 @@ import React, {useState, useEffect} from 'react';
 import { useNavigate,useLocation} from 'react-router-dom';
 import { useParams } from 'react-router-dom';  
 
-const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
+const token = typeof window !== "undefined" ? localStorage.getItem("jwt") : null;
 
 const Author = () => {
     const [authorBooks, setAuthorBooks] = useState([]);
@@ -17,7 +17,7 @@ const Author = () => {
         fetch(`http://localhost:9090/api/authors/${authorName}`, {
           method: "GET",
           headers: {
-            "Authorization": `Bearer ${token}`, // or just `token` if your API expects it differently
+            "Authorization": `Bearer ${token}`,
             "Content-Type": "application/json"
           }
         })
@@ -29,7 +29,7 @@ const Author = () => {
         fetch(`http://localhost:9090/api/books?author=${authorName}`, {
           method: "GET",
           headers: {
-            "Authorization": `Bearer ${token}`, // or just `token` if your API expects it differently
+            "Authorization": `Bearer ${token}`,
             "Content-Type": "application/json"
           }
         })
