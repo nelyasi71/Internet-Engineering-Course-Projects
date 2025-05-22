@@ -9,6 +9,7 @@ import Footer from "../components/footer";
 import axiosInstance from '../api/axiosInstance';
 import useAuthApi from "../hooks/useAuthApi";
 import axios from "axios";
+import { FaGoogle } from "react-icons/fa";
 
 export function meta({}) {
   return [
@@ -200,10 +201,22 @@ const SignUp = () => {
             </div>
             <button
               type="submit"
-              className="btn btn-post rounded-3 w-100 border-0"
+              className="btn btn-post rounded-3 w-100 border-0 mb-3"
               disabled={!isFormValid}f
             >
               Sign up
+            </button>
+
+            <button
+              type="button"
+              className="btn btn-post rounded-3 w-100 border-0"
+              onClick={() => {
+                window.location.href =
+                  "https://accounts.google.com/o/oauth2/auth?client_id=GOOGLE_CLIENT_ID&response_type=code&scope=openid%20email%20profile&redirect_uri=http://localhost:5173/oauth-callback";
+              }}
+            >
+              <FaGoogle size={20} className="me-2 mb-1"/>
+              Signup with Google
             </button>
           </form>
           <p className="text-center text-muted pt-4">
