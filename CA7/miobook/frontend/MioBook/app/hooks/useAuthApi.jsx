@@ -16,11 +16,16 @@ const useAuthApi = () => {
 
     const logout = async () => {
         await axiosInstance.post("/auth/logout");
-        localStorage.removeItem("accessToken");
+        localStorage.removeItem("jwt");
     };
 
     const getUser = async () => {
-        const response = await axiosInstance.get("/auth/user");
+        const response = await axiosInstance.get("/auth/user", {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("jwt")}`
+            }
+        });
+        console.log(response);
         return response.data.success ? response.data.data : null;
     };
 
