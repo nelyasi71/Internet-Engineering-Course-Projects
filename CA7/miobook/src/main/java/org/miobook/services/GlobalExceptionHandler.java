@@ -20,7 +20,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<BaseResponse<ErrorData>> handleMioBookException(MioBookException ex) {
         ErrorData errorData = new ErrorData(ex.getFieldErrors(), ex.isFieldError() ? null : ex.getLogicError());
         BaseResponse<ErrorData> response = new BaseResponse<>(false, ex.getMessage(), errorData);
-        return new ResponseEntity<>(response, response.status());
+        return new ResponseEntity<>(response, ex.getStatus());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
