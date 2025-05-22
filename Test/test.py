@@ -49,7 +49,7 @@ books = [
 cart1 = {"title": "Max Payne"}
 cart2 = {"title": "peanuts"}
 borrow = {"title": "Control", "days": 5}
-addcredit = {"credit": 1000}
+addcredit = {"credit": 10000}
 add_review = {"title": "peanuts", "rate": 5, "comment": "This is the perfect book!"}
 
 class APITest:
@@ -103,7 +103,7 @@ class APITest:
         print("cart_list:", r.json())
 
     def purchase(self):
-        r = requests.post(f"{BASE}/cart/purchase", headers=make_header(self.googoolijan_token), timeout=1)
+        r = requests.post(f"{BASE}/cart/purchase", json={}, headers=make_header(self.googoolijan_token), timeout=1)
         print("purchase:", r.json())
 
     def history(self):
@@ -114,22 +114,25 @@ class APITest:
         r = requests.post(f"{BASE}/books/peanuts/review", json=add_review, headers=make_header(self.googoolijan_token), timeout=1)
         print("add_review:", r.json())
 
+    def logout(self):
+        r = requests.post(f"{BASE}/auth/logout", json={}, timeout=1)
+        print("logout:", r.json())
 
 if __name__ == "__main__":
     t = APITest()
 
-    # Call any you want manually
-    # t.add_admin()
-    # t.add_googoolijan()
+    t.add_admin()
+    t.add_googoolijan()
     t.login_admin()
-    print(t.token)
-    # t.login_googoolijan()
-    # t.add_author()
-    # t.add_book()
-    # t.add_credit()
-    # t.add_cart()
-    # t.borrow_book()
-    # t.list_cart()
-    # t.purchase()
-    # t.history()
-    # t.add_review()
+    t.add_author()
+    t.add_book()
+    t.logout()
+    t.login_googoolijan()
+    t.add_credit()
+    t.add_cart()
+    t.borrow_book()
+    t.list_cart()
+    t.purchase()
+    t.history()
+    t.add_review()
+    t.logout()
