@@ -3,6 +3,7 @@ package org.miobook.controllers;
 import jakarta.servlet.http.HttpServletRequest;
 import org.miobook.commands.Login;
 import org.miobook.commands.Logout;
+import org.miobook.commands.OAuth;
 import org.miobook.commands.ShowUserDetails;
 import org.miobook.responses.*;
 import org.miobook.services.AuthServices;
@@ -40,6 +41,14 @@ public class AuthController {
     @PostMapping("/logout")
     public BaseResponse<Void> logout(@RequestBody Logout command, HttpServletRequest request) {
         String username = (String) request.getAttribute("username");
+        return command.execute(authServices);
+    }
+
+    @CrossOrigin(origins = "http://localhost:5173")
+    @GetMapping("/google/callback")
+    public BaseResponse<JwtRecord> handleGoogleCallback(@RequestParam("code") String code) {
+        OAuth command = new OAuth();
+        command.setCode(code);
         return command.execute(authServices);
     }
 }

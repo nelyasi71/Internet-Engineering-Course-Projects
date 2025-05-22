@@ -40,6 +40,20 @@ public class UserServices implements Services {
         userRepository.save(user);
     }
 
+    @Transactional
+    public User getOrCreate(String email, String username) {
+        Optional<User> userOpt = userRepository.findByEmail(email);
+        User user = userOpt.orElseGet(() -> {
+            User newUser = new Customer();
+            newUser.setEmail(email);
+            newUser.setUsername(username);
+            newUser.setPassword(null);
+            return userRepository.save(newUser);
+        });
+
+        return user;
+    }
+
 
     @Transactional
     public void addCredit(AddCredit dto) {

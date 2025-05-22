@@ -13,6 +13,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT u FROM User u WHERE u.username = :username AND TYPE(u) = :roleClass")
     Optional<User> findByUsernameAndType(@Param("username") String username, @Param("roleClass") Class<? extends User> roleClass);
     Optional<User> findByUsername(String username);
+    Optional<User> findByEmail(String email);
     @Query("SELECT COUNT(u) > 0 FROM User u WHERE u.username = :username AND TYPE(u) = :roleClass")
     boolean existsByUsernameAndType(@Param("username") String username, @Param("roleClass") Class<? extends User> roleClass);
 
