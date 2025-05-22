@@ -1,7 +1,5 @@
 package org.miobook.config;
 
-import org.miobook.auth.JWTAuthentication;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -21,13 +19,5 @@ public class WebConfig {
                         .allowCredentials(true);
             }
         };
-    }
-
-    @Bean
-    public FilterRegistrationBean<JWTAuthentication> jwtFilter(JWTAuthentication filter) {
-        FilterRegistrationBean<JWTAuthentication> registrationBean = new FilterRegistrationBean<>();
-        registrationBean.setFilter(filter);
-        registrationBean.addUrlPatterns("/api/*");
-        return registrationBean;
     }
 }

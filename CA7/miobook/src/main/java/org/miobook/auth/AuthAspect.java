@@ -3,37 +3,40 @@ package org.miobook.auth;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
 import org.miobook.Exception.MioBookException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.web.filter.OncePerRequestFilter;
 
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
-import java.util.Date;
+import java.util.Arrays;
 
+@Aspect
 @Component
-public class JWTAuthentication extends OncePerRequestFilter {
+public class AuthAspect {
+
+    private Key secretKey;
 
     @Value("${jwt.secret}")
     private String jwtSecret;
-    private Key secretKey;
+
+    private final HttpServletRequest request;
+
+    public AuthAspect(HttpServletRequest request) {
+        this.request = request;
+    }
 
     @PostConstruct
     public void init() {
         this.secretKey = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
     }
 
-    @Override
-    protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain filterChain) throws ServletException, IOException {
-
+    @Before("@annotation(authenticated)")
+    public void validateTokenAndRole(JoinPoint joinPoint, Authenticated authenticated) {
         String authHeader = request.getHeader("Authorization");
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
@@ -48,14 +51,19 @@ public class JWTAuthentication extends OncePerRequestFilter {
                     .build()
                     .parseClaimsJws(token);
 
-            request.setAttribute("username", claims.getBody().get("username"));
-            request.setAttribute("email", claims.getBody().get("email"));
-            request.setAttribute("role", claims.getBody().get("role"));
+            String username = claims.getBody().get("username", String.class);
+            String role = claims.getBody().get("role", String.class);
 
-            try {
-                filterChain.doFilter(request, response);
-            } catch (Exception ex) {
-                throw new MioBookException("Error processing request: " + ex.getMessage());
+            if (username == null || role == null) {
+                throw new MioBookException("Invalid token: missing claims");
+            }
+
+            request.setAttribute("username", username);
+            request.setAttribute("role", role);
+
+            String[] allowedRoles = authenticated.roles();
+            if (allowedRoles.length > 0 && !Arrays.asList(allowedRoles).contains(role)) {
+                throw new MioBookException("Access Denied: Role not permitted");
             }
 
         } catch (JwtException e) {
