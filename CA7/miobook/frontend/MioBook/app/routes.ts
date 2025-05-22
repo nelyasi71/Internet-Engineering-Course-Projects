@@ -11,5 +11,6 @@ export default [
     route("authors/:authorName", "routes/Author.jsx"),
     route("books/:bookTitle", "routes/Book.jsx"),
     route("books", "routes/SearchResult.jsx"),
+    route("oauth-callback", "routes/OAuthCallback.jsx"),
     route("/","routes/HomePage.jsx")
 ] satisfies RouteConfig;

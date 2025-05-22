@@ -11,6 +11,13 @@ import useAuthApi from "../hooks/useAuthApi";
 import axios from "axios";
 import { FaGoogle } from "react-icons/fa";
 
+const clientId = "908082702744-0450j4cjil8u1mbmrvtsosdd6puc1825.apps.googleusercontent.com";
+const redirectUri = "http://localhost:5173/oauth-callback";
+const scope = "openid email profile";
+const googleAuthUri = `https://accounts.google.com/o/oauth2/auth?client_id=${clientId}&response_type=code&scope=${encodeURIComponent(
+  scope
+)}&redirect_uri=${encodeURIComponent(redirectUri)}`;
+
 export function meta({}) {
   return [
     { title: "Sign Up" },
@@ -210,10 +217,7 @@ const SignUp = () => {
             <button
               type="button"
               className="btn btn-post rounded-3 w-100 border-0"
-              onClick={() => {
-                window.location.href =
-                  "https://accounts.google.com/o/oauth2/auth?client_id=GOOGLE_CLIENT_ID&response_type=code&scope=openid%20email%20profile&redirect_uri=http://localhost:5173/oauth-callback";
-              }}
+              onClick={() => {window.location.href = googleAuthUri}}
             >
               <FaGoogle size={20} className="me-2 mb-1"/>
               Signup with Google
