@@ -9,6 +9,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.miobook.Exception.MioBookException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
@@ -41,7 +42,7 @@ public class AuthAspect {
         String authHeader = request.getHeader("Authorization");
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            throw new MioBookException("Missing or invalid Authorization header");
+            throw new MioBookException("Missing or invalid Authorization header", HttpStatus.UNAUTHORIZED);
         }
 
         String token = authHeader.substring(7);
@@ -76,11 +77,11 @@ public class AuthAspect {
 
             String[] allowedRoles = authenticated.roles();
             if (allowedRoles.length > 0 && !Arrays.asList(allowedRoles).contains(role)) {
-                throw new MioBookException("Access Denied: Role not permitted");
+                throw new MioBookException("Access Denied: Role not permitted", HttpStatus.FORBIDDEN);
             }
 
         } catch (JwtException e) {
-            throw new MioBookException("Invalid or expired token");
+            throw new MioBookException("Invalid or expired token", HttpStatus.UNAUTHORIZED);
         }
     }
 }

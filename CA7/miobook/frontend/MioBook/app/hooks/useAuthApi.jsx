@@ -16,7 +16,7 @@ const useAuthApi = () => {
 
     const logout = async () => {
         await axiosInstance.post("/auth/logout");
-        localStorage.removeItem("accessToken");
+        localStorage.removeItem("jwt");
     };
 
     const getUser = async () => {

@@ -31,7 +31,7 @@ const ProfileMenu = () => {
         },
         body: JSON.stringify({})
       });
-      localStorage.removeItem("accessToken");
+      localStorage.removeItem("jwt");
       navigate("/signin"); 
     } catch (error) {
       console.error("Logout failed:", error);
