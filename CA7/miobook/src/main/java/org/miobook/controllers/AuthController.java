@@ -1,6 +1,7 @@
 package org.miobook.controllers;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.miobook.auth.Authenticated;
 import org.miobook.commands.Login;
 import org.miobook.commands.Logout;
 import org.miobook.commands.OAuth;
@@ -20,11 +21,9 @@ public class AuthController {
     @Autowired
     UserServices userServices;
 
-    @Autowired
-    RedisServices redisServices;
-
     @CrossOrigin(origins = "http://localhost:5173")
     @GetMapping("/user")
+    @Authenticated(roles = {"admin", "customer"})
     public BaseResponse<UserRecord> fetch_user(HttpServletRequest request) {
         String username = (String) request.getAttribute("username");
         ShowUserDetails command = new ShowUserDetails(username);
@@ -39,6 +38,7 @@ public class AuthController {
 
     @CrossOrigin(origins = "http://localhost:5173")
     @PostMapping("/logout")
+    @Authenticated(roles = {"admin", "customer"})
     public BaseResponse<Void> logout(@RequestBody Logout command, HttpServletRequest request) {
         String username = (String) request.getAttribute("username");
         return command.execute(authServices);

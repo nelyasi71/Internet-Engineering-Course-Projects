@@ -20,7 +20,12 @@ const useAuthApi = () => {
     };
 
     const getUser = async () => {
-        const response = await axiosInstance.get("/auth/user");
+        const response = await axiosInstance.get("/auth/user", {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("jwt")}`
+            }
+        });
+        console.log(response);
         return response.data.success ? response.data.data : null;
     };
 

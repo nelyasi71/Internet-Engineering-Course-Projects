@@ -1,27 +1,24 @@
 // src/pages/OAuthCallback.jsx
 import { useEffect } from "react";
+import axios from "axios";
 
 function OAuthCallback() {
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const code = urlParams.get("code");
-    
 
     if (code) {
-      fetch("http://localhost:9090/auth/google/callback?code=" + code, {
-        method: "GET",
-        credentials: "include"
+      axios.get("http://localhost:9090/api/auth/google/callback", {
+        params: { code },
+        // withCredentials: true
       })
-        .then((res) => {res.json(); console.log(res);})
-        .then((data) => {
-          console.log(res);
-          localStorage.setItem("jwt", data.data.token);
-          
-          // window.location.href = "/";
+        .then((response) => {
+          localStorage.setItem("jwt", response.data.data.token);
+          window.location.href = "/";
         })
         .catch((err) => {
           console.error("OAuth failed", err);
-          // window.location.href = "/signin";
+          window.location.href = "/signin";
         });
     }
   }, []);
