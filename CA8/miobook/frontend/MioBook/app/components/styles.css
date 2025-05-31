@@ -1,0 +1,194 @@
+
+:root {
+    --main-color: #16423C;
+    --secondary-color: #F5EFE7;
+    --background-color: #D9D9D9;
+}
+
+
+footer {
+    position: fixed;
+    background-color: var(--main-color);
+    bottom: 0;
+    width: 100%;
+}
+
+.btn.btn-selected, .btn.btn-selected:hover {
+    color: var(--main-color);
+    background-color: var(--secondary-color); 
+    border-color: var(--main-color);
+    font-weight: 600;
+}
+
+.link {
+    color: var(--main-color) !important;
+    font-weight: 600;
+}
+
+.btn.btn-post {
+    color: white !important;
+    background-color: var(--main-color) !important; 
+    font-weight: 600;
+}
+
+.btn.btn-green {
+    color: white;
+    background-color: #16423C;
+}
+
+.custom-modal {
+    max-width: 450px; 
+}
+
+.bg-custom-gray {
+    background: #f2f2f2 !important;
+}
+
+input {
+    height: 40px;
+}
+
+button {
+    height: 45px;
+    font-weight: 800;
+}
+
+button.accordion-button {
+    font-weight: 600;
+    background-color: #f2f2f2;
+}
+
+.container.book-content {
+    background-color: white;
+    border-bottom: 2px solid #b79b75;
+}
+
+.book-icon {
+    width: 30px;
+    height: auto;
+}
+
+.star {
+    border-radius: 6px;
+    display: inline-block; 
+    background-color: #F1F5F7;
+}
+
+.rating {
+    gap: 4px;
+    top: 381px;
+    left: 499px;
+    flex-direction: row;
+    cursor: pointer;
+}
+
+.pagination-wrapper {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+}
+  
+.pagination-button {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    padding: 4px 8px;
+    background-color: transparent;
+    border: none;
+    size: 12px;
+    font-family: 'Inter';
+    color: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+  
+.pagination-button:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+  
+.pagination-button:disabled {
+    opacity: 0.3;
+    cursor: default;
+}
+  
+.number-button.active {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+  
+.arrow-icon {
+    width: 28px;
+    height: 28px;
+}
+  
+.book-card {
+    width: 200px;
+    height: 320px;
+    border-radius: 16px;
+}
+.book-cover {
+    width: 200px;
+    height: 160px;
+    object-fit: cover;
+    position: relative;
+    top: -1px;
+}
+  
+.card-body{
+    background: #F5EFE7;
+}
+
+.bg-secondary-subtle {
+    background-color: #e9ecef;
+    width: 40px;
+    height: 40px;
+    font-weight: 600;
+    font-size: 14px;
+  }
+  
+.page-background{
+    background-color: #f2f2f2;
+}
+
+.custom-border {
+    border-left: none !important;
+    border-right: none !important;
+    border-top: none !important;
+    border-bottom: 2px solid #804900 !important;
+    background-color: white;
+}
+
+.home-section{
+    background-color: #F5EFE7;
+}
+
+input[type="checkbox"]:checked {
+    accent-color: black;
+  }
+  
+  .number-boxes {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    justify-items: center;
+  }
+  
+  .number-box {
+    width: 100%;
+    text-align: center;
+    padding: 10px 0;
+    border: 2px solid #16423C;
+    color: #16423C;
+    background-color: white;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s ease;
+  }
+  
+  .number-box.selected {
+    background-color: #16423C;
+    color: white;
+  }
+    
