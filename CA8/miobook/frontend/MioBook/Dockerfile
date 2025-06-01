@@ -1,22 +1,25 @@
-FROM node:20-alpine AS development-dependencies-env
-COPY . /app
-WORKDIR /app
-RUN npm ci
+FROM node:20 AS builder
 
-FROM node:20-alpine AS production-dependencies-env
-COPY ./package.json package-lock.json /app/
 WORKDIR /app
-RUN npm ci --omit=dev
 
-FROM node:20-alpine AS build-env
-COPY . /app/
-COPY --from=development-dependencies-env /app/node_modules /app/node_modules
-WORKDIR /app
+COPY package*.json ./
+
+RUN npm install
+
+COPY . .
+
 RUN npm run build
 
-FROM node:20-alpine
-COPY ./package.json package-lock.json /app/
-COPY --from=production-dependencies-env /app/node_modules /app/node_modules
-COPY --from=build-env /app/build /app/build
-WORKDIR /app
-CMD ["npm", "run", "start"]
+FROM nginx:1.25-alpine
+
+ENV BACKEND_HOST=host.docker.internal:8080
+
+COPY --from=builder /app/dist /usr/share/nginx/html
+
+COPY nginx/default.conf.template /etc/nginx/templates/default.conf.template
+
+ENV PORT=5174
+
+EXPOSE 5174
+
+CMD ["nginx", "-g", "daemon off;"]
