@@ -1,5 +1,3 @@
-import { Dropdown } from "react-bootstrap";
-
 import logo from '../static/Logo.png';
 import ProfileMenu from "./ProfileMenu";
 import SearchDropdown from "./SearchDropDown";

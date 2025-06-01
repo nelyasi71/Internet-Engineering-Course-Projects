@@ -8,7 +8,7 @@ function OAuthCallback() {
     const code = urlParams.get("code");
 
     if (code) {
-      axios.get("http://localhost:9090/api/auth/google/callback", {
+      axios.get("/api/auth/google/callback", {
         params: { code },
         // withCredentials: true
       })

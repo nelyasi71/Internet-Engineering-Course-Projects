@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import InputField from "../components/InputField";
 import PasswordField from "../components/PasswordField";
-import Footer from "../components/footer";
 import useAuthApi from "../hooks/useAuthApi";
 import { FaGoogle } from "react-icons/fa";
+import Footer from "../components/Footer";
 
 const loginFields = ["username", "password"];
 
@@ -20,7 +20,7 @@ const initialLoginErrors = loginFields.reduce((acc, field) => {
 }, {});
 
 const clientId = "908082702744-0450j4cjil8u1mbmrvtsosdd6puc1825.apps.googleusercontent.com";
-const redirectUri = "http://localhost:5173/oauth-callback";
+const redirectUri = "http://localhost:5174/oauth-callback";
 const scope = "openid email profile";
 const googleAuthUri = `https://accounts.google.com/o/oauth2/auth?client_id=${clientId}&response_type=code&scope=${encodeURIComponent(
   scope
@@ -97,7 +97,7 @@ const SignIn = () => {
 
         const token = typeof window !== "undefined" ? localStorage.getItem("jwt") : null;
         const userRoleResp = await axios.get(
-          `http://localhost:9090/api/users/${formData.username}`,
+          `/api/users/${formData.username}`,
           {
             headers: {
               Authorization: `Bearer ${token}`

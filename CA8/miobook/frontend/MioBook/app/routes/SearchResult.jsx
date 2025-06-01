@@ -2,9 +2,8 @@ import Navbar from "../components/NavBar";
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import Card from "../components/Card";
-import Footer from "../components/footer";
-import { Modal, Button, Form } from "react-bootstrap";
 import FilterModal from "../components/FilterModal";
+import Footer from "../components/Footer";
 
 const token = typeof window !== "undefined" ? localStorage.getItem("jwt") : null;
 
@@ -32,7 +31,7 @@ const SearchResult = () => {
         if (to) params.append("to", to);
 
         const response = await fetch(
-          `http://localhost:9090/api/books?${params.toString()}`,
+          `/api/books?${params.toString()}`,
           {
             method: "GET",
             headers: {

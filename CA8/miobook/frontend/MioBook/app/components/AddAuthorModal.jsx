@@ -55,7 +55,7 @@ const AddAuthorModal = () => {
     if (!validateForm()) return;
   
     try {
-      const res = await fetch("http://localhost:9090/api/author", {
+      const res = await fetch("/api/author", {
         method: "POST",
         headers: { 
           "Authorization": `Bearer ${token}`, 

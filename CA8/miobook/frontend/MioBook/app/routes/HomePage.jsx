@@ -2,7 +2,7 @@ import Navbar from "../components/NavBar";
 import Picture from "../static/Picture.png";
 import { useState, useEffect } from "react";
 import Card from "../components/Card";
-import Footer from "../components/footer";
+import Footer from "../components/Footer";
 
 const HomePage = () => {
   const [newReleases, setNewReleases] = useState([]);
@@ -12,7 +12,7 @@ const HomePage = () => {
   const fetchNewReleases = async () => {
     try {
       const res = await fetch(
-        "http://localhost:9090/api/books?sortBy=year&order=asc",
+        "/api/books?sortBy=year&order=asc",
         {
           method: "GET",
         }
@@ -27,7 +27,7 @@ const HomePage = () => {
   const fetchTopRatedBooks = async () => {
     try {
       const res = await fetch(
-        "http://localhost:9090/api/books?sortBy=rating&order=desc",
+        "/api/books?sortBy=rating&order=desc",
         {
           method: "GET",
         }

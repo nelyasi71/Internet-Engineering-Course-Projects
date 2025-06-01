@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Navbar from "../components/NavBar";
 import UserInfo from "../components/Userinfo";
-import Footer from "../components/footer";
+import Footer from "../components/Footer";
 import AllBooks from "../components/AllBooks";
 import AllAuthors from "../components/AllAuthors";
 import AddAuthorModal from "../components/AddAuthorModal";
@@ -17,14 +17,14 @@ export function meta({}) {
   ];
 }
 
-export default function Panel() {
+export default function AdminPanel() {
   const [user, setUser] = useState(null);
   const [books, setbooks] = useState([]);
   const [authors, setAuthors] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://localhost:9090/api/auth/user", {
+    fetch("/api/auth/user", {
       method: "GET",
       headers: {
         "Authorization": `Bearer ${token}`, // or just `token` if your API expects it differently
@@ -41,7 +41,7 @@ export default function Panel() {
       setLoading(false);
     });
 
-    fetch("http://localhost:9090/api/get-books", {
+    fetch("/api/get-books", {
       method: "GET",
       headers: {
         "Authorization": `Bearer ${token}`, // or just `token` if your API expects it differently
@@ -51,7 +51,7 @@ export default function Panel() {
     .then(res => res.json())
     .then(res => setbooks(res.data.books));
 
-    fetch("http://localhost:9090/api/authors", {
+    fetch("/api/authors", {
       method: "GET",
       headers: {
         "Authorization": `Bearer ${token}`, // or just `token` if your API expects it differently

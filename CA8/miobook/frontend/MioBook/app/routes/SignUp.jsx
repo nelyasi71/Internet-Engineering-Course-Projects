@@ -5,14 +5,14 @@ import PasswordField from "../components/PasswordField";
 import RoleSelector from "../components/RoleSelector";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
-import Footer from "../components/footer";
 import axiosInstance from '../api/axiosInstance';
 import useAuthApi from "../hooks/useAuthApi";
 import axios from "axios";
 import { FaGoogle } from "react-icons/fa";
+import Footer from "../components/Footer";
 
 const clientId = "908082702744-0450j4cjil8u1mbmrvtsosdd6puc1825.apps.googleusercontent.com";
-const redirectUri = "http://localhost:5173/oauth-callback";
+const redirectUri = "http://localhost:5174/oauth-callback";
 const scope = "openid email profile";
 const googleAuthUri = `https://accounts.google.com/o/oauth2/auth?client_id=${clientId}&response_type=code&scope=${encodeURIComponent(
   scope

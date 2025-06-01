@@ -2,8 +2,6 @@ import Navbar from "../components/NavBar";
 import Background from "../static/Background.png" 
 import Image from "../static/Vertical-Image.png"
 import Card from "../components/Card";
-import React, {useState, useEffect} from 'react';
-import { useNavigate,useLocation} from 'react-router-dom';
 import { useParams } from 'react-router-dom';  
 
 const token = typeof window !== "undefined" ? localStorage.getItem("jwt") : null;
@@ -14,7 +12,7 @@ const Author = () => {
     const { authorName } = useParams(); 
 
     useEffect(() => {
-        fetch(`http://localhost:9090/api/authors/${authorName}`, {
+        fetch(`/api/authors/${authorName}`, {
           method: "GET",
           headers: {
             "Authorization": `Bearer ${token}`,
@@ -26,7 +24,7 @@ const Author = () => {
           setAuthorDetails(res.data);  
         })
          
-        fetch(`http://localhost:9090/api/books?author=${authorName}`, {
+        fetch(`/api/books?author=${authorName}`, {
           method: "GET",
           headers: {
             "Authorization": `Bearer ${token}`,

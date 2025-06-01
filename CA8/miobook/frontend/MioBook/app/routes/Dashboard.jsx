@@ -2,10 +2,10 @@ import { useEffect, useState } from "react";
 import Navbar from "../components/NavBar";
 import CreditForm from "../components/CreditForm";
 import UserInfo from "../components/Userinfo";
-import Footer from "../components/footer";
 import MyBooks from "../components/MyBooks";
 import AccessDenied from "./AccessDenied";
 import { Navigate } from "react-router";
+import Footer from "../components/Footer";
 
 
 export function meta({}) {
@@ -24,7 +24,7 @@ export default function Dashboard() {
   
 
   useEffect(() => {
-    fetch("http://localhost:9090/api/auth/user", {
+    fetch("/api/auth/user", {
       method: "GET",
       headers: {
         "Authorization": `Bearer ${token}`,
@@ -42,7 +42,7 @@ export default function Dashboard() {
     });
     
     
-    fetch("http://localhost:9090/api/purchased-books", {
+    fetch("/api/purchased-books", {
       method: "GET",
       headers: {
         "Authorization": `Bearer ${token}`, // or just `token` if your API expects it differently

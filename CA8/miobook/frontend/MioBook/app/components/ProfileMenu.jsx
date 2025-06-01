@@ -10,7 +10,7 @@ const ProfileMenu = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch("http://localhost:9090/api/auth/user", {
+    fetch("/api/auth/user", {
       method: "GET",
       headers: {
         "Authorization": `Bearer ${token}`, // or just `token` if your API expects it differently
@@ -23,7 +23,7 @@ const ProfileMenu = () => {
 
   const handleLogout = async () => {
     try {
-      await fetch("http://localhost:9090/api/auth/logout", {
+      await fetch("/api/auth/logout", {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${token}`, 

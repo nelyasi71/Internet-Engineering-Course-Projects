@@ -1,9 +1,9 @@
 import CartTable from "../components/CartTable";
-import Footer from "../components/footer";
 import Navbar from "../components/NavBar";
 import { useEffect, useState } from "react";
 import Notifier from "../components/Notifier";
 import { FaShoppingCart } from "react-icons/fa";
+import Footer from "../components/Footer";
 
 
 const token = typeof window !== "undefined" ? localStorage.getItem("jwt") : null;
@@ -25,7 +25,7 @@ export default function BuyCart() {
 
     try {
     
-      const response = await fetch("http://localhost:9090/api/cart/purchase", {
+      const response = await fetch("/api/cart/purchase", {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${token}`,
@@ -47,7 +47,7 @@ export default function BuyCart() {
   }
 
   useEffect(() => {
-    fetch("http://localhost:9090/api/cart/list", {
+    fetch("/api/cart/list", {
       method: "GET",
       headers: {
         "Authorization": `Bearer ${token}`, // or just `token` if your API expects it differently

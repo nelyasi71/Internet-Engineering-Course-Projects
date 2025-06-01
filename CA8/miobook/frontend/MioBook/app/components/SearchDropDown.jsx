@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Dropdown } from 'react-bootstrap';
-import { useNavigate } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 const SearchDropdown = () => {
   const [searchType, setSearchType] = useState('Author');

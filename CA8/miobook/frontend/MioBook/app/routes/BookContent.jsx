@@ -1,4 +1,4 @@
-import Footer from "../components/footer";
+import Footer from "../components/Footer";
 import Navbar from "../components/NavBar";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -21,7 +21,7 @@ export default function BookContent() {
 
 
   useEffect(() => {
-    fetch("http://localhost:9090/api/books/" + title + "/content", {
+    fetch("/api/books/" + title + "/content", {
       method: "GET",
       headers: {
         "Authorization": `Bearer ${token}`, // or just `token` if your API expects it differently

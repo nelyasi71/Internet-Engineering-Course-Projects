@@ -9,7 +9,7 @@ export default function CartItem({ item, onRemove, isHistory }) {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:9090/api/cart/remove", {
+      const response = await fetch("/api/cart/remove", {
         method: "DELETE",
         headers: {
           "Authorization": `Bearer ${token}`, 

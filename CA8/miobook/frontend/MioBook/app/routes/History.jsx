@@ -1,8 +1,8 @@
 import CartTable from "../components/CartTable";
 import { useEffect, useState } from "react";
 import Navbar from "../components/NavBar";
-import Footer from "../components/footer";
-import { RiChatHistoryFill, RiHistoryFill } from "react-icons/ri";
+import { RiHistoryFill } from "react-icons/ri";
+import Footer from "../components/Footer";
 
 
 const token = typeof window !== "undefined" ? localStorage.getItem("jwt") : null;
@@ -19,7 +19,7 @@ export default function History() {
   const [purchasedHistory, setPurchasedHistory] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:9090/api/purchase-history", {
+    fetch("/api/purchase-history", {
       method: "GET",
       headers: {
         "Authorization": `Bearer ${token}`, // or just `token` if your API expects it differently

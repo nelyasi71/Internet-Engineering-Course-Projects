@@ -106,7 +106,7 @@ const AddBookModal = () => {
     if (!validateStep2()) return;
 
     try {
-      const res = await fetch("http://localhost:9090/api/book", {
+      const res = await fetch("/api/book", {
         method: "POST",
         headers: { 
           "Authorization": `Bearer ${token}`, 

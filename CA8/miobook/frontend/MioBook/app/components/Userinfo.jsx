@@ -8,7 +8,7 @@ export default function UserInfo({ name, email, wide }) {
   const navigate = useNavigate();
   const handleLogout = async () => {
     try {
-      await fetch("http://localhost:9090/api/auth/logout", {
+      await fetch("/api/auth/logout", {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${token}`, 

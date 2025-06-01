@@ -5,7 +5,7 @@ import Pagination from "../components/Pagination";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import Comment from "../components/Comment"; 
-import Footer from "../components/footer";
+import Footer from "../components/Footer";
 import AddToCartModal from "../components/AddCartModal.jsx"; 
 import "bootstrap/dist/css/bootstrap.min.css";
 import { toast } from "react-toastify";
@@ -23,7 +23,7 @@ const Book = () => {
   
 
   useEffect(() => {
-    fetch(`http://localhost:9090/api/books/${bookTitle}`)
+    fetch(`/api/books/${bookTitle}`)
       .then((res) => res.json())
       .then((data) => setBook(data.data));
   }, [bookTitle]);
@@ -32,8 +32,8 @@ const Book = () => {
 const handleAddToCart = async ({ borrow, days }) => {
   const username = localStorage.getItem("username"); 
   const endpoint = borrow
-    ? "http://localhost:9090/api/cart/borrow"
-    : "http://localhost:9090/api/cart/add";
+    ? "/api/cart/borrow"
+    : "/api/cart/add";
 
   const body = borrow
     ? { username, title: book.title, days }
