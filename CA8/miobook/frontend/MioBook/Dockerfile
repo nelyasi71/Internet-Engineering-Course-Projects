@@ -12,7 +12,7 @@ RUN npm run build
 
 FROM nginx:1.25-alpine
 
-ENV BACKEND_HOST=host.docker.internal:8080
+ENV BACKEND_HOST=localhost:8080
 
 COPY --from=builder /app/dist /usr/share/nginx/html
 
