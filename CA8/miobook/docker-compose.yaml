@@ -19,7 +19,7 @@ services:
     environment:
       - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/miobook
       - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD_FILE=./secrets/db_password.txt
+      - SPRING_DATASOURCE_PASSWORD_FILE=/run/secrets/db_password
     secrets:
       - db_password
     depends_on:
@@ -29,7 +29,7 @@ services:
   db:
     image: mysql:8
     environment:
-      - MYSQL_ROOT_PASSWORD_FILE=./secrets/db_password.txt
+      - MYSQL_ROOT_PASSWORD_FILE=/run/secrets/db_password
       - MYSQL_DATABASE=miobook
     volumes:
       - db_data:/var/lib/mysql
