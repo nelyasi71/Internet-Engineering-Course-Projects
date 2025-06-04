@@ -7,7 +7,6 @@ import org.miobook.responses.BaseResponse;
 import org.miobook.responses.PurchaseHistoryRecord;
 import org.miobook.responses.PurchasedBooksRecord;
 import org.miobook.responses.UserRecord;
-import org.miobook.services.RedisServices;
 import org.miobook.services.UserServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -16,8 +15,6 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     @Autowired
     UserServices userServices;
-    @Autowired
-    RedisServices redisServices;
 
     @PostMapping("/user")
     @CrossOrigin(origins = "http://localhost:5173")

@@ -7,7 +7,6 @@ import org.miobook.responses.BaseResponse;
 import org.miobook.responses.CartRecord;
 import org.miobook.responses.PurchaseCartRecord;
 import org.miobook.services.CartServices;
-import org.miobook.services.RedisServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,8 +15,6 @@ import org.springframework.web.bind.annotation.*;
 public class CartController {
     @Autowired
     CartServices cartServices;
-    @Autowired
-    RedisServices redisServices;
 
     @CrossOrigin(origins = "http://localhost:5173")
     @Authenticated(roles = {"customer"})

@@ -5,7 +5,6 @@ import org.miobook.auth.Authenticated;
 import org.miobook.commands.*;
 import org.miobook.responses.*;
 import org.miobook.services.BookServices;
-import org.miobook.services.RedisServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,8 +13,6 @@ public class BookController {
 
     @Autowired
     BookServices bookServices;
-    @Autowired
-    RedisServices redisServices;
 
     @CrossOrigin(origins = "http://localhost:5173")
     @Authenticated(roles = {"admin"})

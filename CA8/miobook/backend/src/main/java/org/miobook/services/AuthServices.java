@@ -36,9 +36,6 @@ public class AuthServices implements Services {
     private UserRepository userRepository;
 
     @Autowired
-    private RedisServices redisServices;
-
-    @Autowired
     private SecurityService securityService;
 
     @Autowired

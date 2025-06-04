@@ -10,7 +10,6 @@ import org.miobook.responses.AllAuthorsRecord;
 import org.miobook.responses.AuthorRecord;
 import org.miobook.responses.BaseResponse;
 import org.miobook.services.AuthorServices;
-import org.miobook.services.RedisServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,8 +19,6 @@ public class AuthorController {
     @Autowired
     AuthorServices authorServices;
 
-    @Autowired
-    RedisServices redisServices;
 
     @CrossOrigin(origins = "http://localhost:5173")
     @Authenticated(roles = {"admin"})

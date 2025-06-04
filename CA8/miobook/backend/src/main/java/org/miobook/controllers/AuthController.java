@@ -8,7 +8,6 @@ import org.miobook.commands.OAuth;
 import org.miobook.commands.ShowUserDetails;
 import org.miobook.responses.*;
 import org.miobook.services.AuthServices;
-import org.miobook.services.RedisServices;
 import org.miobook.services.UserServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
