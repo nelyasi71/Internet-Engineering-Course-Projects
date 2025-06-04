@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import axios from "axios";
 import InputField from "../components/InputField";
 import PasswordField from "../components/PasswordField";
@@ -20,7 +20,7 @@ const initialLoginErrors = loginFields.reduce((acc, field) => {
 }, {});
 
 const clientId = "908082702744-0450j4cjil8u1mbmrvtsosdd6puc1825.apps.googleusercontent.com";
-const redirectUri = "http://localhost:5174/oauth-callback";
+const redirectUri = "http://localhost:5173/oauth-callback";
 const scope = "openid email profile";
 const googleAuthUri = `https://accounts.google.com/o/oauth2/auth?client_id=${clientId}&response_type=code&scope=${encodeURIComponent(
   scope

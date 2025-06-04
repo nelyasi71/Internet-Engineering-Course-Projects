@@ -13,7 +13,7 @@ const ProfileMenu = () => {
     fetch("/api/auth/user", {
       method: "GET",
       headers: {
-        "Authorization": `Bearer ${token}`, // or just `token` if your API expects it differently
+        "Authorization": `Bearer ${token}`,
         "Content-Type": "application/json"
       }
     })
