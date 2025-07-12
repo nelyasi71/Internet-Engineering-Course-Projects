@@ -1,0 +1,14 @@
+kubectl apply -f backend\configMap.yml
+kubectl apply -f backend\deployment.yml
+kubectl apply -f backend\secret.yml
+kubectl apply -f backend\service.yml
+
+kubectl apply -f database\configMap.yml
+kubectl apply -f database\deployment.yml
+kubectl apply -f database\secret.yml
+kubectl apply -f database\service.yml
+
+kubectl apply -f frontend\configMap.yml
+kubectl apply -f frontend\deployment.yml
+kubectl apply -f frontend\service.yml
+

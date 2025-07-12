@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: frontend-config
+data:
+  VITE_BACKEND_HOST: backend
+  VITE_BACKEND_PORT: "8080"
+  PORT: "5173"
