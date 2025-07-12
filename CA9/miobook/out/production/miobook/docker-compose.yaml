@@ -1,0 +1,67 @@
+version: "3.7"
+
+services:
+
+  db:
+    image: mysql:8
+    container_name: mysql-db
+    restart: always
+    environment:
+      # MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_password
+      MYSQL_ROOT_PASSWORD: Estanboli2003
+      MYSQL_DATABASE: miobook
+    volumes:
+      - ./mysql-init.sql:/docker-entrypoint-initdb.d/init.sql
+      - db_data:/var/lib/mysq11l
+    secrets:
+      - db_password
+    networks:
+      - miobook_net
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+    container_name: backend
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-db:3306/miobook
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD_FILE=/run/secrets/db_password
+    secrets:
+      - db_password
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - miobook_net
+
+  frontend:
+    build:
+      context: ./frontend/MioBook
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_BACKEND_HOST=backend
+      - VITE_BACKEND_PORT=8080
+      - PORT=5173
+    networks:
+      - miobook_net
+    depends_on:
+      - backend
+
+
+volumes:
+  db_data:
+
+networks:
+  miobook_net:
+
+secrets:
+  db_password:
+    file: ./secrets/db_password.txt

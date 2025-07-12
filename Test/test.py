@@ -1,6 +1,6 @@
 import requests
 
-BASE = "http://localhost:9090/api"
+BASE = "http://localhost:8080/api"
 make_header = lambda token: {"Authorization": f"Bearer {token}"}
 
 
@@ -12,16 +12,16 @@ add_admin_data = {
     "address": {"country": "Iran", "city": "Karaj"}
 }
 
-add_googoolijan_data = {
+add_charlie_data = {
     "role": "customer",
-    "username": "googoolijan",
+    "username": "charlie",
     "password": "1234",
     "email": "my.mail2@mail.com",
     "address": {"country": "Iran", "city": "Karaj"}
 }
 
 login_admin_data = {"username": "admin", "password": "admin"}
-login_googoolijan_data = {"username": "googoolijan", "password": "1234"}
+login_charlie_data = {"username": "charlie", "password": "1234"}
 
 authors = [
     {"name": "Charles Monroe Schulz", "penName": "Sparky", "born": "1922-10-26", "died": "2000-01-12"},
@@ -54,80 +54,80 @@ add_review = {"title": "peanuts", "rate": 5, "comment": "This is the perfect boo
 
 class APITest:
     token = ""
-    googoolijan_token = ""
+    charlie_token = ""
 
     def add_admin(self):
-        r = requests.post(f"{BASE}/user", json=add_admin_data, timeout=1)
+        r = requests.post(f"{BASE}/user", json=add_admin_data, timeout=0.05)
         print("add_admin:", r.json())
 
-    def add_googoolijan(self):
-        r = requests.post(f"{BASE}/user", json=add_googoolijan_data, timeout=1)
-        print("add_googoolijan:", r.json())
+    def add_charlie(self):
+        r = requests.post(f"{BASE}/user", json=add_charlie_data, timeout=0.05)
+        print("add_charlie:", r.json())
 
     def login_admin(self):
-        r = requests.post(f"{BASE}/auth/login", json=login_admin_data, timeout=1)
+        r = requests.post(f"{BASE}/auth/login", json=login_admin_data, timeout=0.05)
         print("login_admin:", r.json())
         self.__class__.token = r.json().get("data", {}).get("token", "")
 
-    def login_googoolijan(self):
-        r = requests.post(f"{BASE}/auth/login", json=login_googoolijan_data, timeout=1)
-        print("login_googoolijan:", r.json())
-        self.__class__.googoolijan_token = r.json().get("data", {}).get("token", "")
+    def login_charlie(self):
+        r = requests.post(f"{BASE}/auth/login", json=login_charlie_data, timeout=0.05)
+        print("login_charlie:", r.json())
+        self.__class__.charlie_token = r.json().get("data", {}).get("token", "")
 
     def add_author(self):
         for a in authors:
-            r = requests.post(f"{BASE}/author", json=a, headers=make_header(self.token), timeout=1)
+            r = requests.post(f"{BASE}/author", json=a, headers=make_header(self.token), timeout=0.05)
             print("add_author:", r.json())
 
     def add_book(self):
         for b in books:
-            r = requests.post(f"{BASE}/book", json=b, headers=make_header(self.token), timeout=1)
+            r = requests.post(f"{BASE}/book", json=b, headers=make_header(self.token), timeout=0.05)
             print("add_book:", r.json())
 
     def add_credit(self):
-        r = requests.post(f"{BASE}/credit", json=addcredit, headers=make_header(self.googoolijan_token), timeout=1)
+        r = requests.post(f"{BASE}/credit", json=addcredit, headers=make_header(self.charlie_token), timeout=0.05)
         print("add_credit:", r.json())
 
     def add_cart(self):
-        r1 = requests.post(f"{BASE}/cart/add", json=cart1, headers=make_header(self.googoolijan_token), timeout=1)
+        r1 = requests.post(f"{BASE}/cart/add", json=cart1, headers=make_header(self.charlie_token), timeout=0.05)
         print("add_cart1:", r1.json())
-        r2 = requests.post(f"{BASE}/cart/add", json=cart2, headers=make_header(self.googoolijan_token), timeout=1)
+        r2 = requests.post(f"{BASE}/cart/add", json=cart2, headers=make_header(self.charlie_token), timeout=0.05)
         print("add_cart2:", r2.json())
 
     def borrow_book(self):
-        r = requests.post(f"{BASE}/cart/borrow", json=borrow, headers=make_header(self.googoolijan_token), timeout=1)
+        r = requests.post(f"{BASE}/cart/borrow", json=borrow, headers=make_header(self.charlie_token), timeout=0.05)
         print("borrow:", r.json())
 
     def list_cart(self):
-        r = requests.get(f"{BASE}/cart/list", headers=make_header(self.googoolijan_token), timeout=1)
+        r = requests.get(f"{BASE}/cart/list", headers=make_header(self.charlie_token), timeout=0.05)
         print("cart_list:", r.json())
 
     def purchase(self):
-        r = requests.post(f"{BASE}/cart/purchase", json={}, headers=make_header(self.googoolijan_token), timeout=1)
+        r = requests.post(f"{BASE}/cart/purchase", json={}, headers=make_header(self.charlie_token), timeout=0.05)
         print("purchase:", r.json())
 
     def history(self):
-        r = requests.get(f"{BASE}/purchase-history", headers=make_header(self.googoolijan_token), timeout=1)
+        r = requests.get(f"{BASE}/purchase-history", headers=make_header(self.charlie_token), timeout=0.05)
         print("history:", r.json())
 
     def add_review(self):
-        r = requests.post(f"{BASE}/books/peanuts/review", json=add_review, headers=make_header(self.googoolijan_token), timeout=1)
+        r = requests.post(f"{BASE}/books/peanuts/review", json=add_review, headers=make_header(self.charlie_token), timeout=0.05)
         print("add_review:", r.json())
 
     def logout(self):
-        r = requests.post(f"{BASE}/auth/logout", json={}, timeout=1)
+        r = requests.post(f"{BASE}/auth/logout", json={}, headers=make_header(self.token), timeout=0.05)
         print("logout:", r.json())
 
 if __name__ == "__main__":
     t = APITest()
 
     t.add_admin()
-    t.add_googoolijan()
+    t.add_charlie()
     t.login_admin()
     t.add_author()
     t.add_book()
     t.logout()
-    t.login_googoolijan()
+    t.login_charlie()
     t.add_credit()
     t.add_cart()
     t.borrow_book()
